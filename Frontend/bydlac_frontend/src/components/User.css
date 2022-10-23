@@ -1,0 +1,17 @@
+.person1 {
+    width: 340px;
+    /*border-radius: 1px;
+    border: solid aqua;*/
+}
+
+.person1Data {
+    padding-left: 50px;
+}
+
+.person1Image {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    float: left;
+}
+

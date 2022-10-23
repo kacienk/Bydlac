@@ -1,0 +1,36 @@
+.inputMessageField {
+    background-color: rgb(118, 176, 206);
+    height: 30px;
+    width: 720px;
+    border: none;
+    border-radius: 15px;
+    outline: none;
+    padding-left: 15px;
+}
+
+.inputSendButton {
+    height: 30px;
+    width: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    /*margin-right: ;*/
+}
+
+.inputPhotoButton {
+    height: 30px;
+    width: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    /*margin-right: ;*/
+}
+
+.inputLocationButton {
+    height: 30px;
+    width: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    /*margin-right: ;*/
+}
