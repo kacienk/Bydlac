@@ -127,3 +127,31 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# jetbrains IDE
+.idea
+
+# From react project:
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+Frontend/bydlac_frontend/node_modules
+Frontend/bydlac_frontend/.pnp
+Frontend/bydlac_frontend/.pnp.js
+
+# testing
+Frontend/bydlac_frontend/coverage
+
+# production
+Frontend/bydlac_frontend/build
+
+# misc
+Frontend/bydlac_frontend/.DS_Store
+Frontend/bydlac_frontend/.env.local
+Frontend/bydlac_frontend/.env.development.local
+Frontend/bydlac_frontend/.env.test.local
+Frontend/bydlac_frontend/.env.production.local
+
+Frontend/bydlac_frontend/npm-debug.log*
+Frontend/bydlac_frontend/yarn-debug.log*
+Frontend/bydlac_frontend/yarn-error.log*
