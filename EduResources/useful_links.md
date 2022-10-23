@@ -29,4 +29,3 @@ Links to useful articles about something more abstract than coding.
 4. [Building a React.js Application using Django REST Framework](https://www.section.io/engineering-education/react-and-django-rest-framework/)
 5. [Creating a Real Time Chat App using React and Socket IO with E2E Encryption](https://www.section.io/engineering-education/creating-a-real-time-chat-app-with-react-socket-io-with-e2e-encryption/)
 6. [How To Build a To-Do application Using Django and React](https://www.digitalocean.com/community/tutorials/build-a-to-do-application-using-django-and-react)
-
