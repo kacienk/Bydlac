@@ -1,17 +1,34 @@
-.person1 {
-    width: 340px;
-    /*border-radius: 1px;
-    border: solid aqua;*/
+.otherPerson {
+    width: 33vw;
+    border-radius: 1px;
+    border: solid aqua;
 }
 
-.person1Data {
+.otherPersonData {
     padding-left: 50px;
 }
 
-.person1Image {
+.otherPersonImage {
     height: 40px;
     width: 40px;
     border-radius: 50%;
     float: left;
 }
 
+.you {
+    width: 33vw;
+    border-radius: 1px;
+    border: solid aqua;
+}
+
+.youData {
+    text-align: right;
+    padding-right: 50px;
+}
+
+.youImage {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    float: right;
+}

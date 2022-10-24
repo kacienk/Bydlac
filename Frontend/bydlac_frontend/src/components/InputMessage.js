@@ -1,7 +1,8 @@
 import {useRef} from "react";
 import './InputMessage.css';
 
-function InputMessage(props) {
+function InputMessage(props)
+{
     const messageRef = useRef();
 
     function sendMessageHandler() {
