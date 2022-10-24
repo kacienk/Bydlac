@@ -17,6 +17,10 @@ Links to useful articles about something more abstract than coding.
 
 1. [JS course codecademy](https://www.codecademy.com/learn/introduction-to-javascript)
 
+## HTML & CSS
+
+1. [HTML & CSS course 6.5h](https://www.youtube.com/watch?v=G3e-cpL7ofc)
+
 ## Django
 
 1. [Django advantages and disadvantages](https://data-flair.training/blogs/django-advantages-and-disadvantages/)
