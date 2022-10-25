@@ -7,6 +7,7 @@ Links to useful articles about something more abstract than coding.
 1. [Basic markdown](https://www.markdownguide.org/basic-syntax/)
 2. [Risk analysis](https://mfiles.pl/pl/index.php/Analiza_ryzyka)
 3. [System architecture](https://wolski.pro/2020/10/architektura-systemow/)
+4. [System architecture 2](https://medium.com/blog-transparent-data/architektura-oprogramowania-projektowanie-oprogramowania-b594aaa63658)
 
 ## React
 
