@@ -40,3 +40,4 @@ Links to useful articles about something more abstract than coding.
 ## Articles about building chat application
 
 1. [Understanding the Architecture & System Design of a Chat Application](https://www.cometchat.com/blog/chat-application-architecture-and-system-design)
+2. [Ace the System Interview— Design a Chat Application](https://towardsdatascience.com/ace-the-system-interview-design-a-chat-application-3f34fd5b85d0)
