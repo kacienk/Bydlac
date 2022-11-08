@@ -1,5 +1,8 @@
 # Useful links
 
+## Overleaf
+1.[presentation script](https://www.overleaf.com/project/63557b9216d51e63c82dee30)
+
 ## Meta-links
 
 Links to useful articles about something more abstract than coding.
@@ -35,9 +38,16 @@ Links to useful articles about something more abstract than coding.
 4. [Building a React.js Application using Django REST Framework](https://www.section.io/engineering-education/react-and-django-rest-framework/)
 5. [Creating a Real Time Chat App using React and Socket IO with E2E Encryption](https://www.section.io/engineering-education/creating-a-real-time-chat-app-with-react-socket-io-with-e2e-encryption/)
 6. [How To Build a To-Do application Using Django and React](https://www.digitalocean.com/community/tutorials/build-a-to-do-application-using-django-and-react)
-
+7. [React + Django crash course](https://youtu.be/tYKRAXIio28)
 
 ## Articles about building chat application
 
 1. [Understanding the Architecture & System Design of a Chat Application](https://www.cometchat.com/blog/chat-application-architecture-and-system-design)
 2. [Ace the System Interview— Design a Chat Application](https://towardsdatascience.com/ace-the-system-interview-design-a-chat-application-3f34fd5b85d0)
+3. [How to Build a Messaging site With React (WhatsApp Clone)](https://www.cometchat.com/tutorials/how-to-build-a-messaging-site-with-react-whatsapp-clone)
+
+## APIs
+
+1. [What Is a Chat API?](https://www.cometchat.com/tutorials/what-is-chat-api)
+2. [Google MapsPlatform](https://mapsplatform.google.com/) (Geolocation API, Maps Embed API)
+3. [Another Google link](https://developers.google.com/maps/get-started)
