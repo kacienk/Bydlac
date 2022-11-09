@@ -46,10 +46,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         error_messages={'unique': 'A user is already registered with this adress'}
     )
 
-    nickname = models.CharField(
-        verbose_name='nickname',
+    username = models.CharField(
+        verbose_name='username',
         unique=True,
-        error_messages={'unique': 'This nickname is already in use'},
+        error_messages={'unique': 'This username is already in use'},
         max_length=200
     )
 
@@ -78,7 +78,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self) -> str:
-        return f'{self.nickname}/{self.email}'
+        return f'{self.username}/{self.email}'
 
 
 class ConversationGroup(models.Model):
@@ -99,6 +99,11 @@ class ConversationGroup(models.Model):
         verbose_name='description',
         null=True,
         blank=True
+    )
+
+    updated = models.DateTimeField(
+        verbose_name='last message time',
+        auto_now=True
     )
 
     created = models.DateTimeField(

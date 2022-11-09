@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 
-# Create your views here.
+
+def home(request):
+    return HttpResponse('Nothing here! For API routse use "adress"/api/')
