@@ -17,7 +17,18 @@ from .serializers import LoginSerializer, RegisterSerializer
 @api_view(['GET'])
 def get_routes(request):
     routes = [
-
+        {
+            'Endpoint': '/login/',
+            'method': 'POST',
+            'body': None,
+            'description': 'Logs in user with data sent in post request'
+        },
+        {
+            'Endpoint': '/register/',
+            'method': 'POST',
+            'body': None,
+            'description': 'Registers user with data sent in post request'
+        },
     ]
 
     return Response(routes)
