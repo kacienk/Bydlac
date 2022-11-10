@@ -7,11 +7,10 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('register/', views.RegisterView.as_view(), name='register'),
 
-    path("users/", views.get_users, name='users'),
-    path("users/register/", views.create_user, name='create-user'),
-    path("users/<int:pk>/update/", views.update_user, name='update-user'),
-    path("users/<int:pk>/delete/", views.delete_user, name='delete-user'),
-    path("users/<int:pk>", views.get_user, name='user'),
+    path("users/", views.UserListView.as_view(), name='users'),
+    path("users/<int:pk>/update/", views.UserUpdateView.as_view(), name='update-user'),
+    path("users/<int:pk>/delete/", views.UserDeleteView.as_view(), name='delete-user'),
+    path("users/<int:pk>", views.UserRetrieveView.as_view(), name='user'),
 
     path("groups/", views.get_users, name='groups'),
     path("groups/create/", views.create_group, name='create-group'),

@@ -9,9 +9,8 @@ from rest_framework import views
 from rest_framework import generics
 
 from base.models import User, ConversationGroup
-from base.serializers import UserSerializer, ConversationGroupSerializer
+from base.serializers import UserSerializer, ConversationGroupSerializer, DetailedUserSerializer
 from .serializers import LoginSerializer, RegisterSerializer
-
 
 
 @api_view(['GET'])
@@ -21,13 +20,37 @@ def get_routes(request):
             'Endpoint': '/login/',
             'method': 'POST',
             'body': None,
-            'description': 'Logs in user with data sent in post request'
+            'description': 'Logs in user with data sent in post request, permisson: Any'
         },
         {
             'Endpoint': '/register/',
             'method': 'POST',
             'body': None,
-            'description': 'Registers user with data sent in post request'
+            'description': 'Registers user with data sent in post request, permisson: Any'
+        },
+        {
+            'Endpoint': '/users/',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns list of all registered users, permisson: AdminUser'
+        },
+        {
+            'Endpoint': '/users/id/',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns list of all registered users, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/users/id/update/',
+            'method': 'PUT, PATCH',
+            'body': None,
+            'description': 'Updates user bio and profile_image (Note: email and username cannot be changed once set), permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/users/id/delete/',
+            'method': 'GET',
+            'body': None,
+            'description': 'Deletes user, permisson: AdminUser'
         },
     ]
 
@@ -35,7 +58,7 @@ def get_routes(request):
 
 
 class LoginView(views.APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [permissions.AllowAny]
     serializer_class = LoginSerializer
 
     def post(self, request, format=None):
@@ -51,8 +74,32 @@ class LoginView(views.APIView):
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [permissions.AllowAny]
     serializer_class = RegisterSerializer
+
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class UserRetrieveView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = DetailedUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class UserUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = DetailedUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class UserDeleteView(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = DetailedUserSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
 @api_view(['GET'])
