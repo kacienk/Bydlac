@@ -26,9 +26,10 @@ Links to useful articles about something more abstract than coding.
 
 1. [HTML & CSS course 6.5h](https://www.youtube.com/watch?v=G3e-cpL7ofc)
 
-## Django
+## Django & REST
 
 1. [Django advantages and disadvantages](https://data-flair.training/blogs/django-advantages-and-disadvantages/)
+2. [REST framework endpoints good practices](https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/)
 
 ## Articles about chat app in Django and React
 
