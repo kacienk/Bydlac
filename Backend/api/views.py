@@ -1,15 +1,22 @@
 from django.shortcuts import render
 from django.contrib.auth import login
+from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import PermissionDenied
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework import views
 from rest_framework import generics
 
-from base.models import User, ConversationGroup
-from base.serializers import UserSerializer, ConversationGroupSerializer, DetailedUserSerializer
+from .utils import IsNotModerator, UserAlreadyInGroup, IsNotGroupMember
+
+from base.models import User, ConversationGroup,  GroupMember
+from base.serializers import UserSerializer, DetailedUserSerializer
+from base.serializers import ConversationGroupSerializer, DetailedConversationGroupSerializer
+from base.serializers import GroupMemberSerializer
 from .serializers import LoginSerializer, RegisterSerializer
 
 
@@ -102,101 +109,129 @@ class UserDeleteView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAdminUser]
 
 
-@api_view(['GET'])
-def get_users(request):
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
-
-    return Response(serializer.data)
+class GroupListView(generics.ListAPIView):
+    queryset = ConversationGroup.objects.all()
+    serializer_class = ConversationGroupSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
-@api_view(['GET'])
-def get_user(request, pk):
-    user = User.objects.get(id=pk)
-    serializer = UserSerializer(user, many=False)
-
-    return Response(serializer.data)
+class GroupRetrieveView(generics.RetrieveAPIView):
+    queryset = ConversationGroup.objects.all()
+    serializer_class = DetailedConversationGroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
-@api_view(['POST'])
-def create_user(request):
-    data = request.user
-    user = User.objects.create(
-        email = data['email'],
-        username = data['username'],
-        profile_image = data['profile_image'],
-        bio = data['bio'],
-        password=data['password']
-    )
-    serializer = UserSerializer(user, many=False)
+class GroupCreateView(generics.CreateAPIView):
+    queryset = ConversationGroup.objects.all()
+    serializer_class = DetailedConversationGroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    return Response(serializer.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
 
-@api_view(['PUT'])
-def update_user(request, pk):
-    data = request.data
-    user = User.objects.get(id=pk)
-    serializer = UserSerializer(instance=user, data=data)
+        group_participant_data = {
+            'user': serializer.data['host'],
+            'group': serializer.data['id'],
+            'is_moderator': True
+        }
 
-    if serializer.is_valid():
-        serializer.save()
+        group_participant_serializer = GroupMemberSerializer(data=group_participant_data)
+        group_participant_serializer.is_valid(raise_exception=True)
 
-    return Response(serializer.data)
+        group_participant_serializer.save()
 
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-@api_view(['DELETE'])
-def delete_user(request, pk):
-    user = User.objects.get(id=pk)
-    user.delete()
-
-    return Response('User was deleted')
+class GroupUpdateView(generics.UpdateAPIView):
+    queryset = ConversationGroup.objects.all()
+    serializer_class = DetailedConversationGroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
-@api_view(['GET'])
-def get_groups():
-    groups = ConversationGroup.objects.all()
-    serializer = ConversationGroupSerializer(groups, many=True)
-
-    return Response(serializer.data)
+class GroupDeleteView(generics.DestroyAPIView):
+    queryset = ConversationGroup.objects.all()
+    serializer_class = DetailedConversationGroupSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
-@api_view(['GET'])
-def get_group(request, pk):
-    group = ConversationGroup.objects.get(id=pk)
-    serializer = ConversationGroupSerializer(group, many=False)
+class AddUserToGroupView(generics.CreateAPIView):
+    queryset = GroupMember.objects.all()
+    serializer_class = GroupMemberSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    return Response(serializer.data)
+    def create(self, request, *args, **kwargs):
+        user = self.request.user
+        queryset = self.get_queryset()
 
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-@api_view(['POST'])
-def create_group(request):
-    data = request.group
-    group = ConversationGroup.objects.create(
-        host=data['host'],
-        name=data['name'],
-        description = data['description']
-    )
-    serializer = ConversationGroupSerializer(group, many=False)
+        # Checking if user requesting adding is member and moderator of the group
+        try:
+            if not queryset.get(Q(user=user) & Q(group=serializer.data['group'])).is_moderator:
+                msg = 'User requesting adding another user to the group is not moderator of the group'
+                raise IsNotModerator(msg, status_code=status.HTTP_403_FORBIDDEN)
+        except ObjectDoesNotExist:
+            msg = 'User requesting adding another user to the group is not in the group himself'
+            raise IsNotGroupMember(msg)
 
-    return Response(serializer.data)
+        # Checking if user is not member already
+        try:
+            if queryset.get(Q(user=serializer.data['user']) & Q(group=serializer.data['group'])):
+                raise UserAlreadyInGroup()
+        except ObjectDoesNotExist:
+            pass                
 
-
-@api_view(['PUT'])
-def update_group(request, pk):
-    data = request.data
-    group = ConversationGroup.objects.get(id=pk)
-    serializer = ConversationGroupSerializer(instance=group, data=data)
-
-    if serializer.is_valid():
-        serializer.save()
-
-    return Response(serializer.data)
+        return super().create(request, *args, **kwargs)
 
 
-@api_view(['DELETE'])
-def delete_group(request, pk):
-    group = ConversationGroup.objects.get(id=pk)
-    group.delete()
+class RemoveUserFromGroup(generics.DestroyAPIView):
+    queryset = GroupMember.objects.all()
+    serializer_class = GroupMemberSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    return Response('ConversationGroup was deleted')
+    def delete(self, request, *args, **kwargs):
+        user = self.request.user
+        queryset = self.get_queryset()
+        data= {'user': kwargs['user_id'], 'group': kwargs['group_id']}
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            link_to_be_deleted = queryset.get(Q(user=serializer.data['user']) & Q(group=serializer.data['group']))
+        except ObjectDoesNotExist:
+            msg = 'User to be removed is not a member of the group'
+            raise IsNotGroupMember(msg)
+
+        group_host = ConversationGroup.objects.get(id=serializer.data['group'])
+
+        if link_to_be_deleted.user == group_host:
+            msg = 'Host cannot be removed from the group'
+            raise PermissionDenied(msg)
+
+        # If user requests to delete himself from the group he should be able to do that, unless he is the host
+        if user != link_to_be_deleted.user:
+            # Checking if user requesting removing is member and moderator of the group
+            try:
+                if not queryset.get(Q(user=user) & Q(group=serializer.data['group'])).is_moderator:
+                    msg = 'User requesting removing another user to the group is not moderator of the group'
+                    raise IsNotModerator(msg, status_code=status.HTTP_403_FORBIDDEN)
+            except ObjectDoesNotExist:
+                msg = 'User requesting removing another user to the group is not in the group himself'
+                raise IsNotGroupMember(msg)
+
+            if link_to_be_deleted.is_moderator and user != group_host:
+                msg = 'Only host of the group can remove moderators from the group'
+                raise PermissionDenied(msg)
+
+
+        kwargs['pk'] = link_to_be_deleted.id
+        return super().delete(request, *args, **kwargs)
+
+
+

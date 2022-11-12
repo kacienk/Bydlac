@@ -101,6 +101,11 @@ class ConversationGroup(models.Model):
         blank=True
     )
 
+    is_private = models.BooleanField(
+        verbose_name='is private',
+        default=True
+    )
+
     updated = models.DateTimeField(
         verbose_name='last message time',
         auto_now=True
@@ -114,7 +119,7 @@ class ConversationGroup(models.Model):
     def __str__(self) -> str:
         return self.name
 
-class GroupParticipant(models.Model):
+class GroupMember(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE
@@ -128,6 +133,9 @@ class GroupParticipant(models.Model):
     is_moderator = models.BooleanField(
         default=False
     )
+
+    def __str__(self) -> str:
+        return f'user:{self.user.id}/group:{self.group.id}'
 
 
 class Message(models.Model):

@@ -12,11 +12,13 @@ urlpatterns = [
     path("users/<int:pk>/delete/", views.UserDeleteView.as_view(), name='delete-user'),
     path("users/<int:pk>", views.UserRetrieveView.as_view(), name='user'),
 
-    path("groups/", views.get_users, name='groups'),
-    path("groups/create/", views.create_group, name='create-group'),
-    path("groups/<int:pk>/update/", views.update_group, name='update-group'),
-    path("groups/<int:pk>/delete/", views.delete_group, name='delete-group'),
-    path("groups/<int:pk>", views.get_group, name='group'),
+    path("groups/", views.GroupListView.as_view(), name='groups'),
+    path("groups/create/", views.GroupCreateView.as_view(), name='create-group'),
+    path("groups/<int:pk>/update/", views.GroupUpdateView.as_view(), name='update-group'),
+    path("groups/<int:pk>/delete/", views.GroupDeleteView.as_view(), name='delete-group'),
+    path("groups/<int:pk>", views.GroupRetrieveView.as_view(), name='group'),
+    path("groups/add-user/", views.AddUserToGroupView.as_view(), name='add-to-group'),
+    path("groups/<int:group_id>/remove-user/<int:user_id>", views.RemoveUserFromGroup.as_view(), name='delete-from-group'),
 
 
 ]

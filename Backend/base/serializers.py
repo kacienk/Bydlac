@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import User, ConversationGroup
+from .models import User, ConversationGroup, GroupMember
 
 
 class UserSerializer(ModelSerializer):
@@ -42,7 +42,31 @@ class ConversationGroupSerializer(ModelSerializer):
             'id',
             'host',
             'name',
-            'description',
+            'is_private',
             'updated',
             'created'
+        ]
+
+
+class DetailedConversationGroupSerializer(ModelSerializer):
+    class Meta:
+        model = ConversationGroup
+        fields = [
+            'id',
+            'host',
+            'name',
+            'description',
+            'is_private',
+            'updated',
+            'created'
+        ]
+
+
+class GroupMemberSerializer(ModelSerializer):
+    class Meta:
+        model = GroupMember
+        fields = [
+            'user',
+            'group',
+            'is_moderator',
         ]
