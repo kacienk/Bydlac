@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import User, ConversationGroup, GroupMember
+from .models import User, ConversationGroup, GroupMember, Message
 
 
 class UserSerializer(ModelSerializer):
@@ -70,3 +70,21 @@ class GroupMemberSerializer(ModelSerializer):
             'group',
             'is_moderator',
         ]
+
+    def update(self, instance, validated_data):
+        instance.is_moderator = validated_data.get('is_moderator', instance.is_moderator)
+
+        instance.save()
+
+        return instance
+
+
+class MessageSerializer(ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        instance.body = validated_data.get('body', instance.body)
+
+        return instance

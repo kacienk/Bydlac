@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
-from base.models import User
+from base.models import User, ConversationGroup
 
 
 class LoginSerializer(serializers.Serializer):

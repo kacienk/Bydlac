@@ -150,9 +150,7 @@ class Message(models.Model):
     )
 
     body = models.TextField()
-
     edited = models.DateTimeField(auto_now=True)
-
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -190,12 +188,13 @@ class Event(models.Model):
         blank=True
     )
 
-    expires = models.DateTimeField()
-
-    created = models.DateTimeField(auto_now_add=True)
-
     max_participants = models.IntegerField(
         blank=True,
         null=True
     )
+
+
+    expires = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
+
 
