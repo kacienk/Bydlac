@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.db.models import Q, Subquery
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -24,6 +24,7 @@ from .serializers import LoginSerializer, RegisterSerializer
 @api_view(['GET'])
 def get_routes(request):
     routes = [
+        # LOGING
         {
             'Endpoint': '/login/',
             'method': 'POST',
@@ -37,6 +38,21 @@ def get_routes(request):
             'description': 'Registers user with data sent in post request, permisson: Any'
         },
         {
+            'Endpoint': '/login/',
+            'method': 'POST',
+            'body': None,
+            'description': 'Logs in user with data sent in post request, permisson: Any'
+        },
+        {
+
+            'Endpoint': '/logout/',
+            'method': 'POST',
+            'body': None,
+            'description': 'Logs in user with data sent in post request, permisson: Any'
+        },
+
+        # USERS
+        {
             'Endpoint': '/users/',
             'method': 'GET',
             'body': None,
@@ -46,7 +62,7 @@ def get_routes(request):
             'Endpoint': '/users/id/',
             'method': 'GET',
             'body': None,
-            'description': 'Returns list of all registered users, permisson: Authenticated'
+            'description': 'Returns user with given id, permisson: Authenticated'
         },
         {
             'Endpoint': '/users/id/update/',
@@ -59,6 +75,100 @@ def get_routes(request):
             'method': 'GET',
             'body': None,
             'description': 'Deletes user, permisson: AdminUser'
+        },
+
+        # GROUPS
+        {
+            'Endpoint': '/groups/',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns list of non-private groups, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/all',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns list of all groups, permisson: AdminUser'
+        },
+        {
+            'Endpoint': '/groups/id',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns group with given id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/create',
+            'method': 'GET',
+            'body': None,
+            'description': 'Creates new group with data sent in post request, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/id/update',
+            'method': 'GET',
+            'body': None,
+            'description': 'Updates group\'s data, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/id/delete',
+            'method': 'GET',
+            'body': None,
+            'description': 'Deletes group, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/id/members',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns list of group members, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/group_id/add-user/user_id', # not yet decided 
+            'method': 'GET',
+            'body': None,
+            'description': 'Adds user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/group_id/remove-user/user_id',  
+            'method': 'GET',
+            'body': None,
+            'description': 'Removes user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/group_id/change-moderator/user_id', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Changes moderator status of user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/group_id/change-moderator/user_id', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Changes moderator status of user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
+        },
+
+        # MESSAGES
+        {
+            'Endpoint': '/groups/group_id/messages/send', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Sends message to the group with id equal to group_id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/group_id/messages/update/message_id', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Updates message with given message_id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/group_id/messages/delete/message_id', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Deletes message with given message_id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/groups/group_id/messages', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Gets all messages sent to group with given group_id, permisson: Authenticated'
         },
     ]
 
@@ -77,6 +187,14 @@ class LoginView(views.APIView):
 
         login(request, user)
 
+        return Response(None, status=status.HTTP_202_ACCEPTED)
+
+
+class LogoutView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format=None):
+        logout(request)
         return Response(None, status=status.HTTP_202_ACCEPTED)
 
 
@@ -103,11 +221,27 @@ class UserUpdateView(generics.UpdateAPIView):
     serializer_class = DetailedUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def update(self, request, *args, **kwargs):
+        user = self.request.user
+        user_to_be_updated = self.get_object()
+
+        if user != user_to_be_updated:
+            msg = 'Only user themself can update their profile'
+            raise PermissionDenied(msg)
+
+        return super().update(request, *args, **kwargs)
+
 
 class UserDeleteView(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = DetailedUserSerializer
     permission_classes = [permissions.IsAdminUser]
+
+
+class GroupNonPrivateListView(generics.ListAPIView):
+    queryset = ConversationGroup.objects.filter(is_private=False)
+    serializer_class = ConversationGroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class GroupListView(generics.ListAPIView):
@@ -220,8 +354,9 @@ class AddUserToGroupView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         user = self.request.user
         queryset = self.get_queryset()
+        data = {'user': self.kwargs['user_id'], 'group': self.kwargs['group_id']}
 
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         # Checking if user requesting adding is member and moderator of the group
