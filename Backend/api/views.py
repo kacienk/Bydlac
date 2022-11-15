@@ -167,10 +167,70 @@ def get_routes(request):
 
         #EVENTS
         {
-            'Endpoint': '/events/', 
+            'Endpoint': '/events', 
             'method': 'GET',
             'body': None,
             'description': 'Gets list of all events, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Gets retreives event of given id, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/create', 
+            'method': 'POST',
+            'body': None,
+            'description': 'Creates an event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/update', 
+            'method': 'PUT, PATCH',
+            'body': None,
+            'description': 'Updates an event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/delete', 
+            'method': 'DELETE',
+            'body': None,
+            'description': 'Deletes an event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/join', 
+            'method': 'GET',
+            'body': None,
+            'description': 'User sending request joins event, creates a link between the user and the event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/leave', 
+            'method': 'GET',
+            'body': None,
+            'description': 'User sending request leavs event, deletes a link between the user and the event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/group', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Retrieves data of a group of the event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/add-group', 
+            'method': 'POST',
+            'body': None,
+            'description': 'Creates a group for the event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/remove-group', 
+            'method': 'DELETE',
+            'body': None,
+            'description': 'Removes a group of the event, permisson: Authenticated'
+        },
+        {
+            'Endpoint': '/events/id/update-group', 
+            'method': 'PUT, PATCH',
+            'body': None,
+            'description': 'Removes a group of the event, permisson: Authenticated'
         },
     ]
 
