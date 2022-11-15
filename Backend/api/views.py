@@ -4,7 +4,7 @@ from django.db.models import Q, Subquery
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import status
 from rest_framework import permissions
@@ -46,7 +46,7 @@ def get_routes(request):
         {
 
             'Endpoint': '/logout/',
-            'method': 'POST',
+            'method': 'GET',
             'body': None,
             'description': 'Logs in user with data sent in post request, permisson: Any'
         },
@@ -72,7 +72,7 @@ def get_routes(request):
         },
         {
             'Endpoint': '/users/id/delete/',
-            'method': 'GET',
+            'method': 'POST',
             'body': None,
             'description': 'Deletes user, permisson: AdminUser'
         },
@@ -98,19 +98,19 @@ def get_routes(request):
         },
         {
             'Endpoint': '/groups/create',
-            'method': 'GET',
+            'method': 'POST',
             'body': None,
             'description': 'Creates new group with data sent in post request, permisson: Authenticated'
         },
         {
             'Endpoint': '/groups/id/update',
-            'method': 'GET',
+            'method': 'PUT, PATCH',
             'body': None,
             'description': 'Updates group\'s data, permisson: Authenticated'
         },
         {
             'Endpoint': '/groups/id/delete',
-            'method': 'GET',
+            'method': 'DELETE',
             'body': None,
             'description': 'Deletes group, permisson: Authenticated'
         },
@@ -122,25 +122,19 @@ def get_routes(request):
         },
         {
             'Endpoint': '/groups/group_id/add-user/user_id', # not yet decided 
-            'method': 'GET',
+            'method': 'POST',
             'body': None,
             'description': 'Adds user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
         },
         {
             'Endpoint': '/groups/group_id/remove-user/user_id',  
-            'method': 'GET',
+            'method': 'DELETE',
             'body': None,
             'description': 'Removes user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
         },
         {
             'Endpoint': '/groups/group_id/change-moderator/user_id', 
-            'method': 'GET',
-            'body': None,
-            'description': 'Changes moderator status of user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/group_id/change-moderator/user_id', 
-            'method': 'GET',
+            'method': 'PUT, PATCH',
             'body': None,
             'description': 'Changes moderator status of user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
         },
@@ -148,19 +142,19 @@ def get_routes(request):
         # MESSAGES
         {
             'Endpoint': '/groups/group_id/messages/send', 
-            'method': 'GET',
+            'method': 'POST',
             'body': None,
             'description': 'Sends message to the group with id equal to group_id, permisson: Authenticated'
         },
         {
             'Endpoint': '/groups/group_id/messages/update/message_id', 
-            'method': 'GET',
+            'method': 'PUT, PATCH',
             'body': None,
             'description': 'Updates message with given message_id, permisson: Authenticated'
         },
         {
             'Endpoint': '/groups/group_id/messages/delete/message_id', 
-            'method': 'GET',
+            'method': 'DELETE',
             'body': None,
             'description': 'Deletes message with given message_id, permisson: Authenticated'
         },
@@ -169,6 +163,14 @@ def get_routes(request):
             'method': 'GET',
             'body': None,
             'description': 'Gets all messages sent to group with given group_id, permisson: Authenticated'
+        },
+
+        #EVENTS
+        {
+            'Endpoint': '/events/', 
+            'method': 'GET',
+            'body': None,
+            'description': 'Gets list of all events, permisson: Authenticated'
         },
     ]
 
