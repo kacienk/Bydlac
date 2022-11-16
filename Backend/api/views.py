@@ -356,7 +356,7 @@ class GroupUpdateView(generics.UpdateAPIView):
         group = self.get_object()
 
         try:
-            if not GroupMember.get(Q(user=user) & Q(group=group)).is_moderator:
+            if not GroupMember.objects.get(Q(user=user) & Q(group=group)).is_moderator:
                 msg = 'User requesting updating group is not moderator of the group'
                 raise IsNotModerator(msg, status_code=status.HTTP_403_FORBIDDEN)
         except ObjectDoesNotExist:

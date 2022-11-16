@@ -171,7 +171,7 @@ class Event(models.Model):
 
     participants = models.ManyToManyField(
         User, 
-        related_name='participants', 
+        related_name='members', 
         blank=True
     )
 
@@ -193,8 +193,9 @@ class Event(models.Model):
         null=True
     )
 
+    location = models.URLField(null=True, blank=True)
 
-    expires = models.DateTimeField()
+    expires = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
 
