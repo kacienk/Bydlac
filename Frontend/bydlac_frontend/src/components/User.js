@@ -9,10 +9,11 @@ function User(props)
             <img className={props.className + 'Image'} src={Person1} alt=''/>
             <p className={props.className + 'Data'}>
                 {props.name} {props.surname}
-                <br/>
-                {props.status}
                 {/* This has to come from database */}
                 {/*TODO Star button for favorite and handling it*/}
+            </p>
+            <p className={props.className + 'Status'}>
+                {props.status}
             </p>
         </div>
     );

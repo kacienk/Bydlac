@@ -1,11 +1,22 @@
 .otherPerson {
     width: 33vw;
-    border-radius: 1px;
-    border: solid aqua;
 }
 
 .otherPersonData {
     padding-left: 50px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    /*border-radius: 1px;
+    border: solid aqua;*/
+}
+
+.otherPersonStatus {
+    padding-left: 50px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    /*border-radius: 1px;
+    border: solid aqua;*/
 }
 
 .otherPersonImage {
@@ -13,17 +24,22 @@
     width: 40px;
     border-radius: 50%;
     float: left;
+    margin-top: 13px;
+    padding-left: 5px;
 }
 
 .you {
     width: 33vw;
-    border-radius: 1px;
-    border: solid aqua;
+
 }
 
 .youData {
     text-align: right;
     padding-right: 50px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    /*border-radius: 1px;
+    border: solid aqua;*/
 }
 
 .youImage {
@@ -31,4 +47,16 @@
     width: 40px;
     border-radius: 50%;
     float: right;
+    margin-top: 13px;
+    padding-right: 5px;
+}
+
+.youStatus {
+    text-align: right;
+    padding-right: 50px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    /*border-radius: 1px;
+    border: solid aqua;*/
 }
