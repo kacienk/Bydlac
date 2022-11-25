@@ -1,0 +1,8 @@
+.logInPage { /* TODO centering div XD */
+    height: 36vh;
+    width: 36vw;
+    text-align: center;
+    position: absolute;
+    top: 32%;
+    left: 32%;
+}

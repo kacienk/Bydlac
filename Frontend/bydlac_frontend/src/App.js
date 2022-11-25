@@ -1,21 +1,23 @@
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes} from "react-router-dom";
+
 import './App.css';
-import User from "./components/User";
-import InputMessage from "./components/InputMessage";
-import Conversation from "./components/Conversation";
+import MainPageTEMP from './pages/MainPageTEMP'
+import LogInPage from "./pages/LogInPage";
+import SignUpPage from "./pages/SignUpPage";
 
 function App() {
-  return (
-      <div>
-          <div className='usersHeader'>
-              <User className='otherPerson' name='Nick' surname='Rozmowcy' status='Status' favorite={true}/>
-              <User className='you' name='Twoj' surname='Nick' status='Status' favorite={null}/>
-          </div>
-
-          <Conversation/>
-
-          <InputMessage/>
-      </div>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<MainPageTEMP />}/>
+                <Route path="/login" element={<LogInPage />}/>
+                <Route path="/signup" element={<SignUpPage />}/>
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
