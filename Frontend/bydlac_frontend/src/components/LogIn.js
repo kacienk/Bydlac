@@ -28,9 +28,9 @@ const LogIn = () => {
 
     return (
         <form className='logInForm' onSubmit={submitHandler}>
-            <p>E-mail:</p>
+            <p className='logInFormText'>E-mail:</p>
             <input
-                className='email'
+                className='logInFormInput'
                 type="text"
                 required
                 placeholder="E-mail"
@@ -38,9 +38,9 @@ const LogIn = () => {
                 onChange={(event) => setEmail(event.target.value)}
             />
 
-            <p>Hasło:</p>
+            <p className='logInFormText'>Hasło:</p>
             <input
-                className='password'
+                className='logInFormInput'
                 type="text"
                 required
                 placeholder="Hasło"
@@ -48,8 +48,8 @@ const LogIn = () => {
                 onChange={(event) => setPassword(event.target.value)}
             />
 
-            <br/> <br/>
-            <button>Zaloguj się</button>
+            <br/>
+            <button className='logInFormButton'>Zaloguj się</button>
         </form>
     )
 }

@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import "./SignUp.css"
 
 const SignUp = () => { /* TODO placeholders */
     const [username, setUsername] = useState('')
@@ -28,9 +29,9 @@ const SignUp = () => { /* TODO placeholders */
 
     return (
         <form className='signUpForm' onSubmit={submitHandler}>
-            <p>Nazwa użytkownika:</p>
+            <p className="signUpFormText">Nazwa użytkownika:</p>
             <input
-                className="username"
+                className="signUpFormInput"
                 type="text"
                 required
                 placeholder="Nazwa użytkownika"
@@ -38,9 +39,9 @@ const SignUp = () => { /* TODO placeholders */
                 onChange={(event) => {setUsername(event.target.value)}}
             />
 
-            <p>E-mail:</p>
+            <p className="signUpFormText">E-mail:</p>
             <input
-                className="email"
+                className="signUpFormInput"
                 type="text"
                 required
                 placeholder="E-mail"
@@ -48,9 +49,9 @@ const SignUp = () => { /* TODO placeholders */
                 onChange={(event) => {setEmail(event.target.value)}}
             />
 
-            <p>Hasło:</p>
+            <p className="signUpFormText">Hasło:</p>
             <input
-                className="password"
+                className="signUpFormInput"
                 type="text"
                 required
                 placeholder="Hasło"
@@ -58,9 +59,9 @@ const SignUp = () => { /* TODO placeholders */
                 onChange={(event) => {setPassword(event.target.value)}}
             />
 
-            <p>Powtórz hasło:</p>
+            <p className="signUpFormText">Powtórz hasło:</p>
             <input
-                className="passwordRepeated"
+                className="signUpFormInput"
                 type="text"
                 required
                 placeholder="Powtórz hasło"
@@ -68,8 +69,8 @@ const SignUp = () => { /* TODO placeholders */
                 onChange={(event) => {setPasswordRepeated(event.target.value)}}
             />
 
-            <br/> <br/>
-            <button>Zarejestruj się</button>
+            <br/>
+            <button className="signUpFormSignUpButton">Zarejestruj się</button>
         </form>
     )
 }

@@ -7,13 +7,16 @@ import "./SignUpPage.css";
 const SignUpPage = () => {
     return (
         <div className='signUpPage'>
-            <p>Rejestracja</p>
+            <p className="rejestracja">REJESTRACJA</p>
 
             <SignUp/>
 
-            <p>Masz już konto?</p>
+            <p className="lub">Lub:</p>
+            <button className="google">GOOGLE</button>
 
-            <Link to="/login">Zaloguj się</Link>
+            <p className="maszJuzKonto">Masz już konto?</p>
+
+            <Link to="/login" className="zalogujSie">Zaloguj się</Link>
         </div>
     )
 }

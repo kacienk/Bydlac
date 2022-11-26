@@ -75,10 +75,7 @@
     border: solid aqua;
 }
 
-.username {
-    border-radius: 1px;
-    border: solid aqua;
-}
+.username {}
 
 .userStatus {
     border-radius: 1px;

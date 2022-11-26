@@ -1,14 +1,14 @@
-.logInForm {
+.signUpForm {
     text-align: center;
 }
 
-.logInFormText {
+.signUpFormText {
     margin-top: 0;
     margin-bottom: 0;
     color: rgb(255, 255, 255);
 }
 
-.logInFormInput {
+.signUpFormInput {
     font-family: 'Patrick Hand', cursive;
     font-size: 22px;
     height: 40px;
@@ -16,7 +16,8 @@
     border: none;
     border-radius: 10px;
 }
-.logInFormButton {
+
+.signUpFormSignUpButton {
     margin-top: 6px;
     font-family: 'Patrick Hand', cursive;
     font-size: 22px;
@@ -30,7 +31,7 @@
     transition-duration: 0.5s;
 }
 
-.logInFormButton:hover {
+.signUpFormSignUpButton:hover {
     background-color: rgb(233, 233, 237);
     color: rgb(158, 176, 173);
 }
