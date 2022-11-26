@@ -13,7 +13,7 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<MainPageTEMP />}/>
+                <Route path="/mainview" element={<MainPageTEMP />}/>
                 <Route path="/login" element={<LogInPage />}/>
                 <Route path="/signup" element={<SignUpPage />}/>
                 <Route path="/logout" element={<LogOutPage />}/>

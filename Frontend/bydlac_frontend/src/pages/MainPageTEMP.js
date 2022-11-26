@@ -7,8 +7,8 @@ const MainPageTEMP = () => {
   return (
       <div>
           <div className='usersHeader'>
-              <User className='otherPerson' name='Nick' surname='Rozmowcy' status='Status' favorite={true}/>
-              <User className='you' name='Twoj' surname='Nick' status='Status' favorite={null}/>
+              <User className='otherPerson' userId={3} favorite={true}/>
+              <User className='you' userId={1} favorite={null}/>
           </div>
 
           <Conversation/>

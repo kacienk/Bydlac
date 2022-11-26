@@ -1,20 +1,29 @@
 import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 const SignUp = () => { /* TODO placeholders */
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [passwordRepeated, setPasswordRepeated] = useState('')
+    const navigate = useNavigate()
 
-    const submitHandler = (event) => {
+    const submitHandler = async (event) => {
         event.preventDefault()
-        const newUser = {username, email, password}
+        const newUser = {username, password, password2: passwordRepeated, email}
 
-        fetch('http://127.0.0.1:8000/api/register/', {
+        let response = await fetch('http://127.0.0.1:8000/api/register/', {
             method: 'POST',
-            headers: {}, /* TODO I don't see it in routes */
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(newUser)
         })
+
+        if (response.ok)
+            navigate('/')
+        else
+            console.log(response.status, response.statusText)
+
+        /* TODO handling errors*/
     }
 
     return (
@@ -24,7 +33,7 @@ const SignUp = () => { /* TODO placeholders */
                 className="username"
                 type="text"
                 required
-                placeholder="TODO?"
+                placeholder="Nazwa użytkownika"
                 value={username}
                 onChange={(event) => {setUsername(event.target.value)}}
             />
@@ -34,7 +43,7 @@ const SignUp = () => { /* TODO placeholders */
                 className="email"
                 type="text"
                 required
-                placeholder="TODO?"
+                placeholder="E-mail"
                 value={email}
                 onChange={(event) => {setEmail(event.target.value)}}
             />
@@ -44,7 +53,7 @@ const SignUp = () => { /* TODO placeholders */
                 className="password"
                 type="text"
                 required
-                placeholder="TODO?"
+                placeholder="Hasło"
                 value={password}
                 onChange={(event) => {setPassword(event.target.value)}}
             />
@@ -54,7 +63,7 @@ const SignUp = () => { /* TODO placeholders */
                 className="passwordRepeated"
                 type="text"
                 required
-                placeholder="TODO?"
+                placeholder="Powtórz hasło"
                 value={passwordRepeated}
                 onChange={(event) => {setPasswordRepeated(event.target.value)}}
             />

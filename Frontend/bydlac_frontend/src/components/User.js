@@ -1,19 +1,30 @@
 import './User.css';
 
 import Person1 from './person1.jpg';
+import {useEffect, useState} from "react";
 
-function User(props)
-{
+
+const User = ({userId}) => {
+    let [user, setUser] = useState([])
+
+    useEffect(() => {
+        getUser(userId)
+    }, [])
+
+    let getUser = async (userId) => {
+        let response = await fetch('http://127.0.0.1:8000/api/users/' + userId)
+        let data = await response.json()
+        setUser(data)
+    }
+
     return (
-        <div className={props.className}>
-            <img className={props.className + 'Image'} src={Person1} alt=''/>
-            <p className={props.className + 'Data'}>
-                {props.name} {props.surname}
-                {/* This has to come from database */}
-                {/*TODO Star button for favorite and handling it*/}
+        <div className="user">
+            <img className="profileImage" src={Person1 /* TODO */} alt=''/>
+            <p className="username">
+                {user.username}
             </p>
-            <p className={props.className + 'Status'}>
-                {props.status}
+            <p className="userStatus">
+                Status: {user.created /* TODO */}
             </p>
         </div>
     );

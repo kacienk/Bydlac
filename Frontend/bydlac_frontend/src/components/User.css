@@ -1,3 +1,4 @@
+/*
 .otherPerson {
     width: 33vw;
 }
@@ -6,8 +7,8 @@
     padding-left: 50px;
     margin-top: 10px;
     margin-bottom: 0;
-    /*border-radius: 1px;
-    border: solid aqua;*/
+    border-radius: 1px;
+    border: solid aqua;
 }
 
 .otherPersonStatus {
@@ -15,8 +16,8 @@
     margin-top: 0;
     margin-bottom: 10px;
     font-size: 14px;
-    /*border-radius: 1px;
-    border: solid aqua;*/
+    border-radius: 1px;
+    border: solid aqua;
 }
 
 .otherPersonImage {
@@ -38,8 +39,8 @@
     padding-right: 50px;
     margin-top: 10px;
     margin-bottom: 0;
-    /*border-radius: 1px;
-    border: solid aqua;*/
+    border-radius: 1px;
+    border: solid aqua;
 }
 
 .youImage {
@@ -57,6 +58,29 @@
     margin-top: 0;
     margin-bottom: 10px;
     font-size: 14px;
-    /*border-radius: 1px;
-    border: solid aqua;*/
+    border-radius: 1px;
+    border: solid aqua;
+}
+ */
+
+.user {
+    border-radius: 1px;
+    border: solid aqua;
+}
+
+.profileImage {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: solid aqua;
+}
+
+.username {
+    border-radius: 1px;
+    border: solid aqua;
+}
+
+.userStatus {
+    border-radius: 1px;
+    border: solid aqua;
 }

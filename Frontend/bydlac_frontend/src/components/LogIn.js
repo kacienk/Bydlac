@@ -1,15 +1,29 @@
 import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
+
 import './LogIn.css';
 
 const LogIn = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const navigate = useNavigate()
 
-    const submitHandler = (event) => {
+    const submitHandler = async (event) => {
         event.preventDefault()
-        const user = {email,  password}
+        const user = {email, password}
 
-        console.log(user)
+        let response = await fetch('http://127.0.0.1:8000/api/login/', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(user)
+        })
+        console.log(response.headers)
+        if (response.ok)
+            navigate('/mainview')
+        else if (400 && response.status)
+            console.log("Złe dane", response.status, response.statusText)
+
+        /* TODO handling errors*/
     }
 
     return (
