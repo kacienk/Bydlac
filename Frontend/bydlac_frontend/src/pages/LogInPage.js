@@ -7,7 +7,7 @@ import "./LogInPage.css";
 const LogInPage = () => {
   return (
       <div className="logInPage">
-          <p>Zaloguj się</p>
+          <p>Logowanie</p>
 
           <LogIn/>
 

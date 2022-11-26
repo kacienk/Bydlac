@@ -7,7 +7,7 @@ import "./SignUpPage.css";
 const SignUpPage = () => {
     return (
         <div className='signUpPage'>
-            <p>Zarejestruj się</p>
+            <p>Rejestracja</p>
 
             <SignUp/>
 
