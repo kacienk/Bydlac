@@ -10,7 +10,6 @@ const LogInPage = () => {
           <p className="logowanie">LOGOWANIE</p>
 
           <LogIn/>
-
           <p className="lub">Lub:</p>
           <button className="google">GOOGLE</button>
 
