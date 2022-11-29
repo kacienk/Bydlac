@@ -1,3 +1,8 @@
+.inputMessage {
+    width: 66vw;
+    border-right: 1px solid gray;
+}
+
 .inputMessageField {
     background-color: rgb(118, 176, 206);
     height: 30px;

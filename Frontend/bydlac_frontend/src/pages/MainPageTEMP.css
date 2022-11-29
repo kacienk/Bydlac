@@ -1,0 +1,25 @@
+.mainView {
+    display: flex;
+}
+
+#logoutContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.logoutButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+    height: 50px;
+    width: available;
+    border: none;
+    background-color: unset;
+}
+
+.usersHeader {
+    display: flex;
+    flex-direction: row;
+    width: 66vw;
+    border-right: 1px solid gray;
+    justify-content: space-between;
+}

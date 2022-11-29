@@ -249,7 +249,7 @@ class LoginView(views.APIView):
 
         login(request, user)
 
-        return Response(None, status=status.HTTP_202_ACCEPTED)
+        return Response(user.id, status=status.HTTP_202_ACCEPTED)
 
 
 class LogoutView(views.APIView):
@@ -269,19 +269,19 @@ class RegisterView(generics.CreateAPIView):
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
 
 
 class UserRetrieveView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = DetailedUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class UserUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = DetailedUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def update(self, request, *args, **kwargs):
         user = self.request.user
@@ -297,31 +297,44 @@ class UserUpdateView(generics.UpdateAPIView):
 class UserDeleteView(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = DetailedUserSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
+
+
+class GetUserGroupsView(generics.ListAPIView):
+    queryset = GroupMember.objects.all()
+    serializer_class = GroupMemberSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+
+        queryset = GroupMember.objects.filter(Q(user=user_id))
+
+        return queryset
 
 
 class GroupNonPrivateListView(generics.ListAPIView):
     queryset = ConversationGroup.objects.filter(is_private=False)
     serializer_class = ConversationGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class GroupListView(generics.ListAPIView):
     queryset = ConversationGroup.objects.all()
     serializer_class = ConversationGroupSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
 
 
 class GroupRetrieveView(generics.RetrieveAPIView):
     queryset = ConversationGroup.objects.all()
     serializer_class = DetailedConversationGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class GroupCreateView(generics.CreateAPIView):
     queryset = ConversationGroup.objects.all()
     serializer_class = DetailedConversationGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -346,10 +359,11 @@ class GroupCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(host=self.request.user)
 
+
 class GroupUpdateView(generics.UpdateAPIView):
     queryset = ConversationGroup.objects.all()
     serializer_class = DetailedConversationGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def update(self, request, *args, **kwargs):
         user = self.request.user
@@ -365,10 +379,11 @@ class GroupUpdateView(generics.UpdateAPIView):
 
         return super().update(request, *args, **kwargs)
 
+
 class GroupDeleteView(generics.DestroyAPIView):
     queryset = ConversationGroup.objects.all()
     serializer_class = DetailedConversationGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def delete(self, request, *args, **kwargs):
         user = self.request.user
@@ -384,18 +399,18 @@ class GroupDeleteView(generics.DestroyAPIView):
 class GetGroupMembersView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
         group_id = self.kwargs['group_id']
 
-        try:
-            _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
-        except ObjectDoesNotExist:
-            if ConversationGroup.objects.get(id=group_id).is_private:
-                msg = 'User cannot look up members of private group unless they are also a member'
-                raise IsNotGroupMember(msg)
+        # try:
+        #     _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
+        # except ObjectDoesNotExist:
+        #     if ConversationGroup.objects.get(id=group_id).is_private:
+        #         msg = 'User cannot look up members of private group unless they are also a member'
+        #         raise IsNotGroupMember(msg)
 
         return super().get(request, *args, **kwargs)
 
@@ -411,7 +426,7 @@ class GetGroupMembersView(generics.ListAPIView):
 class AddUserToGroupView(generics.CreateAPIView):
     queryset = GroupMember.objects.all()
     serializer_class = GroupMemberSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         user = self.request.user
@@ -443,7 +458,7 @@ class AddUserToGroupView(generics.CreateAPIView):
 class RemoveUserFromGroupView(generics.DestroyAPIView):
     queryset = GroupMember.objects.all()
     serializer_class = GroupMemberSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def delete(self, request, *args, **kwargs):
         user = self.request.user
@@ -488,7 +503,7 @@ class RemoveUserFromGroupView(generics.DestroyAPIView):
 class GroupChangeModeratorStatusView(generics.UpdateAPIView):
     queryset = GroupMember.objects.all()
     serializer_class = GroupMemberSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def update(self, request, *args, **kwargs):
         user = self.request.user
@@ -527,17 +542,17 @@ class GroupChangeModeratorStatusView(generics.UpdateAPIView):
 class MessageListView(generics.ListAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
         group_id = self.kwargs['group_id']
 
-        try:
-            _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
-        except ObjectDoesNotExist:
-            msg = 'User cannot get messages unless they are member of the group'
-            raise IsNotGroupMember(msg)
+        #try:
+        #    _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
+        #except ObjectDoesNotExist:
+        #    msg = 'User cannot get messages unless they are member of the group'
+        #    raise IsNotGroupMember(msg)
 
         return super().get(request, *args, **kwargs)
 
@@ -551,17 +566,17 @@ class MessageListView(generics.ListAPIView):
 class MessageCreateView(generics.CreateAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
-        user = self.request.user
-        group_id = kwargs['group_id']
+        # user = self.request.user
+        # group_id = kwargs['group_id']
 
-        try:
-            _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
-        except ObjectDoesNotExist:
-            msg = 'User cannot send message unless they are member of the group'
-            raise IsNotGroupMember(msg)
+        #try:
+        #    _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
+        #except ObjectDoesNotExist:
+        #    msg = 'User cannot send message unless they are member of the group'
+        #    raise IsNotGroupMember(msg)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -573,13 +588,14 @@ class MessageCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         group = ConversationGroup.objects.get(id=self.kwargs['group_id'])
-        serializer.save(author=self.request.user, group=group)
+        user = User.objects.get(id=self.request.data['author'])
+        serializer.save(author=user, group=group)
 
 
 class MessageUpdateView(generics.UpdateAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def update(self, request, *args, **kwargs):
         user = self.request.user
@@ -595,7 +611,7 @@ class MessageUpdateView(generics.UpdateAPIView):
 class MessageDeleteView(generics.DestroyAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def delete(self, request, *args, **kwargs):
         user = self.request.user

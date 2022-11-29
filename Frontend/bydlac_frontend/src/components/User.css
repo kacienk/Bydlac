@@ -63,21 +63,30 @@
 }
  */
 
-.user {
-    border-radius: 1px;
-    border: solid aqua;
+.you {
+    display: inline-flex;
+    /*border-radius: 1px;
+    border: solid aqua;*/
 }
 
 .profileImage {
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
-    border: solid aqua;
+
 }
 
-.username {}
+.username {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 35px;
+}
 
 .userStatus {
     border-radius: 1px;
     border: solid aqua;
+}
+
+.otherPerson {
+    display: inline-flex;
 }

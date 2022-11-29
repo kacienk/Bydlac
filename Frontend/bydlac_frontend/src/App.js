@@ -15,7 +15,7 @@ function App() {
         <Router>
             <UserProvider>
                 <Routes>
-                    <Route path="/mainview" element={<MainPageTEMP />}/>
+                    <Route path="/chat/:groupId" element={<MainPageTEMP />}/>
                     <Route path="/login" element={<LogInPage />}/>
                     <Route path="/signup" element={<SignUpPage />}/>
                     <Route path="/logout" element={<LogOutPage />}/>
