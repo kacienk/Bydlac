@@ -10,7 +10,8 @@ const GetOtherUser = () => {
     let [otherUserList, setOtherUserList] = useState([])
 
     useEffect((() => {
-        getOtherUserList()
+        if (currentGroupId !== -1)
+            getOtherUserList()
     }), [currentGroupId])
 
     const getOtherUserList = async () => {
@@ -19,7 +20,9 @@ const GetOtherUser = () => {
             headers: {"Content-Type": "application/json"}
         })
         let data = await response.json()
-        setOtherUserList(data)
+        console.log("GetOtherUser / getOtherUserList: data: ", data)
+        if (data.length !== 0) // Easiest way to get rid of an error XD
+            setOtherUserList(data)
     }
 
     let otherUser = {'id': 9}

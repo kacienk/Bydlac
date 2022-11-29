@@ -8,7 +8,7 @@ const GroupList = () => {
 
     return (
         <div className="groupList">
-            <p className="groupListText">Group List</p>
+            <p className="groupListText">Konwersacje</p>
             {groupsList.map(group => (
                 <Group key={group.id} group={group}/>
             ))}

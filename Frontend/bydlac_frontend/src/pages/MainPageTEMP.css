@@ -23,3 +23,7 @@
     border-right: 1px solid gray;
     justify-content: space-between;
 }
+
+#TEMPgroupList {
+    width: 33vw;
+}

@@ -128,6 +128,7 @@ AUTH_USER_MODEL = "base.User"
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'http://localhost:3001',
 ]
 
 REST_FRAMEWORK = {

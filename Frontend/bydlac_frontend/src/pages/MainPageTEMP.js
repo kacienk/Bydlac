@@ -33,7 +33,7 @@ const MainPageTEMP = () => {
 
                 <InputMessage/>
             </div>
-            <div className='TEMPgroupList'>
+            <div id='TEMPgroupList'>
                 <GroupList/>
             </div>
         </div>
