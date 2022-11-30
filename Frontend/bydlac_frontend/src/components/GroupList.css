@@ -12,3 +12,11 @@
     border-bottom: 1px solid gray;
 
 }
+
+#newGroupButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+    height: 50px;
+    width: 33vw;
+    border: none;
+}

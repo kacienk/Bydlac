@@ -30,13 +30,13 @@ const GetOtherUser = () => {
     if (otherUserList.length === 2) {
         otherUserList.map(user => {
             if (user.id !== userId) {
-                console.log("rozmowca:", user.id, user.username)
+                console.log("get other user / rozmowca:", user.id, user.username)
                 otherUser = user
             }
         })
     }
 
-    console.log("other user prosze zadzialaj", otherUser)
+    console.log("get other user / other user prosze zadzialaj", otherUser)
     return otherUser
 }
 

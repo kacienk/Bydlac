@@ -9,14 +9,13 @@ import {Link, useParams} from "react-router-dom";
 import GetOtherUser from "../utils/GetOtherUser";
 
 const MainPageTEMP = () => {
-    let params = useParams()
-    console.log("MainPage params: ", params.groupId)
+    //let params = useParams() TODO page numbering
+    //console.log("MainPage params: ", params.groupId)
 
-    let {userId} = useContext(userContext)
-    let {currentGroupId} = useContext(userContext)
-    console.log("MainPage currentGroupID: ", currentGroupId)
+    let {userId, currentGroupId} = useContext(userContext)
+    //console.log("MainPage currentGroupID: ", currentGroupId)
     let otherUser = GetOtherUser()
-    console.log("MainPage otherUserID: ", otherUser.id)
+    //console.log("MainPage otherUserID: ", otherUser.id)
 
     return (
         <div className='mainView'>

@@ -9,6 +9,7 @@ import MainPageTEMP from './pages/MainPageTEMP'
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import LogOutPage from "./pages/LogOutPage";
+import NewGroupPage from "./pages/NewGroupPage"
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/login" element={<LogInPage />}/>
                     <Route path="/signup" element={<SignUpPage />}/>
                     <Route path="/logout" element={<LogOutPage />}/>
+                    <Route path="/new/group" element={<NewGroupPage />}/>
                 </Routes>
             </UserProvider>
         </Router>

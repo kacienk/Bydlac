@@ -357,7 +357,8 @@ class GroupCreateView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        serializer.save(host=self.request.user)
+        # serializer.save(host=self.request.user)
+        super(GroupCreateView, self).perform_create(serializer)
 
 
 class GroupUpdateView(generics.UpdateAPIView):
@@ -437,13 +438,13 @@ class AddUserToGroupView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         # Checking if user requesting adding is member and moderator of the group
-        try:
-            if not queryset.get(Q(user=user) & Q(group=serializer.data['group'])).is_moderator:
-                msg = 'User requesting adding another user to the group is not moderator of the group'
-                raise IsNotModerator(msg, status_code=status.HTTP_403_FORBIDDEN)
-        except ObjectDoesNotExist:
-            msg = 'User requesting adding another user to the group is not in the group himself'
-            raise IsNotGroupMember(msg)
+        # try:
+        #    if not queryset.get(Q(user=user) & Q(group=serializer.data['group'])).is_moderator:
+        #        msg = 'User requesting adding another user to the group is not moderator of the group'
+        #        raise IsNotModerator(msg, status_code=status.HTTP_403_FORBIDDEN)
+        # except ObjectDoesNotExist:
+        #    msg = 'User requesting adding another user to the group is not in the group himself'
+        #    raise IsNotGroupMember(msg)
 
         # Checking if user is not member already
         try:

@@ -19,7 +19,7 @@ const GetGroups = () => {
 
             let data = await response.json()
             setGroupsList(groupsList => [...groupsList, data])
-            console.log("/GetGroups.js/ pojedyncze grupy ", data)
+            //console.log("/GetGroups.js/ pojedyncze grupy ", data)
             //localStorage.setItem('groupsList/' + data.id, JSON.stringify(data))
         })
     }
