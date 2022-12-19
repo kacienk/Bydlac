@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-&-i*6$!vs!bmq3h=ac8b*sy5v)t=xc)d(*696_qcd&p!*1(fl(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['34.118.99.23']
 
 
 # Application definition
@@ -83,8 +83,12 @@ WSGI_APPLICATION = "bydlac_backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": 'eminent-kit-369616:europe-central2:bydlacdb',
+        "USER": 'bydlacdb',
+        "PASSWORD": '/8~:[dPuHZ.sArU%',
+        "HOST": '34.118.99.23',
+        "PORT": '5432',
     }
 }
 

@@ -166,7 +166,8 @@ class Event(models.Model):
     group = models.ForeignKey(
         ConversationGroup,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        blank=True
     )
 
     participants = models.ManyToManyField(
@@ -195,7 +196,7 @@ class Event(models.Model):
 
     location = models.URLField(null=True, blank=True)
 
-    expires = models.DateTimeField(auto_now=True)
+    expires = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
 
 
