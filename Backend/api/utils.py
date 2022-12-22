@@ -108,3 +108,10 @@ class IsMemberLinkSelf(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.user == obj.user
+
+
+class IsAuthor(BasePermission):
+    message = 'User cannot change message unless they are its author.'
+
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.author

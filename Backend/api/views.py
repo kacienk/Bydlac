@@ -14,7 +14,7 @@ from rest_framework import permissions
 from rest_framework import views
 from rest_framework import generics
 
-from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator
+from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor
 
 from base.models import User, ConversationGroup,  GroupMember, Message
 from base.serializers import UserSerializer, DetailedUserSerializer
@@ -244,6 +244,7 @@ class LoginView(views.APIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = LoginSerializer
 
+
     def post(self, request, format=None):
         serializer = LoginSerializer(data=self.request.data, context={ 'request': self.request })
         serializer.is_valid(raise_exception=True)
@@ -260,6 +261,7 @@ class LoginView(views.APIView):
 
 class LogoutView(views.APIView):
     permission_classes = [permissions.AllowAny]
+
 
     def get(self, request, format=None):
         logout(request)
@@ -279,11 +281,13 @@ class UserViewSet(GenericViewSet,
                   mixins.DestroyModelMixin):
     queryset = User.objects.all()
 
+
     def get_serializer_class(self):
         if self.action == 'list':
             return UserSerializer
 
         return DetailedUserSerializer
+
 
     def get_permissions(self):
         if self.action == ('list', 'destroy'):
@@ -305,18 +309,23 @@ class ConversationGroupViewSet(ModelViewSet):
 
         return DetailedConversationGroupSerializer
 
+
     def get_queryset(self):
         if self.action == 'list':
             return ConversationGroup.objects.filter(is_private=False)
 
         return ConversationGroup.objects.all()
 
+
     def get_permissions(self):
         if self.action == ('update', 'partial_update'):
-            permission_classes = [permissions.IsAuthenticated, IsModerator]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator]
         elif self.action == 'destroy':
-            permission_classes = [permissions.IsAuthenticated, IsHost]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost]
         else:
+            # Here might slight change in logic might be necessary.
+            # Maybe another permission that looks like 'IsMember | IsPublic' should be added.
+            # We'll see in tests.
             permission_classes = [permissions.IsAuthenticated]
 
         return [permission() for permission in permission_classes]
@@ -342,6 +351,7 @@ class ConversationGroupViewSet(ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+
     def perform_create(self, serializer):
         serializer.save(host=self.request.user)
 
@@ -359,6 +369,7 @@ class GroupMemberViewSet(ModelViewSet):
 
         return GroupMemberSerializer
 
+
     def get_queryset(self):
         group_pk = self.kwargs['group_pk']
 
@@ -369,15 +380,16 @@ class GroupMemberViewSet(ModelViewSet):
 
         return GroupMember.objects.filter(group=group_pk)
 
+
     def get_permissions(self):
         if self.action in ('list', 'retreive'):
             permission_classes = [permissions.IsAuthenticated, IsMember]
         elif self.action == 'create':
-            permission_classes = [permissions.IsAuthenticated, IsModerator]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator]
         elif self.action in ('update', 'partial_update'):
-            permission_classes = [permissions.IsAuthenticated, IsHost]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost]
         else: #  self.action == 'destroy':
-            permission_classes = [permissions.IsAuthenticated, IsModerator | IsMemberLinkSelf]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator | IsMemberLinkSelf]
 
         return [permission() for permission in permission_classes]
         
@@ -456,91 +468,23 @@ class GroupMemberViewSet(ModelViewSet):
         return super().delete(request, *args, **kwargs)
 
 
-class MessageListView(generics.ListAPIView):
-    queryset = Message.objects.all()
+class MessageViewSet(ModelViewSet):
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        user = self.request.user
-        group_id = self.kwargs['group_id']
-
-        try:
-            _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
-        except ObjectDoesNotExist:
-            msg = 'User cannot get messages unless they are member of the group'
-            raise IsNotGroupMember(msg)
-
-        return super().get(request, *args, **kwargs)
-
+    
     def get_queryset(self):
-        group_id = self.kwargs['group_id']
-        queryset = self.queryset.filter(Q(group=group_id))
-
-        return queryset
+        return Message.objects.filter(group=self.kwargs['group_pk'])
 
 
-class MessageCreateView(generics.CreateAPIView):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    def get_permissions(self):
+        if self.action in ('list', 'retreive', 'create'):
+            permission_classes = [permissions.IsAuthenticated, IsMember]
+        elif self.action in ('update', 'partial_update'):
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsAuthor]
+        else: #  self.action == 'destroy':
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator | IsAuthor]
 
-    def create(self, request, *args, **kwargs):
-        user = self.request.user
-        group_id = kwargs['group_id']
+        return [permission() for permission in permission_classes]
 
-        try:
-            _ = GroupMember.objects.get(Q(user=user) & Q(group=group_id))
-        except ObjectDoesNotExist:
-            msg = 'User cannot send message unless they are member of the group'
-            raise IsNotGroupMember(msg)
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        group = ConversationGroup.objects.get(id=self.kwargs['group_id'])
-        serializer.save(author=self.request.user, group=group)
-
-
-class MessageUpdateView(generics.UpdateAPIView):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def update(self, request, *args, **kwargs):
-        user = self.request.user
-        message = self.get_object()
-
-        if message.author != user:
-            msg = "User cannot update message unless they are its author"
-            raise PermissionDenied(msg)
-
-        return super().update(request, *args, **kwargs)
-
-
-class MessageDeleteView(generics.DestroyAPIView):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def delete(self, request, *args, **kwargs):
-        user = self.request.user
-        group_id = self.kwargs['group_id']
-        message = self.get_object()
-
-        # Checking if user that wants to delete message is author or moderator
-        try:
-            if not GroupMember.get(Q(user=user) & Q(group=group_id)).is_moderator or message.author != user:
-                msg = 'User requesting deleting message is not its author nor moderator of the group'
-                raise IsNotModerator(msg, status_code=status.HTTP_403_FORBIDDEN)
-        except ObjectDoesNotExist:
-            msg = 'User requesting deleting message is not in the group where message has been sent'
-            raise IsNotGroupMember(msg)
-
-        return super().delete(request, *args, **kwargs)
+        serializer.save(author=self.request.user, group=self.kwargs['group_pk'])
