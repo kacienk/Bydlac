@@ -4,7 +4,7 @@ from django.db.models import Q, Subquery
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import ViewSet, GenericViewSet, ModelViewSet
@@ -16,11 +16,12 @@ from rest_framework import generics
 
 from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor
 
-from base.models import User, ConversationGroup,  GroupMember, Message
+from base.models import User, ConversationGroup,  GroupMember, Message, Event
 from base.serializers import UserSerializer, DetailedUserSerializer
 from base.serializers import ConversationGroupSerializer, DetailedConversationGroupSerializer
 from base.serializers import GroupMemberSerializer
 from base.serializers import MessageSerializer
+from base.serializers import EventSerializer
 from .serializers import LoginSerializer, RegisterSerializer
 
 
@@ -290,7 +291,7 @@ class UserViewSet(GenericViewSet,
 
 
     def get_permissions(self):
-        if self.action == ('list', 'destroy'):
+        if self.action in ('list', 'destroy'):
             permission_classes = [permissions.IsAdminUser]
         elif self.action == 'partial_update':
             permission_classes = [permissions.IsAuthenticated, IsSelf]
@@ -304,7 +305,7 @@ class UserViewSet(GenericViewSet,
 
 class ConversationGroupViewSet(ModelViewSet):
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action in ('list', 'list-all-groups'):
             return ConversationGroupSerializer
 
         return DetailedConversationGroupSerializer
@@ -322,6 +323,8 @@ class ConversationGroupViewSet(ModelViewSet):
             permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator]
         elif self.action == 'destroy':
             permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost]
+        elif self.action == 'list-all-groups':
+            permission_classes = [permissions.IsAdminUser]
         else:
             # Here might slight change in logic might be necessary.
             # Maybe another permission that looks like 'IsMember | IsPublic' should be added.
@@ -356,10 +359,12 @@ class ConversationGroupViewSet(ModelViewSet):
         serializer.save(host=self.request.user)
 
 
-class AllGroupListView(generics.ListAPIView):
-    queryset = ConversationGroup.objects.all()
-    serializer_class = ConversationGroupSerializer
-    permission_classes = [permissions.IsAdminUser]
+    @action(methods=['get'], detail=False, url_path='all')
+    def list_all_groups(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(serializer, status=status.HTTP_200_OK)
 
 
 class GroupMemberViewSet(ModelViewSet):
@@ -488,3 +493,41 @@ class MessageViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, group=self.kwargs['group_pk'])
+
+
+class EventViewSet(ModelViewSet):
+    serializer_class = EventSerializer
+
+
+    def get_queryset(self):
+        return Event.objects.all()
+
+
+    def get_permissions(self):
+        if self.action in ('list', 'retreive'):
+            permission_classes = [permissions.IsAdminUser]
+        elif self.action == ('partial_update', 'update', 'destroy'):
+            permission_classes = [permissions.IsAuthenticated, IsHost]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+
+        return [permission() for permission in permission_classes]
+
+
+    def perform_create(self, serializer):
+        serializer.save(host=self.request.user)
+
+    
+    @action(methods=['get'], detail=True)
+    def join(self, request, *args, **kwargs):
+        pass
+
+
+    @action(methods=['get'], detail=True)
+    def leave(self, request, *args, **kwargs):
+        pass
+
+    
+    @action(methods=['get', 'post'], detail=True)
+    def group(self, request, *args, **kwargs):
+        pass

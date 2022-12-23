@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import User, ConversationGroup, GroupMember, Message
+from .models import User, ConversationGroup, GroupMember, Message, Event
 
 
 class UserSerializer(ModelSerializer):
@@ -88,3 +88,9 @@ class MessageSerializer(ModelSerializer):
         instance.body = validated_data.get('body', instance.body)
 
         return instance
+
+
+class EventSerializer(ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'

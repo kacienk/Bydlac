@@ -5,6 +5,7 @@ from . import views
 router = routers.SimpleRouter()
 router.register(r'users', views.UserViewSet, basename='users')
 router.register(r'groups', views.ConversationGroupViewSet, basename='groups')
+router.register(r'events', views.EventViewSet, basename='events')
 
 members_router = routers.NestedSimpleRouter(router, r'groups', lookup='group')
 members_router.register(r'members', views.GroupMemberViewSet, basename='groups-members')
@@ -19,7 +20,6 @@ urlpatterns = [
     path(r'register/', views.RegisterView.as_view(), name='register'),
     path(r'logout/', views.LogoutView.as_view(), name='logout'),
 
-    path(r"groups/all", views.AllGroupListView.as_view(), name='groups'),
     path(r'', include(router.urls)),
 
     path(r'', include(members_router.urls)),
