@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from django.db.models import Q
-from base.models import Event, GroupMember, ConversationGroup
+from base.models import Event, GroupMember, ConversationGroup, User
 
 class IsNotGroupMember(PermissionDenied):
     default_detail = 'User is not member of the group'
@@ -52,6 +52,9 @@ class IsSelf(BasePermission):
     User sending request is trying to receive object representing user.
     """
     message = 'User sending request is not represented by the object they are trying to receive.'
+
+    def has_permission(self, request, view):
+        return User.objects.get(id=view.kwargs['pk']) == request.user
 
     def has_object_permission(self, request, view, obj):
         return obj == request.user
@@ -151,3 +154,218 @@ class IsEventParticipant(BasePermission):
             return request.user in Event.objects.get(id=view.kwargs['event_pk']).participants.all()
         except ObjectDoesNotExist:
             return False
+
+
+routes = [
+    # LOGING IN
+    {
+        'endpoint': '/login/',
+        'method': 'POST',
+        'description': 'Logs in user with data sent in post request',
+        'permisson': 'Any'
+    },
+    {
+        'endpoint': '/register/',
+        'method': 'POST',
+        'description': 'Registers user with data sent in post request',
+        'permisson': 'Any'
+    },
+    {
+        'endpoint': '/logout/',
+        'method': 'GET',
+        'description': 'Logs in user with data sent in post request',
+        'permisson': 'Any'
+    },
+
+    # USERS
+    {
+        'endpoint': '/users/',
+        'method': 'GET',
+        'description': 'Returns list of all registered users',
+        'permisson': 'AdminUser'
+        
+    },
+    {
+        'endpoint': '/users/{pk}/',
+        'method': 'GET',
+        'description': 'Returns user with given id',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/users/{pk}/',
+        'method': 'PUT, PATCH',
+        'description': 'Updates user bio and profile_image (Note: email and username cannot be changed once set)',
+        'permisson': 'Authenticated, Self'
+    },
+    {
+        'endpoint': '/users/{pk}',
+        'method': 'DELETE',
+        'description': 'Deletes user',
+        'permisson': 'AdminUser'
+    },
+    {
+        'endpoint': '/users/{pk}/groups',
+        'method': 'GET',
+        'description': 'Returns list of groups that user is member of',
+        'permisson': 'Authenticated, Self'
+    },
+    {
+        'endpoint': '/users/{pk}/groeventsups',
+        'method': 'GET',
+        'description': 'Returns list of events that user participates in.',
+        'permisson': 'Authenticated, Self'
+    },
+
+    # GROUPS
+    {
+        'endpoint': '/groups/',
+        'method': 'GET',
+        'description': 'Returns list of non-private groups',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/groups/all',
+        'method': 'GET',
+        'description': 'Returns list of all groups',
+        'permisson': 'AdminUser'
+    },
+    {
+        'endpoint': '/groups/{pk}',
+        'method': 'GET',
+        'description': 'Returns group with given id',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/groups/{pk}',
+        'method': 'POST',
+        'description': 'Creates new group with data sent in post request',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/groups/{pk}',
+        'method': 'PUT, PATCH',
+        'description': 'Updates group\'s data',
+        'permisson': 'Authenticated, Member, Moderator, NotEventGroup'
+    },
+    {
+        'endpoint': '/groups/{pk}',
+        'method': 'DELETE',
+        'description': 'Deletes group',
+        'permisson': 'Authenticated, Member, Moderator, Host, NotEventGroup'
+    },
+
+    # MEMBERS
+    {
+        'endpoint': '/groups/{group_pk}/members',
+        'method': 'GET',
+        'description': 'Returns list of group members',
+        'permisson': 'Authenticated, Member, NotEventGroup'
+    },
+    {
+        'endpoint': '/groups/{group_pk}/members', 
+        'method': 'POST',
+        'description': 'Adds user to the group with id equal to group_id',
+        'permisson': 'Authenticated, Member, Moderator, NotEventGroup'
+    },
+    {
+        'endpoint': '/groups/{group_pk}/members/{pk}',  
+        'method': 'DELETE',
+        'description': 'Removes user with id equal to {pk} to the group with id equal to {group_pk}',
+        'permisson': 'Authenticated, Member, Moderator | MemberLinkSelf, NotEventGroup'
+    },
+    {
+        'endpoint': '/groups/{group_pk}/members/{pk}', 
+        'method': 'PUT, PATCH',
+        'description': 'Changes moderator status of user with id equal to {pk} in the group with id equal to {group_pk}',
+        'permisson': 'Authenticated, Member, Moderator, Host, NotEventGroup'
+    },
+
+    # MESSAGES
+    {
+        'endpoint': '/groups/{group_pk}/messages', 
+        'method': 'GET',
+        'description': 'Returns list of messages sent to group with id equal to, {group_pk}',
+        'permisson': 'Authenticated, Member'
+    },
+    {
+        'endpoint': '/groups/{group_pk}/messages', 
+        'method': 'POST',
+        'description': 'Sends message to the group with id equal to {group_pk}',
+        'permisson': 'Authenticated, Member'
+    },
+    {
+        'endpoint': '/groups/{group_pk}/messages/{pk}', 
+        'method': 'GET',
+        'description': 'Retrieves message with id equal to given {pk}',
+        'permisson': 'Authenticated, Member'
+    },
+    {
+        'endpoint': '/groups/{group_pk}/messages/{pk}', 
+        'method': 'PUT, PATCH',
+        'description': 'Updates message with id equal to given {pk}',
+        'permisson': 'Authenticated, Member, Author'
+    },
+    {
+        'endpoint': '/groups/{group_pk}/messages/{pk}', 
+        'method': 'DELETE',
+        'description': 'Deletes message with id equal to given {pk}',
+        'permisson': 'Authenticated, Member, Author | Moderator'
+    },
+
+    #EVENTS
+    {
+        'endpoint': '/events', 
+        'method': 'GET',
+        'description': 'Gets list of all events',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/events', 
+        'method': 'POST',
+        'description': 'Creates an event',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/events/{pk}', 
+        'method': 'GET',
+        'description': 'Retreives an event with id equal to given {pk}',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/events/{pk}', 
+        'method': 'PUT, PATCH',
+        'description': 'Updates an event with id equal to given {pk}',
+        'permisson': 'Authenticated, Host'
+    },
+    {
+        'endpoint': '/events/{pk}', 
+        'method': 'DELETE',
+        'description': 'Deletes an event with id equal to given {pk}',
+        'permisson': 'Authenticated, Host'
+    },
+    {
+        'endpoint': '/events/{pk}/join', 
+        'method': 'GET',
+        'description': 'User sending request joins event with id equall to {pk}, creates a link between the user and the event',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/events/{pk}/leave', 
+        'method': 'GET',
+        'description': 'User sending request leaves event with id equall to {pk}, deletes a link between the user and the event',
+        'permisson': 'Authenticated'
+    },
+    {
+        'endpoint': '/events/{pk}/group', 
+        'method': 'GET',
+        'description': 'Retrieves data of a group of the event with id equall to {pk}',
+        'permisson': 'Authenticated, EventParticipant'
+    },
+    {
+        'endpoint': '/events/{pk}/group', 
+        'method': 'POST',
+        'description': 'Creates a group for the event with id equall to {pk}',
+        'permisson': 'Authenticated, Host'
+    },
+    ]
+ 

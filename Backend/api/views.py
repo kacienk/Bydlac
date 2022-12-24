@@ -14,7 +14,7 @@ from rest_framework import permissions
 from rest_framework import views
 from rest_framework import generics
 
-from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor, IsNotEventGroup, IsEventParticipant
+from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor, IsNotEventGroup, IsEventParticipant, routes
 
 from base.models import User, ConversationGroup,  GroupMember, Message, Event
 from base.serializers import UserSerializer, DetailedUserSerializer
@@ -27,217 +27,6 @@ from .serializers import LoginSerializer, RegisterSerializer
 
 @api_view(['GET'])
 def get_routes(request):
-    routes = [
-        # LOGING IN
-        {
-            'Endpoint': '/login/',
-            'method': 'POST',
-            'body': None,
-            'description': 'Logs in user with data sent in post request, permisson: Any'
-        },
-        {
-            'Endpoint': '/register/',
-            'method': 'POST',
-            'body': None,
-            'description': 'Registers user with data sent in post request, permisson: Any'
-        },
-        {
-            'Endpoint': '/login/',
-            'method': 'POST',
-            'body': None,
-            'description': 'Logs in user with data sent in post request, permisson: Any'
-        },
-        {
-
-            'Endpoint': '/logout/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Logs in user with data sent in post request, permisson: Any'
-        },
-
-        # USERS
-        {
-            'Endpoint': '/users/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns list of all registered users, permisson: AdminUser'
-        },
-        {
-            'Endpoint': '/users/id/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns user with given id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/users/id/update/',
-            'method': 'PUT, PATCH',
-            'body': None,
-            'description': 'Updates user bio and profile_image (Note: email and username cannot be changed once set), permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/users/id/delete/',
-            'method': 'POST',
-            'body': None,
-            'description': 'Deletes user, permisson: AdminUser'
-        },
-
-        # GROUPS
-        {
-            'Endpoint': '/groups/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns list of non-private groups, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/all',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns list of all groups, permisson: AdminUser'
-        },
-        {
-            'Endpoint': '/groups/id',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns group with given id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/create',
-            'method': 'POST',
-            'body': None,
-            'description': 'Creates new group with data sent in post request, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/id/update',
-            'method': 'PUT, PATCH',
-            'body': None,
-            'description': 'Updates group\'s data, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/id/delete',
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Deletes group, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/id/members',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns list of group members, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/group_id/add-user/user_id', # not yet decided 
-            'method': 'POST',
-            'body': None,
-            'description': 'Adds user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/group_id/remove-user/user_id',  
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Removes user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/group_id/change-moderator/user_id', 
-            'method': 'PUT, PATCH',
-            'body': None,
-            'description': 'Changes moderator status of user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated'
-        },
-
-        # MESSAGES
-        {
-            'Endpoint': '/groups/group_id/messages/send', 
-            'method': 'POST',
-            'body': None,
-            'description': 'Sends message to the group with id equal to group_id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/group_id/messages/update/message_id', 
-            'method': 'PUT, PATCH',
-            'body': None,
-            'description': 'Updates message with given message_id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/group_id/messages/delete/message_id', 
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Deletes message with given message_id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/groups/group_id/messages', 
-            'method': 'GET',
-            'body': None,
-            'description': 'Gets all messages sent to group with given group_id, permisson: Authenticated'
-        },
-
-        #EVENTS
-        {
-            'Endpoint': '/events', 
-            'method': 'GET',
-            'body': None,
-            'description': 'Gets list of all events, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id', 
-            'method': 'GET',
-            'body': None,
-            'description': 'Gets retreives event of given id, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/create', 
-            'method': 'POST',
-            'body': None,
-            'description': 'Creates an event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/update', 
-            'method': 'PUT, PATCH',
-            'body': None,
-            'description': 'Updates an event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/delete', 
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Deletes an event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/join', 
-            'method': 'GET',
-            'body': None,
-            'description': 'User sending request joins event, creates a link between the user and the event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/leave', 
-            'method': 'GET',
-            'body': None,
-            'description': 'User sending request leavs event, deletes a link between the user and the event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/group', 
-            'method': 'GET',
-            'body': None,
-            'description': 'Retrieves data of a group of the event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/add-group', 
-            'method': 'POST',
-            'body': None,
-            'description': 'Creates a group for the event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/remove-group', 
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Removes a group of the event, permisson: Authenticated'
-        },
-        {
-            'Endpoint': '/events/id/update-group', 
-            'method': 'PUT, PATCH',
-            'body': None,
-            'description': 'Removes a group of the event, permisson: Authenticated'
-        },
-    ]
-
     return Response(routes)
 
 
@@ -287,21 +76,23 @@ class UserViewSet(GenericViewSet,
         if self.action == 'list':
             return UserSerializer
 
-        if self.action == 'user-groups':
+        if self.action == 'groups':
             return ConversationGroupSerializer
 
-        if self.action == 'user-events':
+        if self.action == 'events':
             return EventSerializer
 
         return DetailedUserSerializer
     
 
     def get_queryset(self):
-        if self.action == 'user-groups':
-            user_groups = GroupMember.objects.filter(Q(user=self.kwargs['pk'])).values('group__id')
-            return ConversationGroup.objects.filter(id__in=user_groups)
+        if self.action == 'groups':
+            user_groups_ids = GroupMember.objects.filter(Q(user=self.kwargs['pk'])).values('group__id')
+            print(GroupMember.objects.filter(Q(user=self.kwargs['pk'])))
+            print(user_groups_ids)
+            return ConversationGroup.objects.filter(id__in=user_groups_ids)
 
-        if self.action == 'user-events':
+        if self.action == 'events':
             return Event.objects.filter(Q(participants__id=self.kwargs['pk']))
 
         return User.objects.all()
@@ -310,7 +101,7 @@ class UserViewSet(GenericViewSet,
     def get_permissions(self):
         if self.action in ('list', 'destroy'):
             permission_classes = [permissions.IsAdminUser]
-        elif self.action == 'partial_update':
+        elif self.action in ('partial_update', 'groups', 'events'):
             permission_classes = [permissions.IsAuthenticated, IsSelf]
         elif self.action == 'update':
             permission_classes = [permissions.IsAdminUser, IsSelf]
@@ -320,8 +111,8 @@ class UserViewSet(GenericViewSet,
         return [permission() for permission in permission_classes]
 
     
-    @action(method=['get'], detail=True, url_path='groups')
-    def user_groups(self, request, *agrs, **kwargs):
+    @action(methods=['get'], detail=True, url_path='groups')
+    def groups(self, request, *agrs, **kwargs):
         groups = self.get_queryset()
         serializer = self.get_serializer(groups, many=True)
 
@@ -329,7 +120,7 @@ class UserViewSet(GenericViewSet,
 
 
     @action(methods=['get'], detail=True, url_path='events')
-    def user_events(self, request, *agrs, **kwargs):
+    def events(self, request, *agrs, **kwargs):
         events = self.get_queryset()
         serializer = self.get_serializer(events, many=True)
 
@@ -530,33 +321,59 @@ class MessageViewSet(ModelViewSet):
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
+    serializer_class = EventSerializer
 
 
     def get_permissions(self):
-        if self.action in ('list', 'retreive'):
-            permission_classes = [permissions.IsAdminUser]
-        elif self.action == ('partial_update', 'update', 'destroy'):
+        if self.action == ('partial_update', 'update', 'destroy'):
             permission_classes = [permissions.IsAuthenticated, IsHost]
         else:
             permission_classes = [permissions.IsAuthenticated]
 
         return [permission() for permission in permission_classes]
 
-    
-    def get_serializer(self, *args, **kwargs):
-        if self.action == 'group':
-            return DetailedConversationGroupSerializer
-
-        return EventSerializer
-
 
     def perform_create(self, serializer):
         serializer.save(host=self.request.user)
 
     
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        event = self.get_object()
+        group = event.group
+        
+        serializer = self.get_serializer(event, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        
+        if event.group is not None:
+            group_data = {
+                'name': request.data.get('name', group.name),
+                'description': request.data.get('description', group.description)
+            }
+
+            group_serializer = DetailedConversationGroupSerializer(group, data=group_data, partial=partial)
+            group_serializer.is_valid(raise_exception=True)
+            group_serializer.save()
+
+        return Response(serializer.data)
+
+
+    def destroy(self, request, *args, **kwargs):
+        group = self.get_object().group
+        group.delete()
+
+        return super().destroy(request, *args, **kwargs)
+
+    
     @action(methods=['GET'], detail=True)
     def join(self, request, *args, **kwargs):
         event = get_object_or_404(self.queryset, id=kwargs['pk'])
+
+        if event.max_participants <= event.participants.count() and event.max_participants > 0:
+            msg = 'User cannot join this event because it has reached its maximal participants capacity.'
+            return Response(msg, status=status.HTTP_403_FORBIDDEN)
+
         event.participants.add(request.user)
 
         if event.group is not None:
@@ -588,39 +405,6 @@ class EventViewSet(ModelViewSet):
                 pass
 
         return Response(None, status=status.HTTP_202_ACCEPTED)
-
-    
-    @action(methods=['GET', 'POST'], detail=True)
-    def group(self, request, *args, **kwargs):
-        event = get_object_or_404(self.queryset, id=kwargs['pk'])
-
-        if request.method == 'GET':
-            if event.group is None:
-                msg = 'Group for this event has not been created.'
-                return Response(msg, status=status.HTTP_404_NOT_FOUND)
-
-            serializer = ConversationGroupSerializer(event.group)
-            return Response(serializer.data)
-
-        if request.method == 'POST':
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-
-            group_member_data = {
-                'user': serializer.data['host'],
-                'group': serializer.data['id'],
-                'is_moderator': True
-            }
-
-            group_member_serializer = GroupMemberSerializer(data=group_member_data)
-            group_member_serializer.is_valid(raise_exception=True)
-
-            group_member_serializer.save()
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class EventGroupViewSet(GenericViewSet):
