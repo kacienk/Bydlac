@@ -14,7 +14,7 @@ from rest_framework import permissions
 from rest_framework import views
 from rest_framework import generics
 
-from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor
+from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor, IsNotEventGroup, IsEventParticipant
 
 from base.models import User, ConversationGroup,  GroupMember, Message, Event
 from base.serializers import UserSerializer, DetailedUserSerializer
@@ -320,9 +320,9 @@ class ConversationGroupViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.action == ('update', 'partial_update'):
-            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsNotEventGroup]
         elif self.action == 'destroy':
-            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost, IsNotEventGroup]
         elif self.action == 'list-all-groups':
             permission_classes = [permissions.IsAdminUser]
         else:
@@ -341,22 +341,22 @@ class ConversationGroupViewSet(ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        group_participant_data = {
+        group_member_data = {
             'user': serializer.data['host'],
             'group': serializer.data['id'],
             'is_moderator': True
         }
 
-        group_participant_serializer = GroupMemberSerializer(data=group_participant_data)
-        group_participant_serializer.is_valid(raise_exception=True)
+        group_member_serializer = GroupMemberSerializer(data=group_member_data)
+        group_member_serializer.is_valid(raise_exception=True)
 
-        group_participant_serializer.save()
+        group_member_serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
     def perform_create(self, serializer):
-        serializer.save(host=self.request.user)
+        serializer.save(host=self.request.user, is_event_group=False)
 
 
     @action(methods=['get'], detail=False, url_path='all')
@@ -388,13 +388,13 @@ class GroupMemberViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.action in ('list', 'retreive'):
-            permission_classes = [permissions.IsAuthenticated, IsMember]
+            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember]
         elif self.action == 'create':
-            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator]
+            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator]
         elif self.action in ('update', 'partial_update'):
-            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost]
+            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator, IsHost]
         else: #  self.action == 'destroy':
-            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator | IsMemberLinkSelf]
+            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator | IsMemberLinkSelf]
 
         return [permission() for permission in permission_classes]
         
@@ -496,11 +496,7 @@ class MessageViewSet(ModelViewSet):
 
 
 class EventViewSet(ModelViewSet):
-    serializer_class = EventSerializer
-
-
-    def get_queryset(self):
-        return Event.objects.all()
+    queryset = Event.objects.all()
 
 
     def get_permissions(self):
@@ -513,21 +509,146 @@ class EventViewSet(ModelViewSet):
 
         return [permission() for permission in permission_classes]
 
+    
+    def get_serializer(self, *args, **kwargs):
+        if self.action == 'group':
+            return DetailedConversationGroupSerializer
+
+        return EventSerializer
+
 
     def perform_create(self, serializer):
         serializer.save(host=self.request.user)
 
     
-    @action(methods=['get'], detail=True)
+    @action(methods=['GET'], detail=True)
     def join(self, request, *args, **kwargs):
-        pass
+        event = get_object_or_404(self.queryset, id=kwargs['pk'])
+        event.participants.add(request.user)
+
+        if event.group is not None:
+            group_member_data = {
+                'user': request.user,
+                'group': event.group,
+                'is_moderator': False
+            }
+
+            group_member_serializer = GroupMemberSerializer(data=group_member_data)
+            group_member_serializer.is_valid(raise_exception=True)
+
+            group_member_serializer.save()
+
+        serializer = self.get_serializer(event, many=False)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
-    @action(methods=['get'], detail=True)
+    @action(methods=['GET'], detail=True)
     def leave(self, request, *args, **kwargs):
-        pass
+        event = get_object_or_404(self.queryset, id=kwargs['pk'])
+        event.participants.remove(request.user)
+
+        if event.group is not None:
+            try:
+                link = GroupMember.objects.get(Q(user=request.user) & Q(group=event.group))
+                link.delete()
+            except ObjectDoesNotExist:
+                pass
+
+        return Response(None, status=status.HTTP_202_ACCEPTED)
 
     
-    @action(methods=['get', 'post'], detail=True)
+    @action(methods=['GET', 'POST'], detail=True)
     def group(self, request, *args, **kwargs):
-        pass
+        event = get_object_or_404(self.queryset, id=kwargs['pk'])
+
+        if request.method == 'GET':
+            if event.group is None:
+                msg = 'Group for this event has not been created.'
+                return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = ConversationGroupSerializer(event.group)
+            return Response(serializer.data)
+
+        if request.method == 'POST':
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+
+            group_member_data = {
+                'user': serializer.data['host'],
+                'group': serializer.data['id'],
+                'is_moderator': True
+            }
+
+            group_member_serializer = GroupMemberSerializer(data=group_member_data)
+            group_member_serializer.is_valid(raise_exception=True)
+
+            group_member_serializer.save()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class EventGroupViewSet(GenericViewSet,
+                        mixins.CreateModelMixin):
+    serializer_class = DetailedConversationGroupSerializer
+
+    
+    def get_permissions(self):
+        if self.action == 'create':
+            permission_classes = [permissions.IsAuthenticated, IsHost]
+        else:
+            permission_classes = [permissions.IsAuthenticated, IsEventParticipant]
+
+        return [permission() for permission in permission_classes]
+
+
+    def create(self, request, *args, **kwargs):
+        event = get_object_or_404(Event, id=self.kwargs['event_pk'])
+
+        if event.group is not None:
+            msg = 'Group for this event already exists.'
+            return Response(msg, status=status.HTTP_403_FORBIDDEN)
+
+        data = {
+            'host': request.user,
+            'name': event.name,
+            'description': event.description,
+            'is_private': True,
+            'is_event_group': True
+        }
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        for user in event.participants.all():
+            event_participant_data = {
+                'user': user,
+                'group': serializer.data['id'],
+                'is_moderator': False
+            }
+
+            if user == event.host:
+                event_participant_data['is_moderator'] = True
+
+            event_participant_serializer = GroupMemberSerializer(data=event_participant_data)
+            event_participant_serializer.is_valid(raise_exception=True)
+            event_participant_serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    
+    @action(methods=['GET'], detail=False, url_path='group') # False detail because I do not want {lookup}
+    def retrieve_group(self, request, *args, **kwargs):
+        event = get_object_or_404(Event, id=self.kwargs['event_pk'])
+
+        if event.group is not None:
+            msg = 'This event does not have group assigned to it.'
+            return Response(msg, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(event.group)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

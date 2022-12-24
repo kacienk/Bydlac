@@ -13,6 +13,9 @@ members_router.register(r'members', views.GroupMemberViewSet, basename='groups-m
 message_router = routers.NestedSimpleRouter(router, r'groups', lookup='group')
 message_router.register(r'messages', views.MessageViewSet, basename='groups-messages')
 
+event_group_router = routers.NestedSimpleRouter(router, r'events', lookup='event')
+event_group_router.register(r'group', views.EventGroupViewSet, basename='events-group')
+
 
 urlpatterns = [
     path(r"", views.get_routes, name='routes'),
@@ -25,4 +28,6 @@ urlpatterns = [
     path(r'', include(members_router.urls)),
 
     path(r'', include(message_router.urls)),
+
+    path(r'', include(event_group_router.urls))
 ]

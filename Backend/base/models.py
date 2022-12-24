@@ -107,6 +107,11 @@ class ConversationGroup(models.Model):
         default=True
     )
 
+    is_event_group = models.BooleanField(
+        verbose_name='is event group',
+        default=False
+    )
+
     updated = models.DateTimeField(
         verbose_name='last message time',
         auto_now=True
@@ -164,7 +169,7 @@ class Event(models.Model):
         on_delete=models.CASCADE
     )
 
-    group = models.ForeignKey(
+    group = models.OneToOneField(
         ConversationGroup,
         on_delete=models.SET_NULL,
         null=True,

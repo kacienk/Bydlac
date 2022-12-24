@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from django.db.models import Q
-from base.models import GroupMember, ConversationGroup
+from base.models import Event, GroupMember, ConversationGroup
 
 class IsNotGroupMember(PermissionDenied):
     default_detail = 'User is not member of the group'
@@ -115,3 +115,39 @@ class IsAuthor(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.user == obj.author
+
+
+class IsNotEventGroup(BasePermission):
+    """
+    Is the group that is queried a group not attatched to an event.
+    """
+    msg = 'Group attatched to an event cannot be managed independently.'
+
+    def has_permission(self, request, view):
+        try:
+            return not ConversationGroup.objects.get(id=view.kwargs['group_pk']).is_event_group
+        except ObjectDoesNotExist:
+            return False
+
+    def has_object_permission(self, request, view, obj):
+        return not obj.is_event_group
+
+
+class IsEventParticipant(BasePermission):
+    """
+    Is user performing action a participant of this event.
+    """
+    msg = 'User cannot retrieve group of an event that they do not participate in.'
+
+    def has_permission(self, request, view):
+        try:
+            return request.user in Event.objects.get(id=view.kwargs['event_pk']).participants.all()
+        except ObjectDoesNotExist:
+            return False
+
+    
+    def has_object_permission(self, request, view, obj):
+        try:
+            return request.user in Event.objects.get(id=view.kwargs['event_pk']).participants.all()
+        except ObjectDoesNotExist:
+            return False
