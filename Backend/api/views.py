@@ -287,7 +287,24 @@ class UserViewSet(GenericViewSet,
         if self.action == 'list':
             return UserSerializer
 
+        if self.action == 'user-groups':
+            return ConversationGroupSerializer
+
+        if self.action == 'user-events':
+            return EventSerializer
+
         return DetailedUserSerializer
+    
+
+    def get_queryset(self):
+        if self.action == 'user-groups':
+            user_groups = GroupMember.objects.filter(Q(user=self.kwargs['pk'])).values('group__id')
+            return ConversationGroup.objects.filter(id__in=user_groups)
+
+        if self.action == 'user-events':
+            return Event.objects.filter(Q(participants__id=self.kwargs['pk']))
+
+        return User.objects.all()
 
 
     def get_permissions(self):
@@ -302,6 +319,22 @@ class UserViewSet(GenericViewSet,
 
         return [permission() for permission in permission_classes]
 
+    
+    @action(method=['get'], detail=True, url_path='groups')
+    def user_groups(self, request, *agrs, **kwargs):
+        groups = self.get_queryset()
+        serializer = self.get_serializer(groups, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    @action(methods=['get'], detail=True, url_path='events')
+    def user_events(self, request, *agrs, **kwargs):
+        events = self.get_queryset()
+        serializer = self.get_serializer(events, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
 
 class ConversationGroupViewSet(ModelViewSet):
     def get_serializer_class(self):
@@ -590,8 +623,7 @@ class EventViewSet(ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class EventGroupViewSet(GenericViewSet,
-                        mixins.CreateModelMixin):
+class EventGroupViewSet(GenericViewSet):
     serializer_class = DetailedConversationGroupSerializer
 
     
