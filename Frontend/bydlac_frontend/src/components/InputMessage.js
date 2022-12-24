@@ -2,7 +2,6 @@ import {useContext, useRef} from "react";
 import './InputMessage.css';
 import userContext from "../context/UserContext";
 
-
 function InputMessage() {
     let {currentGroupId} = useContext(userContext)
     let {userId} = useContext(userContext)
@@ -13,7 +12,6 @@ function InputMessage() {
         currentMessage = messageRef.current.value;
         if (currentMessage === '')
             return;
-        console.log(currentMessage); /* Send message to database I think? */
 
         let response = await fetch('http://127.0.0.1:8000/api/groups/' + currentGroupId + '/messages/send/', {
             method: 'POST',

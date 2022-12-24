@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 
 const GroupList = () => {
     let groupsList = GetGroups()
-    console.log("/GroupsList.js/ lista grup", groupsList)
+    //console.log("/GroupsList.js/ lista grup", groupsList)
 
     return (
         <div className="groupList">

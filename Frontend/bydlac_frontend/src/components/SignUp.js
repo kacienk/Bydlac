@@ -22,7 +22,7 @@ const SignUp = () => {
         if (response.ok)
             navigate('/login')
         else
-            console.log(response.status, response.statusText)
+            alert(response.status + ' ' + response.statusText)
 
         /* TODO handling errors*/
     }

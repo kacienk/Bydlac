@@ -1,7 +1,6 @@
-import {createContext, useReducer, useState} from "react";
+import {createContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import getUserGroups from "../utils/GetUserGroups";
-import GetGroups from "../utils/GetGroups";
 
 const UserContext = createContext();
 

@@ -1,13 +1,10 @@
 import './Conversation.css';
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 
 import Message from "./Message";
-import userContext from "../context/UserContext";
 
 const Conversation = ({groupId}) => {
     let [messages, setMessages] = useState([])
-    //const {currentMessage} = useContext(userContext)
-    //console.log("currmess w conv", currentMessage)
 
     useEffect(() => {
         getMessages(groupId)

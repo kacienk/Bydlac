@@ -5,11 +5,11 @@ import {
 import {UserProvider} from "./context/UserContext";
 
 import './App.css';
-import MainPageTEMP from './pages/MainPageTEMP'
+import MainPageTEMP from './pages/MainPageTEMP';
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import LogOutPage from "./pages/LogOutPage";
-import NewGroupPage from "./pages/NewGroupPage"
+import NewGroupPage from "./pages/NewGroupPage";
 
 function App() {
     return (
