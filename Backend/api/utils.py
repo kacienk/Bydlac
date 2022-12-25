@@ -179,20 +179,27 @@ routes = [
 
     # USERS
     {
-        'endpoint': '/users/',
+        'endpoint': '/users',
         'method': 'GET',
         'description': 'Returns list of all registered users',
         'permisson': 'AdminUser'
         
     },
     {
-        'endpoint': '/users/{pk}/',
+        'endpoint': '/users/self',
+        'method': 'GET',
+        'description': 'Returns data of user with given token',
+        'permisson': 'Authenticated'
+        
+    },
+    {
+        'endpoint': '/users/{pk}',
         'method': 'GET',
         'description': 'Returns user with given id',
         'permisson': 'Authenticated'
     },
     {
-        'endpoint': '/users/{pk}/',
+        'endpoint': '/users/{pk}',
         'method': 'PUT, PATCH',
         'description': 'Updates user bio and profile_image (Note: email and username cannot be changed once set)',
         'permisson': 'Authenticated, Self'
@@ -210,7 +217,7 @@ routes = [
         'permisson': 'Authenticated, Self'
     },
     {
-        'endpoint': '/users/{pk}/groeventsups',
+        'endpoint': '/users/{pk}/events',
         'method': 'GET',
         'description': 'Returns list of events that user participates in.',
         'permisson': 'Authenticated, Self'
@@ -218,7 +225,7 @@ routes = [
 
     # GROUPS
     {
-        'endpoint': '/groups/',
+        'endpoint': '/groups',
         'method': 'GET',
         'description': 'Returns list of non-private groups',
         'permisson': 'Authenticated'

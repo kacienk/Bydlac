@@ -1,13 +1,8 @@
 import pytest
-from rest_framework.test import APIClient
-
-
-client = APIClient()
-
 
 
 @pytest.mark.django_db
-def test_register_user():
+def test_register_user(client):
     payload = {
         'username': 'testuser',
         'password': 'testpassword',
@@ -24,22 +19,20 @@ def test_register_user():
 
 
 @pytest.mark.django_db
-def test_user_login():
-    payload = {
-        'username': 'testuser',
-        'password': 'testpassword',
-        'password2': 'testpassword',
-        'email': 'test@mail.com' 
-    }
+def test_user_login(client, create_user, test_password):
+    username = 'testuser'
+    email = username + '@mail.com'
 
-    client.post('/api/register/', payload)
-    response = client.post('/api/login/', dict(email='test@mail.com', password='testpassword'))
+    create_user(username='testuser')
+    response = client.post('/api/login/', dict(email=email, password=test_password))
 
     assert response.status_code == 202
 
 
 @pytest.mark.django_db
-def test_user_login_fail():
-    response = client.post('/api/login/', dict(email='nikt@mail.com', password='notrightpassword'))
+def test_user_login_fail(client):
+    response = client.post('/api/login/', dict(email='nobody@mail.com', password='notrightpassword'))
 
     assert response.status_code == 400
+
+

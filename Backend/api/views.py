@@ -125,6 +125,13 @@ class UserViewSet(GenericViewSet,
         serializer = self.get_serializer(events, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    @action(methods=['get'], detail=False, url_path='self')
+    def user_self(self, request, *agrs, **kwargs):
+        serializer = self.get_serializer(request.user)
+
+        return Response(serializer.data)
         
 
 class ConversationGroupViewSet(ModelViewSet):
