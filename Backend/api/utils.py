@@ -1,8 +1,10 @@
+from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import status
-from django.db.models import Q
+
 from base.models import Event, GroupMember, ConversationGroup, User
 
 class IsNotGroupMember(PermissionDenied):
@@ -54,7 +56,10 @@ class IsSelf(BasePermission):
     message = 'User sending request is not represented by the object they are trying to receive.'
 
     def has_permission(self, request, view):
-        return User.objects.get(id=view.kwargs['pk']) == request.user
+        try:
+            return User.objects.get(id=view.kwargs['pk']) == request.user
+        except ObjectDoesNotExist:
+            return False
 
     def has_object_permission(self, request, view, obj):
         return obj == request.user
@@ -67,7 +72,10 @@ class IsHost(BasePermission):
     message = 'User sending request is not the host of the group they trying to delete.'
 
     def has_object_permission(self, request, view, obj):
-        return ConversationGroup.objects.get(id=obj.id).host == request.user
+        try:
+            return ConversationGroup.objects.get(id=obj.id).host == request.user
+        except ObjectDoesNotExist:
+            return False
 
 
 class IsModerator(BasePermission):
@@ -80,7 +88,6 @@ class IsModerator(BasePermission):
         try:
             return GroupMember.objects.get(Q(user=request.user) & Q(group=request.data.get('group_pk'))).is_moderator
         except ObjectDoesNotExist:
-            message = 'User sending request is not a member of the group they try to modify.'
             return False
 
 
@@ -151,7 +158,7 @@ class IsEventParticipant(BasePermission):
     
     def has_object_permission(self, request, view, obj):
         try:
-            return request.user in Event.objects.get(id=view.kwargs['event_pk']).participants.all()
+            return request.user in  Event.objects.get(id=view.kwargs['event_pk']).participants.all()
         except ObjectDoesNotExist:
             return False
 
@@ -200,7 +207,7 @@ routes = [
     },
     {
         'endpoint': '/users/{pk}',
-        'method': 'PUT, PATCH',
+        'method': 'PATCH',
         'description': 'Updates user bio and profile_image (Note: email and username cannot be changed once set)',
         'permisson': 'Authenticated, Self'
     },
