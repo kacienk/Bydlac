@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from rest_framework.authtoken.models import Token
 
 
 class UserManager(BaseUserManager):
@@ -106,6 +107,11 @@ class ConversationGroup(models.Model):
         default=True
     )
 
+    is_event_group = models.BooleanField(
+        verbose_name='is event group',
+        default=False
+    )
+
     updated = models.DateTimeField(
         verbose_name='last message time',
         auto_now=True
@@ -163,10 +169,11 @@ class Event(models.Model):
         on_delete=models.CASCADE
     )
 
-    group = models.ForeignKey(
+    group = models.OneToOneField(
         ConversationGroup,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        blank=True
     )
 
     participants = models.ManyToManyField(
@@ -195,7 +202,7 @@ class Event(models.Model):
 
     location = models.URLField(null=True, blank=True)
 
-    expires = models.DateTimeField(auto_now=True)
+    expires = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
 
 

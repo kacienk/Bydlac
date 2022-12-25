@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import User, ConversationGroup, GroupMember, Message
+from .models import User, ConversationGroup, GroupMember, Message, Event
 
 
 class UserSerializer(ModelSerializer):
@@ -70,6 +70,7 @@ class GroupMemberSerializer(ModelSerializer):
             'group',
             'is_moderator',
         ]
+        
 
     def update(self, instance, validated_data):
         instance.is_moderator = validated_data.get('is_moderator', instance.is_moderator)
@@ -84,7 +85,33 @@ class MessageSerializer(ModelSerializer):
         model = Message
         fields = '__all__'
 
+
     def update(self, instance, validated_data):
         instance.body = validated_data.get('body', instance.body)
+
+        return instance
+
+
+class EventSerializer(ModelSerializer):
+    class Meta:
+        model = Event
+        fields = [
+            'id',
+            'host',
+            'name',
+            'description',
+            'max_participants',
+            'location',
+            'expires',
+            'created',
+        ]
+
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.max_participants = validated_data.get('max_participants', instance.max_participants)
+        instance.location = validated_data.get('location', instance.location)
+        instance.expires = validated_data.get('expires', instance.expires)
 
         return instance

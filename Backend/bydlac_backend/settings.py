@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-&-i*6$!vs!bmq3h=ac8b*sy5v)t=xc)d(*696_qcd&p!*1(fl(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['34.118.99.23', '127.0.0.1']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
 
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
 ]
 
@@ -83,8 +84,8 @@ WSGI_APPLICATION = "bydlac_backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
 
@@ -132,6 +133,7 @@ CORS_ALLOWED_ORIGINS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
