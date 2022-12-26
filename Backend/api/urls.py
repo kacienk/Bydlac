@@ -31,3 +31,4 @@ urlpatterns = [
 
     path(r'', include(event_group_router.urls))
 ]
+

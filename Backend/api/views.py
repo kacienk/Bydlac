@@ -299,7 +299,8 @@ class GroupMemberViewSet(ModelViewSet):
 
 class MessageViewSet(ModelViewSet):
     serializer_class = MessageSerializer
-    
+
+
     def get_queryset(self):
         return Message.objects.filter(group=self.kwargs['group_pk'])
 
@@ -364,6 +365,7 @@ class EventViewSet(ModelViewSet):
         group.delete()
 
         return super().destroy(request, *args, **kwargs)
+
 
     
     @action(methods=['GET'], detail=True)

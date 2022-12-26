@@ -1,0 +1,12 @@
+.userMessage {
+    text-align: right;
+    padding-top: 3px;
+    padding-right: 10px;
+
+}
+
+.otherMessage {
+    padding-top: 3px;
+    padding-left: 10px;
+    text-align: left;
+}

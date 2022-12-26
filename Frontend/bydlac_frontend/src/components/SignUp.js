@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "./SignUp.css"
 
-const SignUp = () => { /* TODO placeholders */
+const SignUp = () => {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -20,9 +20,9 @@ const SignUp = () => { /* TODO placeholders */
         })
 
         if (response.ok)
-            navigate('/')
+            navigate('/login')
         else
-            console.log(response.status, response.statusText)
+            alert(response.status + ' ' + response.statusText)
 
         /* TODO handling errors*/
     }
