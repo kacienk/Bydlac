@@ -5,7 +5,7 @@ import userContext from "../context/UserContext";
 
 
 const NewGroup = () => {
-    let {userId} = useContext(userContext)
+    const {userId, userToken} = useContext(userContext)
     let {userGroups} = useContext(userContext)
     const isPrivateOptions = [
         {label: "Prywatna", value: "true"},
@@ -14,18 +14,20 @@ const NewGroup = () => {
 
     let [allUsersList, setAllUsersList] = useState([])
     useEffect((() => {
+        const getAllUsersList = async () => {
+            let response = await fetch('http://127.0.0.1:8000/api/users/', {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                }
+            })
+            let data = await response.json()
+            setAllUsersList(data)
+        }
+
         getAllUsersList()
     }), [])
-
-    const getAllUsersList = async () => {
-
-        let response = await fetch('http://127.0.0.1:8000/api/users/', {
-            method: 'GET',
-            headers: {"Content-Type": "application/json"}
-        })
-        let data = await response.json()
-        setAllUsersList(data)
-    }
 
     let [newGroupName, setNewGroupName] = useState('')
     let [newGroupIsPrivate, setNewGroupIsPrivate] = useState(true)
@@ -44,22 +46,31 @@ const NewGroup = () => {
 
         let response = await fetch('http://127.0.0.1:8000/api/groups/create/', {
             method: 'POST',
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            },
             body: JSON.stringify(newGroup)
         })
 
-        let response2 = await fetch('http://127.0.0.1:8000/api/users/' + userId + '/groups', {
+        let response2 = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
             method: 'GET',
-            headers: {"Content-Type": "application/json"}
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            }
         })
 
         userGroups = await response2.json()
 
         let newGroupId = Math.max(...userGroups.map(object => object.group)) // TODO make it less dumb
         selectedUsers.map(async (user) => {
-            let response3 = await fetch('http://127.0.0.1:8000/api/groups/' + newGroupId + '/add-user/' + user.id, {
+            let response3 = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/`, {
                 method: 'POST',
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                },
                 body: JSON.stringify({
                     user: user.id,
                     group: newGroupId,

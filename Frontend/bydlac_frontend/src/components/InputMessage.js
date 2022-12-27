@@ -3,8 +3,7 @@ import './InputMessage.css';
 import userContext from "../context/UserContext";
 
 function InputMessage() {
-    let {currentGroupId} = useContext(userContext)
-    let {userId} = useContext(userContext)
+    const {currentGroupId, userId, userToken} = useContext(userContext)
     let {currentMessage} = useContext(userContext)
     const messageRef = useRef();
 
@@ -13,9 +12,12 @@ function InputMessage() {
         if (currentMessage === '')
             return;
 
-        let response = await fetch('http://127.0.0.1:8000/api/groups/' + currentGroupId + '/messages/send/', {
+        let response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
             method: 'POST',
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            },
             body: JSON.stringify({
                 'body': currentMessage,
                 'author': userId,

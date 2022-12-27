@@ -1,35 +1,60 @@
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 
 import './LogIn.css';
 import userContext from "../context/UserContext";
+import {useNavigate} from "react-router-dom";
 
 const LogIn = () => {
-    let {logInHandler} = useContext(userContext)
+    const {
+        setUserToken,
+        setCurrentUser,
+        setUserId,
+        currentGroupId
+    } = useContext(userContext)
 
-    //const [email, setEmail] = useState('')
-    //const [password, setPassword] = useState('')
-    //const navigate = useNavigate()
-    // const submitHandler = async (event) => {
-    //     event.preventDefault()
-    //     const user = {email, password}
-    //
-    //     let response = await fetch('http://127.0.0.1:8000/api/login/', {
-    //         method: 'POST',
-    //         headers: {"Content-Type": "application/json"},
-    //         body: JSON.stringify(user)
-    //     })
-    //
-    //     if (response.ok) {
-    //         const data = await response.json()
-    //
-    //         userContext.data = data;
-    //         setUserId(data);
-    //         console.log(userId);
-    //         navigate('/mainview')
-    //     }
-    //     else if (400 && response.status)
-    //         console.log("Złe dane", response.status, response.statusText)
-    // }
+    const navigate = useNavigate()
+    const logInHandler = async (event) => {
+        event.preventDefault()
+
+        // send request to backend to log and authorize user
+        let response = await fetch('http://127.0.0.1:8000/api/login/', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                'email' : event.target.email.value,
+                'password': event.target.password.value
+            })
+        })
+        let data = await response.json()
+
+        if (response.status === 202) {
+            // obtain auth token and store it in localStorage as well as in userContext
+            setUserToken(data['token'])
+            localStorage.setItem('userToken', JSON.stringify(data['token']))
+
+            // obtain all currently logged user's information
+            response = await fetch('http://127.0.0.1:8000/api/users/self/', {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${data['token']}`
+                }
+            })
+            data = await response.json()
+
+            // store it in localStorage as well as in userContext
+            setCurrentUser(data)
+            localStorage.setItem('currentUser', JSON.stringify(data))
+
+            // additionally store currently logged user's ID the same way as other user's info
+            setUserId(data['id'])
+            localStorage.setItem('userId', data['id'])
+
+            navigate(`/chat/${currentGroupId}`) // TODO fix currentGroupId
+        }
+        else
+            alert("Problem z logowaniem")
+    }
 
     return (
         <form className='logInForm' onSubmit={logInHandler}>
@@ -40,8 +65,6 @@ const LogIn = () => {
                 required
                 name="email"
                 placeholder="E-mail"
-                //value={email}
-                //onChange={(event) => setEmail(event.target.value)}
             />
 
             <p className='logInFormText'>Hasło:</p>
@@ -51,8 +74,6 @@ const LogIn = () => {
                 required
                 name="password"
                 placeholder="Hasło"
-                //value={password}
-                //onChange={(event) => setPassword(event.target.value)}
             />
 
             <br/>

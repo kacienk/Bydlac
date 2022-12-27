@@ -1,10 +1,12 @@
 import './Conversation.css';
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 
 import Message from "./Message";
+import userContext from "../context/UserContext";
 
-const Conversation = ({groupId}) => {
+const Conversation = ({props, groupId}) => {
     let [messages, setMessages] = useState([])
+    const {userToken} = useContext(userContext)
 
     useEffect(() => {
         getMessages(groupId)
@@ -12,19 +14,18 @@ const Conversation = ({groupId}) => {
 
 
     let getMessages = async (groupId) => {
-        const timer = setTimeout(async () => {
-            if (groupId !== -1) {
-                let response = await fetch('http://127.0.0.1:8000/api/groups/'+ groupId +'/messages/', {
-                    method: 'GET',
-                    headers: {"Content-Type": "application/json"}
-                })
-                let data = await response.json()
-                setMessages(data)
-
-                console.log("/Conversation.js/getMessages/", data)
-            }
-        }, 1000)
-        //clearTimeout(timer)
+        if (groupId !== null) {
+            let response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/messages/`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                }
+            })
+            let data = await response.json()
+            setMessages(data)
+            console.log("/Conversation.js/getMessages/", data)
+        }
     }
 
     return (

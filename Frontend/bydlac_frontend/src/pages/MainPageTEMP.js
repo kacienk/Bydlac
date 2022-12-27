@@ -10,12 +10,13 @@ import GetOtherUser from "../utils/GetOtherUser";
 
 const MainPageTEMP = () => {
     //let params = useParams() TODO page numbering
-    //console.log("MainPage params: ", params.groupId)
 
-    let {userId, currentGroupId} = useContext(userContext)
-    //console.log("MainPage currentGroupID: ", currentGroupId)
+    let {
+        userId,
+        currentGroupId
+    } = useContext(userContext)
+
     let otherUser = GetOtherUser()
-    //console.log("MainPage otherUserID: ", otherUser.id)
 
     return (
         <div className='mainView'>

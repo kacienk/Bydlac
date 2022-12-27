@@ -1,56 +1,74 @@
-import {createContext, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import getUserGroups from "../utils/GetUserGroups";
+import {createContext, useEffect, useState} from "react";
 
-const UserContext = createContext();
+const UserContext = createContext(null);
 
 export default UserContext;
 
 export const UserProvider = ({children}) => {
 
-    let [userId, setUserId] = useState(
+    const [userToken, setUserToken] = useState(
+        localStorage.getItem('userToken') ? JSON.parse(localStorage.getItem('userToken')) : null)
+
+    const [currentUser, setCurrentUser] = useState(
+        localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : {})
+
+    const [userId, setUserId] = useState(
         localStorage.getItem('userId') ? JSON.parse(localStorage.getItem('userId')) : null)
 
-    //let [userToken, setUserToken] = useState(null)
-    // TODO JWT-decode when Casper is done with tokens in backend
+    const [userGroups, setUserGroups] = useState([])
 
-    let [currentGroupId, changeCurrentGroupId] = useState(-1)
+
+
+    useEffect(() => {
+        let isSubscribed = true
+
+        const getUserGroups = async () => {
+            let response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`,
+                }
+            })
+
+            let data = await response.json()
+            console.log("getusergroups data: ", data)
+
+            if (isSubscribed)
+                 await setUserGroups(data)
+            return data
+        }
+
+
+        if (userId !== null) {
+            let tempUserGroups = getUserGroups()
+            console.log("tempUserGroups: ", tempUserGroups)
+            console.log("userGroups in if in useEffect: ", userGroups)
+        } else
+            alert("napraw to")
+
+        return () => {isSubscribed = false}
+    }, [userId])
+
+
+
+    let [currentGroupId, changeCurrentGroupId] = useState(null)
     let [currentMessage, setCurrentMessage] = useState('')
 
-    const navigate = useNavigate()
-
-    let logInHandler = async (event) => {
-        event.preventDefault()
-
-        let response = await fetch('http://127.0.0.1:8000/api/login/', {
-            method: 'POST',
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                'email' : event.target.email.value,
-                'password': event.target.password.value
-            })
-        })
-
-        let data = await response.json()
-
-        if (response.status === 202) {
-            setUserId(data)
-            localStorage.setItem('userId', JSON.stringify(data))
-            navigate(`/chat/${currentGroupId}`)
-        }
-        else
-            alert("Problem z logowaniem")
-    }
-
-    let userGroups = getUserGroups(userId)
     //let userGroupsFullData = GetGroups(userGroups) TODO maybe I can fix the problem with refreshing
 
-
     let contextData = {
+        userToken:userToken,
+        setUserToken:setUserToken,
+
+        currentUser:currentUser,
+        setCurrentUser:setCurrentUser,
+
         userId:userId,
-        logInHandler:logInHandler,
+        setUserId:setUserId,
 
         userGroups:userGroups,
+        setUserGroups:setUserGroups,
         //userGroupsFullData:userGroupsFullData
 
         currentGroupId:currentGroupId,
@@ -65,3 +83,25 @@ export const UserProvider = ({children}) => {
         </UserContext.Provider>
     )
 }
+
+/*    useEffect(() => {
+        const getUserId = async () => {
+            let response = await fetch('http://127.0.0.1:8000/api/users/self/', {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                }
+            })
+            const data = await response.json()
+
+            localStorage.setItem('currentUser', JSON.stringify(data))
+            localStorage.setItem('userId', data['id'])
+            // setCurrentUser(data) I don't know why this is not working and I can't get it done, so I had to bypass it using localStorage
+        }
+
+        if (userToken !== null) {
+            getUserId()
+        }
+
+    }, [userToken])*/

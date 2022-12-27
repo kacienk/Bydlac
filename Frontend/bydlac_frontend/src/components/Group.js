@@ -9,13 +9,16 @@ const Group = ({group}) => {
 
     const handleClick = (event) => {
         changeCurrentGroupId(event.target.value)
-        console.log("currgrID", currentGroupId)
-
     }
 
     return (
         <Link to={`/chat/${currentGroupId}`}>
-            <button className="groupButton" onClick={handleClick} value={group.id}>Nazwa grupy: {group.name}</button>
+            <button
+                className="groupButton"
+                onClick={handleClick}
+                value={group.id}>
+                Nazwa grupy: {group.name}
+            </button>
         </Link>
     )
 }
