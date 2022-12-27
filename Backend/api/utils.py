@@ -250,7 +250,7 @@ routes = [
         'permisson': 'Authenticated'
     },
     {
-        'endpoint': '/groups/{pk}',
+        'endpoint': '/groups/create',
         'method': 'POST',
         'description': 'Creates new group with data sent in post request',
         'permisson': 'Authenticated'
