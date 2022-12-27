@@ -1,7 +1,8 @@
+from datetime import datetime, timedelta
+import pytz
+
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
-from rest_framework.authtoken.models import Token
-
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -202,7 +203,7 @@ class Event(models.Model):
 
     location = models.URLField(null=True, blank=True)
 
-    expires = models.DateTimeField()
+    expires = models.DateTimeField(default=(datetime.now(tz=pytz.timezone('Europe/Warsaw')) + timedelta(minutes=15)))
     created = models.DateTimeField(auto_now_add=True)
 
 
