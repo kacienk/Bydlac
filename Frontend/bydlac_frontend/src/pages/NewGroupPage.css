@@ -1,0 +1,84 @@
+#test {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#newGroupBox {
+    height: 93vh;
+    width: 66vw;
+    /* border: solid aqua;
+    border-radius: 1px;*/
+    border-top: 1px solid gray;
+    border-right: 1px solid gray;
+    padding-top: 8px; /* TODO fix this*/
+    align-items: center;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+#newGroupForm {
+    border: none;
+    border-radius: 10px;
+    background: rgb(158, 176, 173);
+    height: 45vh;
+    width: 30vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.newGroupPageText {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: rgb(255, 255, 255);
+}
+
+#newGroupPageInput {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    height: 40px;
+    width: 20vw;
+    border: none;
+    border-radius: 10px;
+}
+
+#newGroupPageTextarea {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    height: 9vh;
+    width: 20vw;
+    border: none;
+    border-radius: 10px;
+}
+
+#newGroupIsPrivate {
+    width: 20vw;
+}
+
+#newGroupUsers {
+    width: 20vw;
+}
+
+#newGroupPageButton {
+    margin-top: 6px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    height: 40px;
+    width: 20vw;
+    border: 3px solid rgb(233, 233, 237);
+    border-radius: 10px;
+    background-color: rgb(158, 176, 173);
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+
+#newGroupPageButton:hover {
+    background-color: rgb(233, 233, 237);
+    color: rgb(158, 176, 173);
+}

@@ -1,0 +1,37 @@
+.logInForm {
+    text-align: center;
+}
+
+.logInFormText {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: rgb(255, 255, 255);
+}
+
+.logInFormInput {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    height: 40px;
+    width: 196px;
+    border: none;
+    border-radius: 10px;
+}
+
+.logInFormButton {
+    margin-top: 6px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    height: 40px;
+    width: 200px;
+    border: 3px solid rgb(233, 233, 237);
+    border-radius: 10px;
+    background-color: rgb(158, 176, 173);
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+
+.logInFormButton:hover {
+    background-color: rgb(233, 233, 237);
+    color: rgb(158, 176, 173);
+}
