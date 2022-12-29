@@ -158,3 +158,6 @@ Frontend/bydlac_frontend/.env.production.local
 Frontend/bydlac_frontend/npm-debug.log*
 Frontend/bydlac_frontend/yarn-debug.log*
 Frontend/bydlac_frontend/yarn-error.log*
+
+# images
+Backend/user_images
