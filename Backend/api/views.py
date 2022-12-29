@@ -324,7 +324,7 @@ class MessageViewSet(ModelViewSet):
 
 
     def perform_create(self, serializer):
-        group = get_object_or_404(ConversationGroup, self.kwargs['group_pk'])
+        group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
         serializer.save(author=self.request.user, group=group)
 
 
