@@ -9,24 +9,26 @@ const Conversation = ({props, groupId}) => {
     const {userToken} = useContext(userContext)
 
     useEffect(() => {
-        getMessages(groupId)
-    }, ) // [groupId, currentMessage]
-
-
-    let getMessages = async (groupId) => {
-        if (groupId !== null) {
-            let response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/messages/`, {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${userToken}`
-                }
-            })
-            let data = await response.json()
-            setMessages(data)
-            console.log("/Conversation.js/getMessages/", data)
+        const getMessages = async (groupId) => {
+            if (groupId !== null) {
+                let response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/messages/`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Token ${userToken}`
+                    }
+                })
+                let data = await response.json()
+                setMessages(data)
+                console.log("/Conversation.js/getMessages/", data)
+            }
         }
-    }
+
+        if (groupId !== null)
+            getMessages(groupId)
+    }, [userToken, groupId, messages]) // [groupId, currentMessage]
+
+
 
     return (
         <div className='conversationBox'>

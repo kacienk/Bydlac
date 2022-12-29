@@ -6,7 +6,7 @@ import userContext from "../context/UserContext";
 
 const NewGroup = () => {
     const {userId, userToken} = useContext(userContext)
-    let {userGroups} = useContext(userContext)
+    //let {userGroups} = useContext(userContext)
     const isPrivateOptions = [
         {label: "Prywatna", value: "true"},
         {label: "Publiczna", value: "false"}
@@ -44,7 +44,7 @@ const NewGroup = () => {
             is_private: newGroupIsPrivate
         }
 
-        let response = await fetch('http://127.0.0.1:8000/api/groups/create/', {
+        let response = await fetch('http://127.0.0.1:8000/api/groups/', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -52,8 +52,10 @@ const NewGroup = () => {
             },
             body: JSON.stringify(newGroup)
         })
+        const data = await response.json()
+        const newGroupId = data['id']
 
-        let response2 = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
+/*        let response2 = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
@@ -61,11 +63,10 @@ const NewGroup = () => {
             }
         })
 
-        userGroups = await response2.json()
+        userGroups = await response2.json()*/
 
-        let newGroupId = Math.max(...userGroups.map(object => object.group)) // TODO make it less dumb
         selectedUsers.map(async (user) => {
-            let response3 = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/`, {
+            let response3 = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/members/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -77,7 +78,7 @@ const NewGroup = () => {
                     is_moderator: false
                 })
             })
-            if (response.ok && response2.ok && response3.ok) {
+            if (response.ok /*&& response2.ok*/ && response3.ok) {
                 navigate('/chat/' + newGroupId)
             }
             else

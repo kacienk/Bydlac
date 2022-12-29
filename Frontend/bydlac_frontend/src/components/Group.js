@@ -8,7 +8,7 @@ const Group = ({group}) => {
     let {changeCurrentGroupId} = useContext(userContext)
 
     const handleClick = (event) => {
-        changeCurrentGroupId(event.target.value)
+        changeCurrentGroupId(Number(event.target.value))
     }
 
     return (
