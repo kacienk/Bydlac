@@ -21,20 +21,6 @@ class IsNotGroupMember(PermissionDenied):
             self.status_code = status_code
 
 
-class IsNotModerator(PermissionDenied):
-    default_detail = 'User requesting adding another user to the group is not moderator of the group'
-    default_code = 'invalid'
-
-    def __init__(self, detail=None, status_code=None):
-        if detail:
-            self.detail = detail
-        else:
-            self.detail = self.default_detail
-
-        if status_code is not None:
-            self.status_code = status_code
-
-
 class UserAlreadyInGroup(PermissionDenied):
     default_detail = 'User already in group'
     default_code = 'invalid'
@@ -244,15 +230,15 @@ routes = [
         'permisson': 'AdminUser'
     },
     {
-        'endpoint': '/groups/{pk}',
-        'method': 'GET',
-        'description': 'Returns group with given id',
+        'endpoint': '/groups',
+        'method': 'POST',
+        'description': 'Creates new group with data sent in post request',
         'permisson': 'Authenticated'
     },
     {
-        'endpoint': '/groups/create',
-        'method': 'POST',
-        'description': 'Creates new group with data sent in post request',
+        'endpoint': '/groups/{pk}',
+        'method': 'GET',
+        'description': 'Returns group with given id',
         'permisson': 'Authenticated'
     },
     {

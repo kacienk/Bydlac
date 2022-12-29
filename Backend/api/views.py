@@ -1,20 +1,18 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login, logout
-from django.db.models import Q, Subquery
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
-from rest_framework.viewsets import ViewSet, GenericViewSet, ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework import views
 from rest_framework import generics
-
-from .utils import IsMemberLinkSelf, IsNotModerator, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor, IsNotEventGroup, IsEventParticipant, routes
 
 from base.models import User, ConversationGroup,  GroupMember, Message, Event
 from base.serializers import UserSerializer, DetailedUserSerializer
@@ -22,6 +20,8 @@ from base.serializers import ConversationGroupSerializer, DetailedConversationGr
 from base.serializers import GroupMemberSerializer
 from base.serializers import MessageSerializer
 from base.serializers import EventSerializer
+
+from .utils import IsMemberLinkSelf, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor, IsNotEventGroup, IsEventParticipant, routes
 from .serializers import LoginSerializer, RegisterSerializer
 
 
@@ -233,7 +233,7 @@ class GroupMemberViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         data = request.data
-        data['group'] = self.kwargs['group_id']
+        data['group'] = self.kwargs['group_pk']
         
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -324,7 +324,8 @@ class MessageViewSet(ModelViewSet):
 
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user, group=self.kwargs['group_pk'])
+        group = get_object_or_404(ConversationGroup, self.kwargs['group_pk'])
+        serializer.save(author=self.request.user, group=group)
 
 
 class EventViewSet(ModelViewSet):
