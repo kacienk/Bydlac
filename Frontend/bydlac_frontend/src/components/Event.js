@@ -1,9 +1,10 @@
 import {useContext} from "react";
 import userContext from "../context/UserContext";
 import {Link} from "react-router-dom";
-import "./Group.css"
+import "./Event.css"
 
-const Group = ({group}) => {
+const Event = ({Event}) => {
+/*    let {currentGroupId} = useContext(userContext)
     let {changeCurrentGroupId} = useContext(userContext)
 
     const handleClick = (event) => {
@@ -11,7 +12,7 @@ const Group = ({group}) => {
     }
 
     return (
-        <Link to={`/chat/${group.id}`}>
+        <Link to={`/chat/${currentGroupId}`}>
             <button
                 className="groupButton"
                 onClick={handleClick}
@@ -19,8 +20,7 @@ const Group = ({group}) => {
                 Nazwa grupy: {group.name}
             </button>
         </Link>
-    )
+    )*/
 }
 
-export default Group;
-
+export default Event;

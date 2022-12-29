@@ -32,7 +32,7 @@ export const UserProvider = ({children}) => {
             })
 
             let data = await response.json()
-            console.log("getusergroups data: ", data)
+            //console.log("getusergroups data: ", data)
 
             if (isSubscribed)
                  await setUserGroups(data)
@@ -42,8 +42,8 @@ export const UserProvider = ({children}) => {
 
         if (userId !== null) {
             let tempUserGroups = getUserGroups()
-            console.log("tempUserGroups: ", tempUserGroups)
-            console.log("userGroups in if in useEffect: ", userGroups)
+            //console.log("tempUserGroups: ", tempUserGroups)
+            //console.log("userGroups in if in useEffect: ", userGroups)
         } else
             alert("napraw to")
 
@@ -83,25 +83,3 @@ export const UserProvider = ({children}) => {
         </UserContext.Provider>
     )
 }
-
-/*    useEffect(() => {
-        const getUserId = async () => {
-            let response = await fetch('http://127.0.0.1:8000/api/users/self/', {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${userToken}`
-                }
-            })
-            const data = await response.json()
-
-            localStorage.setItem('currentUser', JSON.stringify(data))
-            localStorage.setItem('userId', data['id'])
-            // setCurrentUser(data) I don't know why this is not working and I can't get it done, so I had to bypass it using localStorage
-        }
-
-        if (userToken !== null) {
-            getUserId()
-        }
-
-    }, [userToken])*/

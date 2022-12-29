@@ -1,37 +1,19 @@
 import './User.css';
 
 import Person1 from './person1.jpg';
-import {useContext, useEffect, useState} from "react";
+import {useContext} from "react";
 import userContext from "../context/UserContext";
 
 
-const User = ({className, userId, otherUser}) => {
-    let [user, setUser] = useState([])
-    const {userToken} = useContext(userContext)
-
-    useEffect(() => {
-        getUser(userId)
-    }, [])
-
-    let getUser = async (userId) => {
-        console.log("USERTOKEN: ", userToken, "USERID: ", userId)
-        let response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/`, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Token ${userToken}`
-            }
-        })
-        let data = await response.json()
-        setUser(data)
-    }
+const User = ({className, otherUser}) => {
+    const {currentUser} = useContext(userContext)
 
     return (
         <div>
             {(className === "you") ?
                 <div className="you">
                     <p className="username">
-                        {user.username}
+                        {currentUser.username}
                     </p>
                     <img className="profileImage" src={Person1 /* TODO */} alt=''/>
                     {/*<p className="userStatus">

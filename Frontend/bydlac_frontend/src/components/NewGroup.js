@@ -5,8 +5,14 @@ import userContext from "../context/UserContext";
 
 
 const NewGroup = () => {
-    const {userId, userToken} = useContext(userContext)
-    //let {userGroups} = useContext(userContext)
+    const {
+        userId,
+        userToken,
+        setUserGroups
+    } = useContext(userContext)
+
+    let {userGroups} = useContext(userContext)
+
     const isPrivateOptions = [
         {label: "Prywatna", value: "true"},
         {label: "Publiczna", value: "false"}
@@ -33,6 +39,7 @@ const NewGroup = () => {
     let [newGroupIsPrivate, setNewGroupIsPrivate] = useState(true)
     let [newGroupDescription, setNewGroupDescription] = useState('')
     let [selectedUsers, setSelectedUsers] = useState([])
+
     const navigate = useNavigate()
     const newGroupSubmitHandler = async (event) => {
         event.preventDefault()
@@ -54,16 +61,7 @@ const NewGroup = () => {
         })
         const data = await response.json()
         const newGroupId = data['id']
-
-/*        let response2 = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Token ${userToken}`
-            }
-        })
-
-        userGroups = await response2.json()*/
+        userGroups = setUserGroups(userGroups => [...userGroups, data])
 
         selectedUsers.map(async (user) => {
             let response3 = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/members/`, {
@@ -78,7 +76,7 @@ const NewGroup = () => {
                     is_moderator: false
                 })
             })
-            if (response.ok /*&& response2.ok*/ && response3.ok) {
+            if (response.ok && response3.ok) {
                 navigate('/chat/' + newGroupId)
             }
             else
@@ -103,7 +101,8 @@ const NewGroup = () => {
                     <CreatableSelect
                         options={isPrivateOptions}
                         defaultValue={isPrivateOptions[0]}
-                        onChange={(selected) => {selected.value === "false" ? setNewGroupIsPrivate(false) : setNewGroupIsPrivate(true)}}
+                        onChange={(selected) =>
+                        {selected.value === "false" ? setNewGroupIsPrivate(false) : setNewGroupIsPrivate(true)}}
                     />
                 </div>
 

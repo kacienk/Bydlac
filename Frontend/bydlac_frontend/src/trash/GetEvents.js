@@ -1,22 +1,22 @@
 import userContext from "../context/UserContext";
 import {useContext, useEffect, useState} from "react";
 
-const GetGroups = () => {
+const GetEvents = () => {
     const {
-        userGroups,
+        userEvents,
         userToken,
         userId
     } = useContext(userContext)
 
-    let [groupsList, setGroupsList] = useState([])
+    let [eventsList, setEventsList] = useState([])
 
     useEffect((() => {
-        getGroupsList(userGroups)
+        getEventsList(userEvents)
     }), [userId])
 
-    let getGroupsList = (userGroups) => {
-        userGroups.map(async (group) => {
-            let response = await fetch(`http://127.0.0.1:8000/api/groups/${group.id}/`, {
+    let getEventsList = (userEvents) => {
+        userEvents.map(async (event) => {
+            let response = await fetch(`http://127.0.0.1:8000/api/events/${event.id}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -25,11 +25,11 @@ const GetGroups = () => {
             })
 
             let data = await response.json()
-            setGroupsList(groupsList => [...groupsList, data])
+            setEventsList(eventsList => [...eventsList, data])
         })
     }
 
-    return groupsList;
+    return eventsList;
 }
 
-export default GetGroups;
+export default GetEvents;

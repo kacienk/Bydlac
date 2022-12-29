@@ -1,7 +1,6 @@
 import UsersHeader from "../components/UsersHeader";
 import NewGroup from "../components/NewGroup";
-import GroupList from "../components/GroupList";
-
+import ListHeader from "../components/ListHeader";
 import "./NewGroupPage.css"
 
 
@@ -16,7 +15,7 @@ const NewGroupPage = () => {
             </div>
 
             <div id='TEMPgroupList'>
-                <GroupList/>
+                <ListHeader />
             </div>
         </div>
     )

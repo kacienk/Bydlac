@@ -20,7 +20,7 @@ const Conversation = ({props, groupId}) => {
                 })
                 let data = await response.json()
                 setMessages(data)
-                console.log("/Conversation.js/getMessages/", data)
+                //console.log("/Conversation.js/getMessages/", data)
             }
         }
 

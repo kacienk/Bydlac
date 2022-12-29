@@ -19,7 +19,7 @@ function InputMessage() {
         if (currentMessage === '')
             return;
 
-        console.log("currentGroupId in sendMessageHhandler: ", currentGroupId)
+        //console.log("currentGroupId in sendMessageHhandler: ", currentGroupId)
         let response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
             method: 'POST',
             headers: {
