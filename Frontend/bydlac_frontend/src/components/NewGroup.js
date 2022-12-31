@@ -64,7 +64,7 @@ const NewGroup = () => {
         userGroups = setUserGroups(userGroups => [...userGroups, data])
 
         selectedUsers.map(async (user) => {
-            let response3 = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/members/`, {
+            let response2 = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/members/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -76,7 +76,7 @@ const NewGroup = () => {
                     is_moderator: false
                 })
             })
-            if (response.ok && response3.ok) {
+            if (response.ok && response2.ok) {
                 navigate('/chat/' + newGroupId)
             }
             else

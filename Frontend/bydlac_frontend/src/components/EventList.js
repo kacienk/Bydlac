@@ -1,11 +1,11 @@
 import Event from "./Event";
-import GetEvents from "../trash/GetEvents";
 import "./EventList.css"
 import {Link} from "react-router-dom";
+import {useContext} from "react";
+import userContext from "../context/UserContext";
 
 const EventList = () => {
-    let eventsList = GetEvents()
-    //console.log("/EventList.js/ lista Event", eventsList)
+    const {userEvents} = useContext(userContext)
 
     return (
         <div className="eventList">
@@ -15,7 +15,7 @@ const EventList = () => {
             </Link>
 
             {
-                eventsList.map(event => (<Event key={event.id} event={event}/>))
+                userEvents.map(event => (<Event key={event.id} event={event}/>))
             }
         </div>
     )

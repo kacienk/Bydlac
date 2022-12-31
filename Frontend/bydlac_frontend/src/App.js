@@ -10,19 +10,25 @@ import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import LogOutPage from "./pages/LogOutPage";
 import NewGroupPage from "./pages/NewGroupPage";
+import NewEventPage from "./pages/NewEventPage";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 
 function App() {
     return (
         <Router>
-            <UserProvider>
-                <Routes>
-                    <Route path="/chat/:groupId" element={<MainPageTEMP />}/>
-                    <Route path="/login" element={<LogInPage />}/>
-                    <Route path="/signup" element={<SignUpPage />}/>
-                    <Route path="/logout" element={<LogOutPage />}/>
-                    <Route path="/new/group" element={<NewGroupPage />}/>
-                </Routes>
-            </UserProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <UserProvider>
+                    <Routes>
+                        <Route path="/chat/:groupId" element={<MainPageTEMP />}/>
+                        <Route path="/login" element={<LogInPage />}/>
+                        <Route path="/signup" element={<SignUpPage />}/>
+                        <Route path="/logout" element={<LogOutPage />}/>
+                        <Route path="/new/group" element={<NewGroupPage />}/>
+                        <Route path="/new/event" element={<NewEventPage />}/>
+                    </Routes>
+                </UserProvider>
+            </LocalizationProvider>
         </Router>
     );
 }
