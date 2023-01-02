@@ -80,18 +80,26 @@ class IsModerator(BasePermission):
 class IsMember(BasePermission):
     """
     User sending request is member.
+    # NOT DONE YET
     """
     message = 'User cannot look up members of group unless they are also a member'
 
     def has_permission(self, request, view):
         try:
-            return GroupMember.objects.get(Q(user=request.user) & Q(group=view.kwargs['group_pk']))
+            if 'group_pk' in view.kwargs:
+                return GroupMember.objects.get(Q(user=request.user) & Q(group=view.kwargs['group_pk']))
+            if 'pk' in view.kwargs:
+                return GroupMember.objects.get(Q(user=request.user) & Q(group=view.kwargs['pk']))
         except ObjectDoesNotExist:
             return False
+        return False
 
     def has_object_permission(self, request, view, obj):
         try:
-            return GroupMember.objects.get(Q(user=request.user) & Q(group=obj))
+            if isinstance(obj, ConversationGroup):
+                return GroupMember.objects.get(Q(user=request.user) & Q(group=obj))
+            
+            return self.has_permission(request, view)
         except ObjectDoesNotExist:
             return False
 
@@ -121,7 +129,10 @@ class IsNotEventGroup(BasePermission):
 
     def has_permission(self, request, view):
         try:
-            return not ConversationGroup.objects.get(id=view.kwargs['group_pk']).is_event_group
+            if 'group_pk' in view.kwargs:
+                return not ConversationGroup.objects.get(id=view.kwargs['group_pk']).is_event_group
+            if 'pk' in view.kwargs:
+                return not ConversationGroup.objects.get(id=view.kwargs['pk']).is_event_group
         except ObjectDoesNotExist:
             return False
 

@@ -1,8 +1,8 @@
-from datetime import datetime, timedelta
-import pytz
+from datetime import timedelta
 
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -115,13 +115,18 @@ class ConversationGroup(models.Model):
 
     updated = models.DateTimeField(
         verbose_name='last message time',
-        auto_now=True
+        default = timezone.now
     )
 
     created = models.DateTimeField(
         verbose_name='group creation date',
         auto_now_add=True
     )
+    
+
+    class Meta:
+        ordering = ['-updated']
+
 
     def __str__(self) -> str:
         return self.name
@@ -203,7 +208,7 @@ class Event(models.Model):
 
     location = models.URLField(null=True, blank=True)
 
-    expires = models.DateTimeField(default=(datetime.now(tz=pytz.timezone('Europe/Warsaw')) + timedelta(minutes=15)))
+    expires = models.DateTimeField(default=(timezone.now() + timedelta(minutes=15)))
     created = models.DateTimeField(auto_now_add=True)
 
 

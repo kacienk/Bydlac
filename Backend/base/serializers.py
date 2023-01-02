@@ -46,7 +46,6 @@ class ConversationGroupSerializer(ModelSerializer):
             'updated',
             'created'
         ]
-        ordering = ['-updated']
 
 
 class DetailedConversationGroupSerializer(ModelSerializer):

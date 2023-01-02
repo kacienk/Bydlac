@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login, logout
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, action
@@ -88,8 +89,6 @@ class UserViewSet(GenericViewSet,
     def get_queryset(self):
         if self.action == 'groups':
             user_groups_ids = GroupMember.objects.filter(Q(user=self.kwargs['pk'])).values('group__id')
-            print(GroupMember.objects.filter(Q(user=self.kwargs['pk'])))
-            print(user_groups_ids)
             return ConversationGroup.objects.filter(id__in=user_groups_ids)
 
         if self.action == 'events':
@@ -195,7 +194,7 @@ class ConversationGroupViewSet(ModelViewSet):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
-        return Response(serializer, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GroupMemberViewSet(ModelViewSet):
@@ -336,11 +335,21 @@ class MessageViewSet(ModelViewSet):
             permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator | IsAuthor]
 
         return [permission() for permission in permission_classes]
+    
+    def create(self, request, *args, **kwargs):
+        self._update_group()
+        return super().create(request, *args, **kwargs)
 
 
     def perform_create(self, serializer):
-        group = get_object_or_404(ConversationGroup, self.kwargs['group_pk'])
+        group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
         serializer.save(author=self.request.user, group=group)
+    
+
+    def _update_group(self):
+        group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
+        group.updated = timezone.now()
+        group.save()
 
 
 class EventViewSet(ModelViewSet):
