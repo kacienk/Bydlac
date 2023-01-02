@@ -1,0 +1,51 @@
+.logInComponent {
+    background-color: rgb(158, 176, 173);
+    height: 500px;
+    width: 360px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 40px;
+}
+
+.logowanie {
+    margin-bottom: 27px;
+    font-size: 33px;
+    color: rgb(255, 255, 255);
+}
+
+.lub {
+    margin-top: 16px;
+    margin-bottom: 0;
+    color: rgb(255, 255, 255);
+}
+
+.google {
+    margin-top: 6px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    height: 40px;
+    width: 200px;
+    border: 3px solid rgb(233, 233, 237);
+    border-radius: 10px;
+    background-color: rgb(158, 176, 173);
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+
+.google:hover {
+    background-color: rgb(233, 233, 237);
+    color: rgb(158, 176, 173);
+}
+
+.nieMaszJeszczeKonta {
+    margin-bottom: 0;
+    color: rgb(255, 255, 255);
+}
+
+.zarejestrujSieJuzTeraz {
+    color: rgba(85, 26, 139, 0.6);
+}

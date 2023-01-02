@@ -128,7 +128,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "base.User"
 
 CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+    'http://localhost:3001',
 ]
 
 REST_FRAMEWORK = {
@@ -140,3 +141,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000/api/']

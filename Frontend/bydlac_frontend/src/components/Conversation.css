@@ -1,6 +1,6 @@
 .conversationBox {
     height: 90vh;
     width: 66vw;
-    border: solid aqua;
-    border-radius: 1px;
+    border-top: 1px solid gray;
+    border-right: 1px solid gray;
 }

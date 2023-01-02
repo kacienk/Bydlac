@@ -1,3 +1,8 @@
+.inputMessage {
+    width: 66vw;
+    border-right: 1px solid gray;
+}
+
 .inputMessageField {
     background-color: rgb(118, 176, 206);
     height: 30px;
@@ -23,7 +28,6 @@
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    /*margin-right: ;*/
 }
 
 .inputLocationButton {
@@ -32,5 +36,4 @@
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    /*margin-right: ;*/
 }

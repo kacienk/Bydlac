@@ -1,21 +1,30 @@
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes} from "react-router-dom";
+import {UserProvider} from "./context/UserContext";
+
 import './App.css';
-import User from "./components/User";
-import InputMessage from "./components/InputMessage";
-import Conversation from "./components/Conversation";
+import MainPageTEMP from './pages/MainPageTEMP';
+import LogInPage from "./pages/LogInPage";
+import SignUpPage from "./pages/SignUpPage";
+import LogOutPage from "./pages/LogOutPage";
+import NewGroupPage from "./pages/NewGroupPage";
 
 function App() {
-  return (
-      <div>
-          <div className='usersHeader'>
-              <User className='otherPerson' name='Nick' surname='Rozmowcy' status='Status' favorite={true}/>
-              <User className='you' name='Twoj' surname='Nick' status='Status' favorite={null}/>
-          </div>
-
-          <Conversation/>
-
-          <InputMessage/>
-      </div>
-  );
+    return (
+        <Router>
+            <UserProvider>
+                <Routes>
+                    <Route path="/chat/:groupId" element={<MainPageTEMP />}/>
+                    <Route path="/login" element={<LogInPage />}/>
+                    <Route path="/signup" element={<SignUpPage />}/>
+                    <Route path="/logout" element={<LogOutPage />}/>
+                    <Route path="/new/group" element={<NewGroupPage />}/>
+                </Routes>
+            </UserProvider>
+        </Router>
+    );
 }
 
 export default App;
