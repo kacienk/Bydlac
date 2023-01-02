@@ -262,6 +262,12 @@ routes = [
         'permission': 'Authenticated, Member, NotEventGroup'
     },
     {
+        'endpoint': '/groups/{group_pk}/members/links',
+        'method': 'GET',
+        'description': 'Returns list of objects representing links between group of id {pk} and users',
+        'permission': 'Authenticated, Member, NotEventGroup'
+    },
+    {
         'endpoint': '/groups/{group_pk}/members', 
         'method': 'POST',
         'description': 'Adds user to the group with id equal to group_id',

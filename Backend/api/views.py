@@ -218,7 +218,7 @@ class GroupMemberViewSet(ModelViewSet):
 
 
     def get_permissions(self):
-        if self.action in ('list', 'retreive'):
+        if self.action in ('list', 'retreive', 'list_links'):
             permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember]
         elif self.action == 'create':
             permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator]
@@ -303,11 +303,26 @@ class GroupMemberViewSet(ModelViewSet):
         self.kwargs['pk'] = link_to_be_deleted.id
         return super().delete(request, *args, **kwargs)
 
+    
+    @action(methods=['GET'], detail=False, url_path='links')
+    def list_links(self, request, *args, **kwargs):
+        """
+        Function returns list of objects representing links between group with id equal to {pk} and users.
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class MessageViewSet(ModelViewSet):
     serializer_class = MessageSerializer
-
-
+    
     def get_queryset(self):
         return Message.objects.filter(group=self.kwargs['group_pk'])
 
@@ -391,7 +406,6 @@ class EventViewSet(ModelViewSet):
         group.delete()
 
         return super().destroy(request, *args, **kwargs)
-
 
     
     @action(methods=['GET'], detail=True, url_path='participants')
