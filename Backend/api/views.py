@@ -111,7 +111,7 @@ class UserViewSet(GenericViewSet,
 
     
     @action(methods=['get'], detail=True, url_path='groups')
-    def groups(self, request, *agrs, **kwargs):
+    def groups(self, request, *args, **kwargs):
         groups = self.get_queryset()
         serializer = self.get_serializer(groups, many=True)
 
@@ -119,7 +119,7 @@ class UserViewSet(GenericViewSet,
 
 
     @action(methods=['get'], detail=True, url_path='events')
-    def events(self, request, *agrs, **kwargs):
+    def events(self, request, *args, **kwargs):
         events = self.get_queryset()
         serializer = self.get_serializer(events, many=True)
 
@@ -127,7 +127,7 @@ class UserViewSet(GenericViewSet,
 
 
     @action(methods=['get'], detail=False, url_path='self')
-    def user_self(self, request, *agrs, **kwargs):
+    def user_self(self, request, *args, **kwargs):
         serializer = self.get_serializer(request.user)
 
         return Response(serializer.data)
@@ -348,7 +348,7 @@ class MessageViewSet(ModelViewSet):
 
     def _update_group(self):
         group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
-        group.updated = timezone.now()
+        group.last_message = timezone.now()
         group.save()
 
 
