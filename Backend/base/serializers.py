@@ -43,7 +43,7 @@ class ConversationGroupSerializer(ModelSerializer):
             'host',
             'name',
             'is_private',
-            'updated',
+            'last_message',
             'created'
         ]
 
@@ -57,7 +57,7 @@ class DetailedConversationGroupSerializer(ModelSerializer):
             'name',
             'description',
             'is_private',
-            'updated',
+            'last_message',
             'created'
         ]
 
