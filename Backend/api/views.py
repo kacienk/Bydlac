@@ -250,57 +250,57 @@ class GroupMemberViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         data= {
-            'user': kwargs['user_id'], 
-            'group': kwargs['group_id'], 
+            'user': kwargs['pk'], 
+            'group': kwargs['group_pk'], 
             'is_moderator': request.data.get('is_moderator', False)
         }
 
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-
-        group = ConversationGroup.objects.get(id=serializer.data['group'])
+        group = get_object_or_404(ConversationGroup, id=data['group'])
+        user = get_object_or_404(User, id=data['user'])
 
         try:
-            link_to_be_updated = queryset.get(Q(user=serializer.data['user']) & Q(group=serializer.data['group']))
+            instance = queryset.get(Q(user=user) & Q(group=group))
         except ObjectDoesNotExist:
             msg = 'User to change moderator status is not a member of the group'
             raise IsNotGroupMember(msg)
 
-        if link_to_be_updated.user == group.host:
+        if user == group.host:
             msg = 'Host\'s moderator status cannot be changed'
             raise PermissionDenied(msg)
-
-        self.kwargs['pk'] = link_to_be_updated.id
-        return super().update(request, *args, **kwargs)
-
-
-    def delete(self, request, *args, **kwargs):
-        user = self.request.user
-        queryset = self.get_queryset()
-        data= {'user': kwargs['user_id'], 'group': kwargs['group_id']}
-
-        serializer = self.get_serializer(data=data)
+        
+        serializer = self.get_serializer(instance, data=data)
         serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
 
-        group = ConversationGroup.objects.get(id=serializer.data['group'])
+        return Response(serializer.data)
+
+
+    def destroy(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        data= {
+            'user': kwargs['pk'], 
+            'group': kwargs['group_pk'], 
+        }
+
+        group = get_object_or_404(ConversationGroup, id=data['group'])
+        user = get_object_or_404(User, id=data['user'])
 
         try:
-            link_to_be_deleted = queryset.get(Q(user=serializer.data['user']) & Q(group=serializer.data['group']))
+            instance = queryset.get(Q(user=user) & Q(group=group))
         except ObjectDoesNotExist:
             msg = 'User to be removed is not a member of the group'
             raise IsNotGroupMember(msg)
 
-        if link_to_be_deleted.user == group.host:
+        if user == group.host:
             msg = 'Host cannot be removed from the group'
             raise PermissionDenied(msg)
 
-        if link_to_be_deleted.is_moderator and user != group.host:
+        if instance.is_moderator and self.request.user != group.host:
             msg = 'Only host of the group can remove moderators from the group'
             raise PermissionDenied(msg)
 
-
-        self.kwargs['pk'] = link_to_be_deleted.id
-        return super().delete(request, *args, **kwargs)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     
     @action(methods=['GET'], detail=False, url_path='links')

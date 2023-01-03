@@ -113,7 +113,7 @@ class ConversationGroup(models.Model):
         default=False
     )
 
-    updated = models.DateTimeField(
+    last_message = models.DateTimeField(
         verbose_name='last message time',
         default = timezone.now
     )
@@ -125,7 +125,7 @@ class ConversationGroup(models.Model):
     
 
     class Meta:
-        ordering = ['-updated']
+        ordering = ['-last_message']
 
 
     def __str__(self) -> str:
