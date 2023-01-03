@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import userContext from "../context/UserContext";
 import {Link, useNavigate} from "react-router-dom";
 import CreatableSelect from "react-select/creatable";
+import User from "./User";
 import "./Group.css"
 
 const GroupOptions = ({groupId, handlePopup}) => {
@@ -13,7 +14,38 @@ const GroupOptions = ({groupId, handlePopup}) => {
 
     const [groupMembers, setGroupMembers] = useState([])
 
+    const [toggleGroupDetailsButton, setToggleGroupDetailsButton] = useState(true)
     const [toggleDeleteUsersButton, setToggleDeleteUsersButton] = useState(false)
+    const [toggleChangeModeratorsButton, setToggleChangeModeratorsButton] = useState(false)
+    const [toggleDeleteGroupButton, setToggleDeleteGroupButton] = useState(false)
+    const handleTogglingButtons = (button) => {
+        switch (button) {
+            case 'groupDetails':
+                setToggleGroupDetailsButton(true)
+                setToggleDeleteUsersButton(false)
+                setToggleChangeModeratorsButton(false)
+                setToggleDeleteGroupButton(false)
+                return;
+            case 'deleteUsers':
+                setToggleGroupDetailsButton(false)
+                setToggleDeleteUsersButton(true)
+                setToggleChangeModeratorsButton(false)
+                setToggleDeleteGroupButton(false)
+                return;
+            case 'changeModerators':
+                setToggleGroupDetailsButton(false)
+                setToggleDeleteUsersButton(false)
+                setToggleChangeModeratorsButton(true)
+                setToggleDeleteGroupButton(false)
+                return;
+            case 'deleteGroup':
+                setToggleGroupDetailsButton(false)
+                setToggleDeleteUsersButton(false)
+                setToggleChangeModeratorsButton(false)
+                setToggleDeleteGroupButton(true)
+                return;
+        }
+    }
 
     const [selectedToDelete, setSelectedToDelete] = useState([])
 
@@ -62,8 +94,14 @@ const GroupOptions = ({groupId, handlePopup}) => {
     }
 
 
-    const deleteGroup = () => {
-
+    const deleteGroup = async () => {
+        const deleteGroupResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            }
+        })
     }
 
 
@@ -71,16 +109,19 @@ const GroupOptions = ({groupId, handlePopup}) => {
         <div id="groupOptionsPopupBackground" >
             <div id="groupOptionsPopup">
                 <div id="groupOptionsButtonList">
+                    <button onClick={ () => handleTogglingButtons('groupDetails') }>
+                        Dane grupy
+                    </button>
                     <button
-                        onClick={ () => {setToggleDeleteUsersButton(prevState => !prevState)} }>
+                        onClick={ () => handleTogglingButtons('deleteUsers') }>
                         Usuń uczestników
                     </button>
                     <button
-                        onClick={ () => {navigate(`/chat/${groupId}/edit/members`) /* TODO only when user is admin? */} }>
+                        onClick={ () => handleTogglingButtons('changeModerators') /* TODO only when user is admin? */ }>
                         Edytuj moderatorów
                     </button>
                     <button
-                        onClick={ deleteGroup }>
+                        onClick={ () => handleTogglingButtons('deleteGroup') }>
                         Usuń grupę
                     </button>
                 </div>
@@ -91,15 +132,21 @@ const GroupOptions = ({groupId, handlePopup}) => {
                         X
                     </button>
 
-                    {!toggleDeleteUsersButton && (
-                        <div>
+                    {toggleGroupDetailsButton && (
+                        <div id="groupDetails">
                             <h3> Opis grupy: </h3>
                             <p> {group.description} </p>
+                            <h3> Członkowie: </h3>
+                            <div>
+                                {groupMembers.map(user => (
+                                    <User key={user.id} className="otherPerson" otherUser={user} />
+                                )) /* TODO fit unlimited amount of members - scrolling! */}
+                            </div>
                         </div>
                     )}
 
                     {toggleDeleteUsersButton && (
-                        <div>
+                        <div id="deleteUsers">
                             <h3> Wybierz użytkowników do usunięcia: </h3>
                             <CreatableSelect
                                 required
@@ -111,6 +158,21 @@ const GroupOptions = ({groupId, handlePopup}) => {
                                 onChange={(selected) => setSelectedToDelete(selected)}
                             />
                             <button onClick={ deleteUsers } >
+                                Potwierdź
+                            </button>
+                        </div>
+                    )}
+
+                    {toggleChangeModeratorsButton && (
+                        <div id="changeModerators">
+                            <h3> TODO </h3>
+                        </div>
+                    )}
+
+                    {toggleDeleteGroupButton && (
+                        <div id="deleteGroup">
+                            <h3> Czy na pewno chcesz usunąć tę grupę? </h3>
+                            <button onClick={ deleteGroup } >
                                 Potwierdź
                             </button>
                         </div>
@@ -140,7 +202,7 @@ const Group = ({group}) => {
                     className="groupButton"
                     onClick={handleClick}
                     value={group.id}>
-                    Nazwa grupy: {group.name}
+                    {group.name}
                 </button>
             </Link>
 

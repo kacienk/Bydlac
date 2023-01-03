@@ -45,7 +45,7 @@ export const UserProvider = ({children}) => {
             alert("napraw: problem z pobieraniem grup przed pozyskaniem ID usera")
 
         return () => {isSubscribed = false}
-    }, [userId])
+    }) // TODO maybe fix constant re-rendering? XD
 
     const [userEvents, setUserEvents] = useState([])
     useEffect(() => {
