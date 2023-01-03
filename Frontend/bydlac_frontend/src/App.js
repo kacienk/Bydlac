@@ -5,6 +5,7 @@ import {
 import {UserProvider} from "./context/UserContext";
 
 import './App.css';
+import MainPage from './pages/MainPage'
 import MainPageTEMP from './pages/MainPageTEMP';
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -20,12 +21,13 @@ function App() {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <UserProvider>
                     <Routes>
-                        <Route path="/chat/:groupId" element={<MainPageTEMP />}/>
-                        <Route path="/login" element={<LogInPage />}/>
-                        <Route path="/signup" element={<SignUpPage />}/>
-                        <Route path="/logout" element={<LogOutPage />}/>
-                        <Route path="/new/group" element={<NewGroupPage />}/>
-                        <Route path="/new/event" element={<NewEventPage />}/>
+                        <Route path="/" element={<MainPage />} />
+                        <Route path="/chat/:groupId" element={<MainPageTEMP />} />
+                        <Route path="/login" element={<LogInPage />} />
+                        <Route path="/signup" element={<SignUpPage />} />
+                        <Route path="/logout" element={<LogOutPage />} />
+                        <Route path="/new/group" element={<NewGroupPage />} />
+                        <Route path="/new/event" element={<NewEventPage />} />
                     </Routes>
                 </UserProvider>
             </LocalizationProvider>

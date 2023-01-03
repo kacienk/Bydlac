@@ -1,21 +1,17 @@
 import React, {useContext} from "react";
 import userContext from "../context/UserContext";
+import {Link} from "react-router-dom";
+
 import User from "../components/User";
 import Conversation from "../components/Conversation";
 import InputMessage from "../components/InputMessage";
-import "./MainPageTEMP.css"
-import {Link, useParams} from "react-router-dom";
-import GetOtherUser from "../utils/GetOtherUser";
 import ListHeader from "../components/ListHeader";
+import GetOtherUser from "../utils/GetOtherUser";
+
+import "./MainPageTEMP.css"
 
 const MainPageTEMP = () => {
-    //let params = useParams() TODO page numbering
-
-    let {
-        userId,
-        currentGroupId
-    } = useContext(userContext)
-
+    const {currentGroupId} = useContext(userContext)
     let otherUser = GetOtherUser()
 
     return (
@@ -37,7 +33,6 @@ const MainPageTEMP = () => {
                 <ListHeader/>
             </div>
         </div>
-
     )
 }
 
