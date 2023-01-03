@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login, logout
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, action
@@ -88,8 +89,6 @@ class UserViewSet(GenericViewSet,
     def get_queryset(self):
         if self.action == 'groups':
             user_groups_ids = GroupMember.objects.filter(Q(user=self.kwargs['pk'])).values('group__id')
-            print(GroupMember.objects.filter(Q(user=self.kwargs['pk'])))
-            print(user_groups_ids)
             return ConversationGroup.objects.filter(id__in=user_groups_ids)
 
         if self.action == 'events':
@@ -195,7 +194,7 @@ class ConversationGroupViewSet(ModelViewSet):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
-        return Response(serializer, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GroupMemberViewSet(ModelViewSet):
@@ -218,7 +217,7 @@ class GroupMemberViewSet(ModelViewSet):
 
 
     def get_permissions(self):
-        if self.action in ('list', 'retreive'):
+        if self.action in ('list', 'retreive', 'list_links'):
             permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember]
         elif self.action == 'create':
             permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator]
@@ -303,11 +302,26 @@ class GroupMemberViewSet(ModelViewSet):
         self.kwargs['pk'] = link_to_be_deleted.id
         return super().delete(request, *args, **kwargs)
 
+    
+    @action(methods=['GET'], detail=False, url_path='links')
+    def list_links(self, request, *args, **kwargs):
+        """
+        Function returns list of objects representing links between group with id equal to {pk} and users.
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class MessageViewSet(ModelViewSet):
     serializer_class = MessageSerializer
-
-
+    
     def get_queryset(self):
         return Message.objects.filter(group=self.kwargs['group_pk'])
 
@@ -321,11 +335,21 @@ class MessageViewSet(ModelViewSet):
             permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator | IsAuthor]
 
         return [permission() for permission in permission_classes]
+    
+    def create(self, request, *args, **kwargs):
+        self._update_group()
+        return super().create(request, *args, **kwargs)
 
 
     def perform_create(self, serializer):
         group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
         serializer.save(author=self.request.user, group=group)
+    
+
+    def _update_group(self):
+        group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
+        group.updated = timezone.now()
+        group.save()
 
 
 class EventViewSet(ModelViewSet):
@@ -391,7 +415,6 @@ class EventViewSet(ModelViewSet):
         group.delete()
 
         return super().destroy(request, *args, **kwargs)
-
 
     
     @action(methods=['GET'], detail=True, url_path='participants')
