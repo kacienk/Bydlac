@@ -72,7 +72,7 @@ class IsModerator(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         try:
-            return GroupMember.objects.get(Q(user=request.user) & Q(group=request.data.get('group_pk'))).is_moderator
+            return GroupMember.objects.get(Q(user=request.user) & Q(group=obj)).is_moderator
         except ObjectDoesNotExist:
             return False
 
@@ -80,18 +80,21 @@ class IsModerator(BasePermission):
 class IsMember(BasePermission):
     """
     User sending request is member.
-    # NOT DONE YET
     """
     message = 'User cannot look up members of group unless they are also a member'
 
     def has_permission(self, request, view):
         try:
             if 'group_pk' in view.kwargs:
-                return GroupMember.objects.get(Q(user=request.user) & Q(group=view.kwargs['group_pk']))
-            if 'pk' in view.kwargs:
-                return GroupMember.objects.get(Q(user=request.user) & Q(group=view.kwargs['pk']))
+                group = get_object_or_404(ConversationGroup, id=view.kwargs['group_pk'])
+            elif 'pk' in view.kwargs:
+                group = get_object_or_404(ConversationGroup, id=view.kwargs['pk'])
+            
+            if GroupMember.objects.get(Q(user=request.user) & Q(group=group)) is not None:
+                return True
         except ObjectDoesNotExist:
             return False
+
         return False
 
     def has_object_permission(self, request, view, obj):
