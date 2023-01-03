@@ -136,7 +136,7 @@ class UserViewSet(GenericViewSet,
 
 class ConversationGroupViewSet(ModelViewSet):
     def get_serializer_class(self):
-        if self.action in ('list', 'list-all-groups'):
+        if self.action in ('list', 'list_all_groups'):
             return ConversationGroupSerializer
 
         return DetailedConversationGroupSerializer
@@ -154,7 +154,7 @@ class ConversationGroupViewSet(ModelViewSet):
             permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsNotEventGroup]
         elif self.action == 'destroy':
             permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost, IsNotEventGroup]
-        elif self.action == 'list-all-groups':
+        elif self.action == 'list_all_groups':
             permission_classes = [permissions.IsAdminUser]
         else:
             # Here might slight change in logic might be necessary.
@@ -330,7 +330,13 @@ class MessageViewSet(ModelViewSet):
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
+    
+    
+    def get_serializer_class(self):
+        if self.action == 'participants_list':
+            return UserSerializer
+
+        return EventSerializer
 
 
     def get_permissions(self):
@@ -340,6 +346,18 @@ class EventViewSet(ModelViewSet):
             permission_classes = [permissions.IsAuthenticated]
 
         return [permission() for permission in permission_classes]
+
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        
+        queryset = self.get_queryset()
+        event = queryset.get(id=serializer.data['id'])
+        event.participants.add(request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
     def perform_create(self, serializer):
@@ -365,7 +383,7 @@ class EventViewSet(ModelViewSet):
             group_serializer.is_valid(raise_exception=True)
             group_serializer.save()
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
     def destroy(self, request, *args, **kwargs):
@@ -374,6 +392,15 @@ class EventViewSet(ModelViewSet):
 
         return super().destroy(request, *args, **kwargs)
 
+
+    
+    @action(methods=['GET'], detail=True, url_path='participants')
+    def participants_list(self, request, *args, **kwargs):
+        event = self.get_object()
+        participants = event.participants.all()
+
+        serializer = self.get_serializer(participants, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     
     @action(methods=['GET'], detail=True)

@@ -155,19 +155,19 @@ routes = [
         'endpoint': '/login/',
         'method': 'POST',
         'description': 'Logs in user with data sent in post request',
-        'permisson': 'Any'
+        'permission': 'Any'
     },
     {
         'endpoint': '/register/',
         'method': 'POST',
         'description': 'Registers user with data sent in post request',
-        'permisson': 'Any'
+        'permission': 'Any'
     },
     {
         'endpoint': '/logout/',
         'method': 'GET',
         'description': 'Logs in user with data sent in post request',
-        'permisson': 'Any'
+        'permission': 'Any'
     },
 
     # USERS
@@ -175,45 +175,45 @@ routes = [
         'endpoint': '/users',
         'method': 'GET',
         'description': 'Returns list of all registered users',
-        'permisson': 'AdminUser'
+        'permission': 'AdminUser'
         
     },
     {
         'endpoint': '/users/self',
         'method': 'GET',
         'description': 'Returns data of user with given token',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
         
     },
     {
         'endpoint': '/users/{pk}',
         'method': 'GET',
         'description': 'Returns user with given id',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/users/{pk}',
         'method': 'PATCH',
         'description': 'Updates user bio and profile_image (Note: email and username cannot be changed once set)',
-        'permisson': 'Authenticated, Self'
+        'permission': 'Authenticated, Self'
     },
     {
         'endpoint': '/users/{pk}',
         'method': 'DELETE',
         'description': 'Deletes user',
-        'permisson': 'AdminUser'
+        'permission': 'AdminUser'
     },
     {
         'endpoint': '/users/{pk}/groups',
         'method': 'GET',
         'description': 'Returns list of groups that user is member of',
-        'permisson': 'Authenticated, Self'
+        'permission': 'Authenticated, Self'
     },
     {
         'endpoint': '/users/{pk}/events',
         'method': 'GET',
         'description': 'Returns list of events that user participates in.',
-        'permisson': 'Authenticated, Self'
+        'permission': 'Authenticated, Self'
     },
 
     # GROUPS
@@ -221,37 +221,37 @@ routes = [
         'endpoint': '/groups',
         'method': 'GET',
         'description': 'Returns list of non-private groups',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/groups/all',
         'method': 'GET',
         'description': 'Returns list of all groups',
-        'permisson': 'AdminUser'
+        'permission': 'AdminUser'
     },
     {
         'endpoint': '/groups',
         'method': 'POST',
         'description': 'Creates new group with data sent in post request',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/groups/{pk}',
         'method': 'GET',
         'description': 'Returns group with given id',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/groups/{pk}',
         'method': 'PUT, PATCH',
         'description': 'Updates group\'s data',
-        'permisson': 'Authenticated, Member, Moderator, NotEventGroup'
+        'permission': 'Authenticated, Member, Moderator, NotEventGroup'
     },
     {
         'endpoint': '/groups/{pk}',
         'method': 'DELETE',
         'description': 'Deletes group',
-        'permisson': 'Authenticated, Member, Moderator, Host, NotEventGroup'
+        'permission': 'Authenticated, Member, Moderator, Host, NotEventGroup'
     },
 
     # MEMBERS
@@ -259,25 +259,25 @@ routes = [
         'endpoint': '/groups/{group_pk}/members',
         'method': 'GET',
         'description': 'Returns list of group members',
-        'permisson': 'Authenticated, Member, NotEventGroup'
+        'permission': 'Authenticated, Member, NotEventGroup'
     },
     {
         'endpoint': '/groups/{group_pk}/members', 
         'method': 'POST',
         'description': 'Adds user to the group with id equal to group_id',
-        'permisson': 'Authenticated, Member, Moderator, NotEventGroup'
+        'permission': 'Authenticated, Member, Moderator, NotEventGroup'
     },
     {
         'endpoint': '/groups/{group_pk}/members/{pk}',  
         'method': 'DELETE',
         'description': 'Removes user with id equal to {pk} to the group with id equal to {group_pk}',
-        'permisson': 'Authenticated, Member, Moderator | MemberLinkSelf, NotEventGroup'
+        'permission': 'Authenticated, Member, Moderator | MemberLinkSelf, NotEventGroup'
     },
     {
         'endpoint': '/groups/{group_pk}/members/{pk}', 
         'method': 'PUT, PATCH',
         'description': 'Changes moderator status of user with id equal to {pk} in the group with id equal to {group_pk}',
-        'permisson': 'Authenticated, Member, Moderator, Host, NotEventGroup'
+        'permission': 'Authenticated, Member, Moderator, Host, NotEventGroup'
     },
 
     # MESSAGES
@@ -285,31 +285,31 @@ routes = [
         'endpoint': '/groups/{group_pk}/messages', 
         'method': 'GET',
         'description': 'Returns list of messages sent to group with id equal to, {group_pk}',
-        'permisson': 'Authenticated, Member'
+        'permission': 'Authenticated, Member'
     },
     {
         'endpoint': '/groups/{group_pk}/messages', 
         'method': 'POST',
         'description': 'Sends message to the group with id equal to {group_pk}',
-        'permisson': 'Authenticated, Member'
+        'permission': 'Authenticated, Member'
     },
     {
         'endpoint': '/groups/{group_pk}/messages/{pk}', 
         'method': 'GET',
         'description': 'Retrieves message with id equal to given {pk}',
-        'permisson': 'Authenticated, Member'
+        'permission': 'Authenticated, Member'
     },
     {
         'endpoint': '/groups/{group_pk}/messages/{pk}', 
         'method': 'PUT, PATCH',
         'description': 'Updates message with id equal to given {pk}',
-        'permisson': 'Authenticated, Member, Author'
+        'permission': 'Authenticated, Member, Author'
     },
     {
         'endpoint': '/groups/{group_pk}/messages/{pk}', 
         'method': 'DELETE',
         'description': 'Deletes message with id equal to given {pk}',
-        'permisson': 'Authenticated, Member, Author | Moderator'
+        'permission': 'Authenticated, Member, Author | Moderator'
     },
 
     #EVENTS
@@ -317,55 +317,61 @@ routes = [
         'endpoint': '/events', 
         'method': 'GET',
         'description': 'Gets list of all events',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/events', 
         'method': 'POST',
         'description': 'Creates an event',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/events/{pk}', 
         'method': 'GET',
         'description': 'Retreives an event with id equal to given {pk}',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/events/{pk}', 
         'method': 'PUT, PATCH',
         'description': 'Updates an event with id equal to given {pk}',
-        'permisson': 'Authenticated, Host'
+        'permission': 'Authenticated, Host'
     },
     {
         'endpoint': '/events/{pk}', 
         'method': 'DELETE',
         'description': 'Deletes an event with id equal to given {pk}',
-        'permisson': 'Authenticated, Host'
+        'permission': 'Authenticated, Host'
+    },
+    {
+        'endpoint': '/events/{pk}/participants', 
+        'method': 'GET',
+        'description': 'Returns list of users participating in event with id equall to {pk}',
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/events/{pk}/join', 
         'method': 'GET',
         'description': 'User sending request joins event with id equall to {pk}, creates a link between the user and the event',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/events/{pk}/leave', 
         'method': 'GET',
         'description': 'User sending request leaves event with id equall to {pk}, deletes a link between the user and the event',
-        'permisson': 'Authenticated'
+        'permission': 'Authenticated'
     },
     {
         'endpoint': '/events/{pk}/group', 
         'method': 'GET',
         'description': 'Retrieves data of a group of the event with id equall to {pk}',
-        'permisson': 'Authenticated, EventParticipant'
+        'permission': 'Authenticated, EventParticipant'
     },
     {
         'endpoint': '/events/{pk}/group', 
         'method': 'POST',
         'description': 'Creates a group for the event with id equall to {pk}',
-        'permisson': 'Authenticated, Host'
+        'permission': 'Authenticated, Host'
     },
     ]
  
