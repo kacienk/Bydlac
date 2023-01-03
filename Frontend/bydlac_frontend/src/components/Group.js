@@ -1,9 +1,8 @@
 import {useContext, useEffect, useState} from "react";
 import userContext from "../context/UserContext";
 import {Link, useNavigate} from "react-router-dom";
-
-import "./Group.css"
 import CreatableSelect from "react-select/creatable";
+import "./Group.css"
 
 const GroupOptions = ({groupId, handlePopup}) => {
     const {userToken} = useContext(userContext)
@@ -11,7 +10,14 @@ const GroupOptions = ({groupId, handlePopup}) => {
     const navigate = useNavigate()
 
     const [group, setGroup] = useState({})
+
     const [groupMembers, setGroupMembers] = useState([])
+
+    const [toggleDeleteUsersButton, setToggleDeleteUsersButton] = useState(false)
+
+    const [selectedToDelete, setSelectedToDelete] = useState([])
+
+
     useEffect(() => {
         const getGroupDetails = async () => {
             const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
@@ -36,10 +42,9 @@ const GroupOptions = ({groupId, handlePopup}) => {
         }
 
         getGroupDetails()
-    }, [])
+    }, [selectedToDelete])
 
-    const [toggleDeleteUsersButton, setToggleDeleteUsersButton] = useState(false)
-    const [selectedToDelete, setSelectedToDelete] = useState([])
+
     const deleteUsers = () => {
         selectedToDelete.map(async (user) => {
             const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${user.id}/`, {
@@ -53,10 +58,14 @@ const GroupOptions = ({groupId, handlePopup}) => {
             if (!response.ok)
                 alert(response.status)
         })
+        setSelectedToDelete([])
     }
+
+
     const deleteGroup = () => {
 
     }
+
 
     return (
         <div id="groupOptionsPopupBackground" >
@@ -106,11 +115,9 @@ const GroupOptions = ({groupId, handlePopup}) => {
                             </button>
                         </div>
                     )}
-
                 </div>
             </div>
         </div>
-
     )
 }
 
@@ -136,6 +143,7 @@ const Group = ({group}) => {
                     Nazwa grupy: {group.name}
                 </button>
             </Link>
+
             <button
                 id="groupOptions"
                 onClick={handlePopup}>

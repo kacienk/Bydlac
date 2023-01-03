@@ -8,16 +8,18 @@
     height: 30px;
     width: 60vw;
     border: none;
-    border-radius: 15px;
+    border-radius: 15px 0 0 15px;
     outline: none;
+    padding-top: 0;
+    padding-bottom: 0;
     padding-left: 15px;
 }
 
 .inputSendButton {
     height: 30px;
     width: 30px;
-    border: none;
-    border-radius: 50%;
+    border: 1px rgb(118, 176, 206);
+    border-radius: 0 50% 50% 0;
     cursor: pointer;
     /*margin-right: ;*/
 }

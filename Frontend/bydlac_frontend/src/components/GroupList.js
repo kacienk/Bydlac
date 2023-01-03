@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {useContext} from "react";
 import userContext from "../context/UserContext";
 
-const GroupList = (isFavList) => {
+const GroupList = () => {
     const {userGroups} = useContext(userContext)
 
     return (
@@ -14,10 +14,7 @@ const GroupList = (isFavList) => {
                 <button id='newGroupButton'>Nowa konwersacja</button>
             </Link>
 
-            {isFavList ?
-                userGroups.map(group => (<Group key={group.id} group={group}/>)) :
-                userGroups.map(group => (/* TODO group.isFavourite &&*/ <Group key={group.id} group={group}/>))
-            }
+            { userGroups.map(group => (<Group key={group.id} group={group}/>)) }
         </div>
     )
 }
