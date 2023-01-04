@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import CreatableSelect from "react-select/creatable";
 import {DateTimePicker} from "@mui/x-date-pickers";
 import {TextField} from "@mui/material";
+import LocationMaps from "./LocationMaps";
 
 
 const NewEvent = () => {
@@ -79,7 +80,10 @@ const NewEvent = () => {
         })
     }
 
-
+    const [toggleMaps, setToggleMaps] = useState(false)
+    const handleMapsPopup = () => {
+        setToggleMaps(prevState => !prevState)
+    }
 
     // TODO
     const [tempDate, setTempDate] = useState(Date())
@@ -109,9 +113,9 @@ const NewEvent = () => {
                        onChange={(event) => setNewEvent({type: 'changeMaxParticipants', max_participants: event.target.value})}
                 />
 
-                <button>
-                    Dodaj lokalizację wydarzenia
-                </button>
+
+
+
 
                 <DateTimePicker
                     ampm={false}
@@ -123,6 +127,11 @@ const NewEvent = () => {
 
                 <button id='newGroupPageButton'>Stwórz konwersację</button>
             </form>
+            <button onClick={ handleMapsPopup } >
+                Dodaj lokalizację wydarzenia
+            </button>
+
+            {toggleMaps && <LocationMaps /> /*TODO fix the layout*/}
         </div>
     )
 }
