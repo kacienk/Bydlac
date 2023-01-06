@@ -85,7 +85,6 @@ class UserViewSet(GenericViewSet,
 
         return DetailedUserSerializer
     
-
     def get_queryset(self):
         if self.action == 'groups':
             user_groups_ids = GroupMember.objects.filter(Q(user=self.kwargs['pk'])).values('group__id')
@@ -95,7 +94,6 @@ class UserViewSet(GenericViewSet,
             return Event.objects.filter(Q(participants__id=self.kwargs['pk']))
 
         return User.objects.all()
-
 
     def get_permissions(self):
         if self.action in ('list', 'destroy'):
@@ -108,7 +106,6 @@ class UserViewSet(GenericViewSet,
             permission_classes = [permissions.IsAuthenticated]
 
         return [permission() for permission in permission_classes]
-
     
     @action(methods=['get'], detail=True, url_path='groups')
     def groups(self, request, *args, **kwargs):
@@ -117,7 +114,6 @@ class UserViewSet(GenericViewSet,
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
     @action(methods=['get'], detail=True, url_path='events')
     def events(self, request, *args, **kwargs):
         events = self.get_queryset()
@@ -125,10 +121,17 @@ class UserViewSet(GenericViewSet,
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
     @action(methods=['get'], detail=False, url_path='self')
     def user_self(self, request, *args, **kwargs):
         serializer = self.get_serializer(request.user)
+
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=False, url_path='from-username')
+    def get_user_given_username(self, request, *args, **kwargs):
+        username = self.request.query_params.get('username')
+        user = get_object_or_404(User, username=username)
+        serializer = self.get_serializer(user)
 
         return Response(serializer.data)
         
