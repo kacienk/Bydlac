@@ -290,14 +290,8 @@ routes = [
     {
         'endpoint': '/groups/{group_pk}/members',
         'method': 'GET',
-        'description': 'Returns list of group members',
-        'permission': 'Authenticated, Member, NotEventGroup'
-    },
-    {
-        'endpoint': '/groups/{group_pk}/members/links',
-        'method': 'GET',
-        'description': 'Returns list of objects representing links between group of id {pk} and users',
-        'permission': 'Authenticated, Member, NotEventGroup'
+        'description': 'Returns list of group members with username',
+        'permission': 'Authenticated, Member'
     },
     {
         'endpoint': '/groups/{group_pk}/members', 

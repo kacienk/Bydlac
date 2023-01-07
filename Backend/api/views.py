@@ -201,7 +201,11 @@ class ConversationGroupViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class GroupMemberViewSet(ModelViewSet):
+class GroupMemberViewSet(mixins.CreateModelMixin,
+                         mixins.UpdateModelMixin,
+                         mixins.DestroyModelMixin,
+                         mixins.ListModelMixin,
+                         GenericViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return GroupMemberListSerializer
@@ -221,8 +225,8 @@ class GroupMemberViewSet(ModelViewSet):
 
 
     def get_permissions(self):
-        if self.action in ('list', 'retreive', 'list_links'):
-            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember]
+        if self.action == 'list':
+            permission_classes = [permissions.IsAuthenticated, IsMember]
         elif self.action == 'create':
             permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator]
         elif self.action in ('update', 'partial_update'):
@@ -234,20 +238,23 @@ class GroupMemberViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        data = request.data
-        data['group'] = self.kwargs['group_pk']
-        
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
+        data = {
+            'group': self.kwargs['group_pk'],
+            'user': request.data['user']
+        }
 
         # Checking if user is not member already
         try:
-            if queryset.get(Q(user=serializer.data['user']) & Q(group=serializer.data['group'])):
+            if queryset.get(Q(user=data['user']) & Q(group=data['group'])):
                 raise UserAlreadyInGroup()
         except ObjectDoesNotExist:
-            pass                
-
-        return super().create(request, *args, **kwargs)
+            pass  
+        
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def update(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -302,21 +309,6 @@ class GroupMemberViewSet(ModelViewSet):
 
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(methods=['GET'], detail=False, url_path='links')
-    def list_links(self, request, *args, **kwargs):
-        """
-        Function returns list of objects representing links between group with id equal to {pk} and users.
-        """
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class MessageViewSet(ModelViewSet):
