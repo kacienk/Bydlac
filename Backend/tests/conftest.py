@@ -30,7 +30,6 @@ def create_user(test_password):
 
         return User.objects.create_user(**kwargs)
 
-
     return make_user
 
 
@@ -51,7 +50,6 @@ def create_superuser(test_password):
 
         return User.objects.create_superuser(**kwargs)
 
-
     return make_superuser
 
 
@@ -62,9 +60,22 @@ def auth_user(client, test_password):
     """
     def authenticate_user(user):
         return client.post('/api/login/', dict(email=user.email, password=test_password))
-
     
     return authenticate_user
+
+
+@pytest.fixture
+def auth_client(client, auth_user):
+    """
+    Returns client authenticated with given user.
+    """
+    def authenticate_client(user):
+        auth_response = auth_user(user)
+        client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+
+        return client
+    
+    return authenticate_client
 
 
 @pytest.fixture
@@ -79,7 +90,6 @@ def add_user_to_group():
             raise Exception('Group instance not specified.')
 
         return GroupMember.objects.create(**kwargs)
-    
 
     return add
 
@@ -97,7 +107,7 @@ def create_group(add_user_to_group):
             raise Exception('Group host not specified.')
 
         group = ConversationGroup.objects.create(**kwargs)
-        add_user_to_group(user=kwargs['host'], group=group)
+        add_user_to_group(user=kwargs['host'], group=group, is_moderator=True)
 
         return group
 
@@ -116,8 +126,7 @@ def add_user_to_event():
             raise Exception('Group instance not specified.')
 
         return kwargs['event'].participants.add(kwargs['user'])
-    
-    
+        
     return add
 
 

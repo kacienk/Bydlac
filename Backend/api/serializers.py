@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
-from base.models import User, ConversationGroup
+from base.models import User, GroupMember
 
 
 class LoginSerializer(serializers.Serializer):
@@ -85,3 +85,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
 
+
+class GroupMemberListSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    user = serializers.IntegerField()
+    group = serializers.IntegerField()
+    is_moderator = serializers.BooleanField()

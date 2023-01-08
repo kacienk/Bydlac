@@ -7,9 +7,7 @@ class UserSerializer(ModelSerializer):
         model = User
         fields = [
             'id', 
-            'email', 
             'username',
-            'created'
         ]
 
 
@@ -17,8 +15,7 @@ class DetailedUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 
-            'email', 
+            'id',  
             'username', 
             'profile_image',
             'bio',
@@ -60,6 +57,15 @@ class DetailedConversationGroupSerializer(ModelSerializer):
             'last_message',
             'created'
         ]
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.is_private = validated_data.get('is_private', instance.is_private)
+
+        instance.save()
+
+        return instance
 
 
 class GroupMemberSerializer(ModelSerializer):

@@ -70,6 +70,17 @@ class IsModerator(BasePermission):
     """
     message = 'User sending request is not a moderator of the group they try to modify.'
 
+    def has_permission(self, request, view):
+        try:
+            if 'group_pk' in view.kwargs:
+                group = get_object_or_404(ConversationGroup, id=view.kwargs['group_pk'])
+            elif 'pk' in view.kwargs:
+                group = get_object_or_404(ConversationGroup, id=view.kwargs['pk'])
+
+            return GroupMember.objects.get(Q(user=request.user) & Q(group=group)).is_moderator
+        except ObjectDoesNotExist:
+            return False
+
     def has_object_permission(self, request, view, obj):
         try:
             return GroupMember.objects.get(Q(user=request.user) & Q(group=obj)).is_moderator
@@ -90,7 +101,7 @@ class IsMember(BasePermission):
             elif 'pk' in view.kwargs:
                 group = get_object_or_404(ConversationGroup, id=view.kwargs['pk'])
             
-            if GroupMember.objects.get(Q(user=request.user) & Q(group=group)) is not None:
+            if GroupMember.objects.get(Q(user=request.user) & Q(group=group)):
                 return True
         except ObjectDoesNotExist:
             return False
@@ -100,7 +111,8 @@ class IsMember(BasePermission):
     def has_object_permission(self, request, view, obj):
         try:
             if isinstance(obj, ConversationGroup):
-                return GroupMember.objects.get(Q(user=request.user) & Q(group=obj))
+                if GroupMember.objects.get(Q(user=request.user) & Q(group=obj)):
+                    return True
             
             return self.has_permission(request, view)
         except ObjectDoesNotExist:
@@ -226,8 +238,14 @@ routes = [
     {
         'endpoint': '/users/{pk}/events',
         'method': 'GET',
-        'description': 'Returns list of events that user participates in.',
+        'description': 'Returns list of events that user participates in',
         'permission': 'Authenticated, Self'
+    },
+    {
+        'endpoint': '/users/from-username/?username={username}',
+        'method': 'GET',
+        'description': 'Returns user givent their username',
+        'permission': 'Authenticated'
     },
 
     # GROUPS
@@ -272,14 +290,8 @@ routes = [
     {
         'endpoint': '/groups/{group_pk}/members',
         'method': 'GET',
-        'description': 'Returns list of group members',
-        'permission': 'Authenticated, Member, NotEventGroup'
-    },
-    {
-        'endpoint': '/groups/{group_pk}/members/links',
-        'method': 'GET',
-        'description': 'Returns list of objects representing links between group of id {pk} and users',
-        'permission': 'Authenticated, Member, NotEventGroup'
+        'description': 'Returns list of group members with username',
+        'permission': 'Authenticated, Member'
     },
     {
         'endpoint': '/groups/{group_pk}/members', 
