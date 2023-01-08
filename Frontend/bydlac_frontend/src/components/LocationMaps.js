@@ -1,17 +1,20 @@
-import React, {useCallback, useState} from "react";
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import React, {useCallback, useMemo, useState} from "react";
+import {GoogleMap, useJsApiLoader, Marker} from "@react-google-maps/api";
+import "./LocationMaps.css";
 
 const containerStyle = {
-    width: '100vw',
-    height: '100vh'
+    width: '100%',
+    height: '100%'
 };
 
-const center = {
-    lat: -3.745,
-    lng: -38.523
-};
 
-const LocationMaps = () => {
+
+const LocationMaps = ({handleMapsPopup}) => {
+    const center = useMemo(() => ({
+        lat: 50.06238352015929,
+        lng: 19.934045851482864
+    }), []);
+
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: "API_KEY"
@@ -19,30 +22,39 @@ const LocationMaps = () => {
     })
 
     const [map, setMap] = useState(null)
+    const onLoad = useCallback((map) => { setMap(map) }, [])
+    const onUnmount = useCallback(() => { setMap(null) }, [])
 
-    const onLoad = useCallback(function callback(map) {
-        const bounds = new window.google.maps.LatLngBounds(center);
-        map.fitBounds(bounds);
-
-        setMap(map)
-    }, [])
-
-    const onUnmount = useCallback(function callback(map) {
-        setMap(null)
-    }, [])
+    const [position, setPosition] = useState({lat: 0, lng: 0})
+    const [visible, setVisible] = useState(false)
+    const addPlace = (position) => {
+        setPosition({lat: position.latLng.lat(), lng: position.latLng.lng()})
+        setVisible(true)
+    }
 
     return isLoaded ? (
-        <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={10}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-        >
-            { /* Child components, such as markers, info windows, etc. */ }
-            <></>
-        </GoogleMap>
-    ) : <h1>Coś poszło nie tak :c</h1>
+            <div id="mapsPopupBackground">
+                <div id="mapsPopup">
+                    <button id="closePopupButton"
+                            onClick={ handleMapsPopup }>
+                        X
+                    </button>
+                    <GoogleMap
+                        mapContainerStyle={containerStyle}
+                        center={center}
+                        zoom={13}
+                        onLoad={onLoad}
+                        onClick={addPlace}
+                        onUnmount={onUnmount}
+                    >
+                        <Marker  position={position} visible={visible}/>
+                    </GoogleMap>
+                    <button onClick={handleMapsPopup}>
+                        Potwierdź
+                    </button>
+                </div>
+            </div>
+    ) : <></>
 }
 
 export default LocationMaps;

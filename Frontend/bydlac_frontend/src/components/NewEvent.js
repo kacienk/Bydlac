@@ -1,4 +1,4 @@
-import {useContext, useEffect, useReducer, useState} from "react";
+import React, {useContext, useEffect, useReducer, useState} from "react";
 import userContext from "../context/UserContext";
 import {useNavigate} from "react-router-dom";
 import CreatableSelect from "react-select/creatable";
@@ -6,6 +6,8 @@ import {DateTimePicker} from "@mui/x-date-pickers";
 import {TextField} from "@mui/material";
 import LocationMaps from "./LocationMaps";
 
+import "./NewEvent.css";
+import {GoogleMap} from "@react-google-maps/api";
 
 const NewEvent = () => {
     const {
@@ -89,49 +91,52 @@ const NewEvent = () => {
     const [tempDate, setTempDate] = useState(Date())
 
     return (
-        <div id='newGroupBox'>
-            <form id='newGroupForm' onSubmit={newEventSubmitHandler}>
-                <p className='newGroupPageText'>Nazwa wydarzenia: </p>
-                <input id='newGroupPageInput'
-                       type="text"
-                       required
-                       placeholder="Nazwa"
-                       onChange={(event) => setNewEvent({type: 'changeName', name: event.target.value})}
-                />
+        <div id='newEventBox'>
+            <div id='newEventInnerBox'>
+                <form id='newEventForm' onSubmit={newEventSubmitHandler}>
+                    <p className='newEventPageText'>Nazwa wydarzenia: </p>
+                    <input id='newEventPageInput'
+                           type="text"
+                           required
+                           placeholder="Nazwa"
+                           onChange={(event) => setNewEvent({type: 'changeName', name: event.target.value})}
+                    />
 
-                <p className='newGroupPageText'>Opis:</p>
-                <textarea
-                    id='newGroupPageTextarea'
-                    onChange={(event) => setNewEvent({type: 'changeDescription', description: event.target.value})}
-                ></textarea>
+                    <p className='newEventPageText'>Opis:</p>
+                    <textarea
+                        id='newEventPageTextarea'
+                        onChange={(event) => setNewEvent({type: 'changeDescription', description: event.target.value})}
+                    ></textarea>
 
-                <p className='newGroupPageText'>Maksymalna liczba uczestników: </p>
-                <input id='newGroupPageInput'
-                       type="text"
-                       required
-                       placeholder="Liczba"
-                       onChange={(event) => setNewEvent({type: 'changeMaxParticipants', max_participants: event.target.value})}
-                />
-
-
-
+                    <p className='newEventPageText'>Maksymalna liczba uczestników: </p>
+                    <input id='newEventPageInput'
+                           type="text"
+                           required
+                           placeholder="Liczba"
+                           onChange={(event) => setNewEvent({type: 'changeMaxParticipants', max_participants: event.target.value})}
+                    />
 
 
-                <DateTimePicker
-                    ampm={false}
-                    disablePast={true}
-                    onChange={(newValue) => setTempDate(newValue)}
-                    value={tempDate}
-                    renderInput={(props) => <TextField {...props} /> /* TODO style all this */} />
+                    <button type="button"
+                            onClick={ handleMapsPopup } >
+                        Dodaj lokalizację wydarzenia
+                    </button>
 
 
-                <button id='newGroupPageButton'>Stwórz konwersację</button>
-            </form>
-            <button onClick={ handleMapsPopup } >
-                Dodaj lokalizację wydarzenia
-            </button>
+                    <DateTimePicker
+                        ampm={false}
+                        disablePast={true}
+                        onChange={(newValue) => setTempDate(newValue)}
+                        value={tempDate}
+                        renderInput={(props) => <TextField {...props} /> /* TODO style all this */} />
 
-            {toggleMaps && <LocationMaps /> /*TODO fix the layout*/}
+
+                    <button id='newEventPageButton'>Stwórz konwersację</button>
+                </form>
+            </div>
+
+            {toggleMaps &&
+                <LocationMaps handleMapsPopup={ handleMapsPopup }/> }
         </div>
     )
 }

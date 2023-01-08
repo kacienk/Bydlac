@@ -1,0 +1,18 @@
+#mapsPopupBackground {
+    position: fixed;
+    background: rgba(0, 0, 0, 50%);
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+#mapsPopup {
+    width: 66vw;
+    height: 33vh;
+
+}
