@@ -66,6 +66,15 @@ const NewGroup = () => {
             alert("Błąd podczas procesu tworzenia konwersacji")
 
         selectedUsersList.map(async (user) => {
+            const userIdResponse = await fetch(`http://127.0.0.1:8000/api/users/from-username/?username=${user}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                }
+            })
+            const userData = await userIdResponse.json()
+
             let addUserResponse = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/members/`, {
                 method: 'POST',
                 headers: {
@@ -73,7 +82,7 @@ const NewGroup = () => {
                     "Authorization": `Token ${userToken}`
                 },
                 body: JSON.stringify({
-                    user: user,
+                    user: userData.id,
                     group: newGroupId,
                     is_moderator: false
                 })

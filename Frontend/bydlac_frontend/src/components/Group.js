@@ -78,8 +78,9 @@ const GroupOptions = ({groupId, handlePopup}) => {
 
 
     const deleteUsers = () => {
+        console.log("selectedToDelete: ", selectedToDelete)
         selectedToDelete.map(async (user) => {
-            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${user.id}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${user.user}/`, {
                 method: 'DELETE',
                 headers: {
                     "Content-Type": "application/json",
@@ -154,7 +155,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
                                 isMulti
                                 options={groupMembers}
                                 getOptionLabel={(user) => user.username}
-                                getOptionValue={(user) => user.id}
+                                getOptionValue={(user) => user.user}
                                 onChange={(selected) => setSelectedToDelete(selected)}
                             />
                             <button onClick={ deleteUsers } >

@@ -9,7 +9,7 @@ const containerStyle = {
 
 
 
-const LocationMaps = ({handleMapsPopup}) => {
+const LocationMaps = ({handleMapsPopup, setLocation, markerPosition, markerVisibility}) => {
     const center = useMemo(() => ({
         lat: 50.06238352015929,
         lng: 19.934045851482864
@@ -17,7 +17,7 @@ const LocationMaps = ({handleMapsPopup}) => {
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: "API_KEY"
+        googleMapsApiKey: "AIzaSyDn3aelRR6FsVFR6qmS13J4yEl8qUsVt_A"
         /** Insert api key from https://console.cloud.google.com/apis/credentials/key - I'm not gonna put it on GitHub */
     })
 
@@ -25,8 +25,8 @@ const LocationMaps = ({handleMapsPopup}) => {
     const onLoad = useCallback((map) => { setMap(map) }, [])
     const onUnmount = useCallback(() => { setMap(null) }, [])
 
-    const [position, setPosition] = useState({lat: 0, lng: 0})
-    const [visible, setVisible] = useState(false)
+    const [position, setPosition] = useState(markerPosition)
+    const [visible, setVisible] = useState(markerVisibility)
     const addPlace = (position) => {
         setPosition({lat: position.latLng.lat(), lng: position.latLng.lng()})
         setVisible(true)
@@ -49,7 +49,10 @@ const LocationMaps = ({handleMapsPopup}) => {
                     >
                         <Marker  position={position} visible={visible}/>
                     </GoogleMap>
-                    <button onClick={handleMapsPopup}>
+                    <button onClick={() => {
+                    setLocation(position)
+                    handleMapsPopup()}
+                    }>
                         Potwierdź
                     </button>
                 </div>

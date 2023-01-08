@@ -13,10 +13,10 @@ const Event = ({event}) => {
     return (
         <Link to={`/chat/${event.id}`}>
             <button
-                className="groupButton"
+                id="eventButton"
                 onClick={handleClick}
                 value={event.id}>
-                Nazwa wydarzenia: {event.name}
+                {event.name}
             </button>
         </Link>
     )

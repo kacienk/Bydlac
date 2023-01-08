@@ -1,0 +1,9 @@
+#eventButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+    text-align: left;
+    padding-left: 10px;
+    height: 50px;
+    width: 30vw;
+    border: none;
+}

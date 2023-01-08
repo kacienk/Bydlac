@@ -7,7 +7,6 @@ import {TextField} from "@mui/material";
 import LocationMaps from "./LocationMaps";
 
 import "./NewEvent.css";
-import {GoogleMap} from "@react-google-maps/api";
 
 const NewEvent = () => {
     const {
@@ -17,31 +16,27 @@ const NewEvent = () => {
     } = useContext(userContext)
     let {userEvents} = useContext(userContext)
 
-    const initialEvent = {
-        name: "",
-        description: "",
-        max_participants: 1,
-        location: "",
-        expires: ""
-    }
-    const reducer = (state, action) => {
-        switch (action.type) {
-            case 'changeName':
-                return {name: action.name}
-            case 'changeDescription':
-                return {description: action.description}
-            case 'changeMaxParticipants':
-                return {max_participants: action.max_participants}
-            case 'changeLocation':
-                return {location: action.location}
-            case 'changeExpires':
-                return {expires: action.expires}
-            default:
-                alert("coś się zepsuło w setNewEvent: reducer") // TODO
+
+    const [newEventName, setNewEventName] = useState('')
+    const [newEventDescription, setNewEventDescription] = useState('')
+    const [newEventMaxParticipants, setNewEventMaxParticipants] = useState(1)
+    const [newEventLocation, setNewEventLocation] = useState('')
+    const [newEventExpirationDate, setNewEventExpirationDate] = useState(Date())
+    const [newSelectedUser, setNewSelectedUser] = useState('');
+    const [selectedUsersList, setSelectedUsersList] = useState([]);
+
+    const handleKeyDown = (event) => {
+        if (!newSelectedUser)
+            return;
+
+        switch (event.key) {
+            case 'Enter':
+            case 'Tab':
+                setSelectedUsersList((prev) => [...prev, newSelectedUser]);
+                setNewSelectedUser('');
+                event.preventDefault();
         }
-    }
-    const [newEvent, setNewEvent] = useReducer(reducer, initialEvent)
-    const [selectedUsers, setSelectedUsers] = useState([])
+    };
 
     const navigate = useNavigate()
 
@@ -54,41 +49,54 @@ const NewEvent = () => {
                 "Content-Type": "application/json",
                 "Authorization": `Token ${userToken}`
             },
-            body: JSON.stringify(newEvent)
+            body: JSON.stringify({
+                host: userId,
+                name: newEventName,
+                description: newEventDescription,
+                max_participants: newEventMaxParticipants,
+                location: newEventLocation,
+                expires: newEventExpirationDate
+            })
         })
         const data = await response.json()
         const newEventId = data['id']
         userEvents = setUserEvents(userEvents => [...userEvents, data])
 
         // TODO check this part after Kacper corrects endpoints
-        selectedUsers.map(async (user) => {
-            let response2 = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/participants/`, {
+        selectedUsersList.map(async (user) => {
+            const userIdResponse = await fetch(`http://127.0.0.1:8000/api/users/from-username/?username=${user}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                }
+            })
+            const userData = await userIdResponse.json()
+
+
+            let addUserToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/participants/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${userToken}`
                 },
                 body: JSON.stringify({
-                    user: user.id,
+                    user: userData.id,
                     group: newEventId,
                     is_moderator: false
                 })
             })
-            if (response.ok && response2.ok) {
-                navigate('/event/' + newEventId)
-            }
-            else
-                alert("Błąd podczas procesu tworzenia wydarzenia")
         })
+        if (response.ok) {
+            navigate('/event/' + newEventId)
+        }
+        else
+            alert("Błąd podczas procesu tworzenia wydarzenia")
     }
 
     const [toggleMaps, setToggleMaps] = useState(false)
-    const handleMapsPopup = () => {
-        setToggleMaps(prevState => !prevState)
-    }
+    const handleMapsPopup = () => { setToggleMaps(prevState => !prevState) }
 
-    // TODO
-    const [tempDate, setTempDate] = useState(Date())
 
     return (
         <div id='newEventBox'>
@@ -99,13 +107,13 @@ const NewEvent = () => {
                            type="text"
                            required
                            placeholder="Nazwa"
-                           onChange={(event) => setNewEvent({type: 'changeName', name: event.target.value})}
+                           onChange={(event) => setNewEventName(event.target.value)}
                     />
 
                     <p className='newEventPageText'>Opis:</p>
                     <textarea
                         id='newEventPageTextarea'
-                        onChange={(event) => setNewEvent({type: 'changeDescription', description: event.target.value})}
+                        onChange={(event) => setNewEventDescription(event.target.value)}
                     ></textarea>
 
                     <p className='newEventPageText'>Maksymalna liczba uczestników: </p>
@@ -113,7 +121,7 @@ const NewEvent = () => {
                            type="text"
                            required
                            placeholder="Liczba"
-                           onChange={(event) => setNewEvent({type: 'changeMaxParticipants', max_participants: event.target.value})}
+                           onChange={(event) => setNewEventMaxParticipants(Number(event.target.value))}
                     />
 
 
@@ -121,22 +129,45 @@ const NewEvent = () => {
                             onClick={ handleMapsPopup } >
                         Dodaj lokalizację wydarzenia
                     </button>
+                    { newEventLocation !== '' ?
+                        (<p>Lokalizacja wybrana pomyślnie!</p>) :
+                        (<p>Nie wybrano lokalizacji</p>) }
 
 
                     <DateTimePicker
                         ampm={false}
                         disablePast={true}
-                        onChange={(newValue) => setTempDate(newValue)}
-                        value={tempDate}
+                        onChange={(newValue) => setNewEventExpirationDate(newValue)}
+                        value={newEventExpirationDate}
                         renderInput={(props) => <TextField {...props} /> /* TODO style all this */} />
 
+                    <p className='newGroupPageText'>Dodaj członków:</p>
+                    <div id='newGroupUsers'>
+                        <CreatableSelect
+                            components={{ DropdownIndicator: null, }}
+                            inputValue={newSelectedUser}
+                            isClearable
+                            isMulti
+                            menuIsOpen={false}
+                            onChange={(newValue) => setSelectedUsersList(newValue)}
+                            onInputChange={(newValue) => setNewSelectedUser(newValue)}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Wpisz nazwy użytkowników oddzielając je enterem"
+                            value={selectedUsersList}
+                            getOptionLabel={(user) => user}
+                        />
+                    </div>
 
                     <button id='newEventPageButton'>Stwórz konwersację</button>
                 </form>
             </div>
 
             {toggleMaps &&
-                <LocationMaps handleMapsPopup={ handleMapsPopup }/> }
+                <LocationMaps
+                    handleMapsPopup={ handleMapsPopup }
+                    setLocation={ setNewEventLocation }
+                    markerPosition={ {lat: 0, lng: 0} }
+                    markerVisibility={ false } /> }
         </div>
     )
 }
