@@ -94,6 +94,7 @@ class MessageSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.body = validated_data.get('body', instance.body)
+        instance.save()
 
         return instance
 
@@ -119,5 +120,6 @@ class EventSerializer(ModelSerializer):
         instance.max_participants = validated_data.get('max_participants', instance.max_participants)
         instance.location = validated_data.get('location', instance.location)
         instance.expires = validated_data.get('expires', instance.expires)
+        instance.save()
 
         return instance

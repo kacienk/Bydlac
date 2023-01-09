@@ -15,6 +15,7 @@ def test_register_user(client):
     response = client.post('/api/register/', payload)
     data = response.data
 
+    assert response.status_code == 201, f'{response.data}'
     assert data['username'] == payload['username']
     assert data['email'] == payload['email']
     assert 'password' not in data
@@ -28,7 +29,7 @@ def test_login_user(client, create_user, test_password):
     create_user(username=username)
     response = client.post('/api/login/', dict(email=email, password=test_password))
 
-    assert response.status_code == 202
+    assert response.status_code == 202, f'{response.data}'
     assert 'token' in response.data
 
 
@@ -65,7 +66,7 @@ def test_user_list_fail_authenticated_not_admin(client, create_user, auth_user):
 
     response = client.get('/api/users/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -75,7 +76,7 @@ def test_user_list_fail_not_authenticated(client):
     """
     response = client.get('/api/users/')
 
-    assert response.status_code == 401
+    assert response.status_code == 401, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -87,7 +88,7 @@ def test_user_self(client, create_user, auth_user):
     response = client.get('/api/users/self/')
     data = response.data
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert data['id'] == user.id
     assert data['username'] == user.username 
     assert 'password' not in data  
@@ -103,7 +104,7 @@ def test_user_retrieve(client, create_user, auth_user):
     response = client.get(f'/api/users/{user2.id}/')
     data = response.data
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert data['id'] == user2.id
     assert data['username'] == user2.username
     assert 'password' not in data
@@ -117,7 +118,7 @@ def test_user_retrieve_fail_bad_id(client, create_user, auth_user):
 
     response = client.get(f'/api/users/-1/')
 
-    assert response.status_code == 404
+    assert response.status_code == 404, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -133,7 +134,7 @@ def test_user_patch(client, create_user, auth_user):
     data = response.data
     user.refresh_from_db()
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert data['bio'] == bio
     assert user.bio == bio
     assert data['id'] == user.id
@@ -151,7 +152,7 @@ def test_user_patch_fail_patch_user_other_than_self(client, create_user, auth_us
 
     response = client.patch(f'/api/users/{user2.id}/', dict(bio=bio))
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -163,7 +164,7 @@ def test_user_delete(client, create_user, create_superuser, auth_user):
 
     response = client.delete(f'/api/users/{user.id}/')
 
-    assert response.status_code == 204
+    assert response.status_code == 204, f'{response.data}'
     with pytest.raises(User.DoesNotExist):
         user.refresh_from_db()
 
@@ -177,7 +178,7 @@ def test_user_delete_fail_not_admin(client, create_user, auth_user):
 
     response = client.delete(f'/api/users/{user2.id}/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -192,7 +193,7 @@ def test_user_groups(client, create_user, auth_user, create_group):
     data = response.data
     data = sorted(data, key=lambda x: x.get('id'))
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert len(data) == 2
     assert data[0].get('id') == group1.id
     assert data[1].get('id') == group2.id
@@ -209,7 +210,7 @@ def test_user_groups_user_not_in_any_group(client, create_user, auth_user):
     response = client.get(f'/api/users/{user.id}/groups/')
     data = response.data
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert len(data) == 0
 
 
@@ -225,7 +226,7 @@ def test_user_groups_check_not_self_groups(client, create_user, auth_user, creat
 
     response = client.get(f'/api/users/{user2.id}/groups/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -240,7 +241,7 @@ def test_user_events(client, create_user, auth_user, create_event):
     data = response.data
     print(data)
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert len(data) == 2
     assert data[0].get('id') == event1.id
     assert data[0].get('name') == event1.name
@@ -257,7 +258,7 @@ def test_user_events_user_not_in_any_event(client, create_user, auth_user):
     response = client.get(f'/api/users/{user.id}/events/')
     data = response.data
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert len(data) == 0
 
 
@@ -273,7 +274,7 @@ def test_user_events_check_not_self_events(client, create_user, auth_user, creat
 
     response = client.get(f'/api/users/{user2.id}/groups/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -286,7 +287,7 @@ def test_user_from_username(client, create_user, auth_user):
     response = client.get(f'/api/users/from-username/?username={user2.username}')
     data = response.data
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert data['id'] == user2.id
 
 

@@ -4,8 +4,7 @@ from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.dateparse import parse_datetime
 
-from base.models import ConversationGroup
-from base.serializers import ConversationGroupSerializer, DetailedConversationGroupSerializer
+from base.models import ConversationGroup, GroupMember
 
 
 @pytest.mark.django_db
@@ -23,7 +22,7 @@ def test_conversation_group_list_non_private(auth_client, create_user, create_gr
     data = response.data
     data = sorted(data, key=lambda x: x.get('id'))
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert len(data) == 2
     assert data[0].get('id') == group1.id
     assert data[1].get('id') == group3.id
@@ -47,7 +46,7 @@ def test_conversation_group_list_all(client, create_superuser, create_user, auth
     data = response.data
     data = sorted(data, key=lambda x: x.get('id'))
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert len(data) == 4
     assert data[0].get('id') == group1.id
     assert data[1].get('id') == group2.id
@@ -72,7 +71,7 @@ def test_conversation_group_list_all_fail_not_admin(auth_client, create_user, cr
 
     response = client.get('/api/groups/all/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -83,7 +82,7 @@ def test_conversation_group_create(auth_client, create_user):
     response = client.post('/api/groups/', dict(name='testgroup', is_private=False))
     data = response.data
 
-    assert response.status_code == 201
+    assert response.status_code == 201, f'{response.data}'
     
     try:
         testgroup = ConversationGroup.objects.get(name='testgroup')
@@ -93,6 +92,7 @@ def test_conversation_group_create(auth_client, create_user):
         assert data['is_private'] == testgroup.is_private
         assert testgroup.name == 'testgroup'
         assert testgroup.is_private == False
+        assert len(GroupMember.objects.filter(group=testgroup.id)) == 1
     except ObjectDoesNotExist:
         assert False
 
@@ -105,7 +105,7 @@ def test_conversation_group_create_fail_two_groups_with_the_same_name(auth_clien
 
     response = client.post('/api/groups/', dict(name='testgroup', is_private=False))
 
-    assert response.status_code == 400
+    assert response.status_code == 400, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -115,7 +115,7 @@ def test_conversation_group_create_fail_no_name_given(auth_client, create_user):
 
     response = client.post('/api/groups/', dict(is_private=False))
 
-    assert response.status_code == 400
+    assert response.status_code == 400, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -127,7 +127,7 @@ def test_conversation_group_retrieve(auth_client, create_user, create_group):
     response = client.get(f'/api/groups/{group.id}/')
     data = response.data
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert data['id'] == group.id
     assert data['name'] == group.name
     assert parse_datetime(data['last_message']) == group.last_message
@@ -140,7 +140,7 @@ def test_conversation_group_retrieve_fail_bad_id(auth_client, create_user):
 
     response = client.get(f'/api/groups/-1/')
 
-    assert response.status_code == 404
+    assert response.status_code == 404, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -153,7 +153,7 @@ def test_conversation_group_retrieve_fail_not_member(auth_client, create_user, c
 
     response = client.get(f'/api/groups/{group.id}/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -167,7 +167,7 @@ def test_conversation_group_update_host(auth_client, create_user, create_group):
     data = response.data
     group.refresh_from_db()
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert data['id'] == group.id
     assert group.description == payload['description']
     assert group.is_private == payload['is_private']
@@ -188,7 +188,7 @@ def test_conversation_group_update_moderator(auth_client, create_user, create_gr
     
     group.refresh_from_db()
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert data['id'] == group.id
     assert group.description == payload['description']
     assert group.is_private == payload['is_private']
@@ -206,7 +206,7 @@ def test_conversation_group_update_fail_regular_member(auth_client, create_user,
     payload = dict(description="testdescription", is_private=False)
     response = client.patch(f'/api/groups/{group.id}/', payload)
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -220,7 +220,7 @@ def test_conversation_group_update_fail_not_member(auth_client, create_user, cre
     payload = dict(description="testdescription", is_private=False)
     response = client.patch(f'/api/groups/{group.id}/', payload)
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -237,7 +237,7 @@ def test_conversation_group_update_fail_wrong_attributes(auth_client, create_use
 
     group.refresh_from_db()
 
-    assert response.status_code == 200
+    assert response.status_code == 200, f'{response.data}'
     assert group.last_message != payload['last_message']
     assert group.host == host
 
@@ -250,7 +250,7 @@ def test_conversation_group_delete(auth_client, create_user, create_group):
 
     response = client.delete(f'/api/groups/{group.id}/')
 
-    assert response.status_code == 204
+    assert response.status_code == 204, f'{response.data}'
     with pytest.raises(ConversationGroup.DoesNotExist):
         group.refresh_from_db()
 
@@ -266,7 +266,7 @@ def test_conversation_group_delete_fail_moderator(auth_client, create_user, crea
 
     response = client.delete(f'/api/groups/{group.id}/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -280,7 +280,7 @@ def test_conversation_group_delete_fail_regular_member(auth_client, create_user,
 
     response = client.delete(f'/api/groups/{group.id}/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 @pytest.mark.django_db
@@ -293,7 +293,7 @@ def test_conversation_group_delete_fail_not_member(auth_client, create_user, cre
 
     response = client.delete(f'/api/groups/{group.id}/')
 
-    assert response.status_code == 403
+    assert response.status_code == 403, f'{response.data}'
 
 
 
