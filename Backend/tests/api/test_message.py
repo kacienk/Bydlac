@@ -6,7 +6,7 @@ from base.models import Message
 
 
 @pytest.mark.django_db
-def test_messages_list(auth_client, create_user, create_group, create_message):
+def test_message_list(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -29,7 +29,7 @@ def test_messages_list(auth_client, create_user, create_group, create_message):
 
 
 @pytest.mark.django_db
-def test_messages_list_fail_not_member(auth_client, create_user, create_group, create_message):
+def test_message_list_fail_not_member(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -45,7 +45,7 @@ def test_messages_list_fail_not_member(auth_client, create_user, create_group, c
 
 
 @pytest.mark.django_db
-def test_messages_create(auth_client, create_user, create_group):
+def test_message_create(auth_client, create_user, create_group):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -65,7 +65,7 @@ def test_messages_create(auth_client, create_user, create_group):
 
 
 @pytest.mark.django_db
-def test_messages_create_fail_not_member(auth_client, create_user, create_group):
+def test_message_create_fail_not_member(auth_client, create_user, create_group):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -78,7 +78,7 @@ def test_messages_create_fail_not_member(auth_client, create_user, create_group)
 
 
 @pytest.mark.django_db
-def test_messages_create_fail_not_member(auth_client, create_user, create_group):
+def test_message_create_fail_not_member(auth_client, create_user, create_group):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -91,7 +91,7 @@ def test_messages_create_fail_not_member(auth_client, create_user, create_group)
 
 
 @pytest.mark.django_db
-def test_messages_retireve(auth_client, create_user, create_group, create_message):
+def test_message_retireve(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -107,7 +107,7 @@ def test_messages_retireve(auth_client, create_user, create_group, create_messag
 
 
 @pytest.mark.django_db
-def test_messages_retireve_fail_not_member(auth_client, create_user, create_group, create_message):
+def test_message_retireve_fail_not_member(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -120,7 +120,7 @@ def test_messages_retireve_fail_not_member(auth_client, create_user, create_grou
 
 
 @pytest.mark.django_db
-def test_messages_retireve_fail_wrong_id(auth_client, create_user, create_group, create_message):
+def test_message_retireve_fail_wrong_id(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -131,7 +131,7 @@ def test_messages_retireve_fail_wrong_id(auth_client, create_user, create_group,
 
 
 @pytest.mark.django_db
-def test_messages_update(auth_client, create_user, create_group, create_message):
+def test_message_update(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -152,7 +152,7 @@ def test_messages_update(auth_client, create_user, create_group, create_message)
 
 
 @pytest.mark.django_db
-def test_messages_update_fail_not_author(auth_client, create_user, create_group, create_message, add_user_to_group):
+def test_message_update_fail_not_author(auth_client, create_user, create_group, create_message, add_user_to_group):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -168,7 +168,7 @@ def test_messages_update_fail_not_author(auth_client, create_user, create_group,
 
 
 @pytest.mark.django_db
-def test_messages_delete_author(auth_client, create_user, create_group, create_message):
+def test_message_delete_author(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -183,7 +183,7 @@ def test_messages_delete_author(auth_client, create_user, create_group, create_m
 
 
 @pytest.mark.django_db
-def test_messages_delete_moderator(auth_client, create_user, create_group, create_message, add_user_to_group):
+def test_message_delete_moderator(auth_client, create_user, create_group, create_message, add_user_to_group):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -200,7 +200,7 @@ def test_messages_delete_moderator(auth_client, create_user, create_group, creat
 
 
 @pytest.mark.django_db
-def test_messages_delete_fail_not_moderator_not_author(auth_client, create_user, create_group, create_message, add_user_to_group):
+def test_message_delete_fail_not_moderator_not_author(auth_client, create_user, create_group, create_message, add_user_to_group):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 

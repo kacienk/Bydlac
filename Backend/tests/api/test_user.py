@@ -15,7 +15,7 @@ def test_register_user(client):
     response = client.post('/api/register/', payload)
     data = response.data
 
-    assert response.status_code == 200, f'{response.data}'
+    assert response.status_code == 201, f'{response.data}'
     assert data['username'] == payload['username']
     assert data['email'] == payload['email']
     assert 'password' not in data

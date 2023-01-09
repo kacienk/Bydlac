@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login, logout
 from django.db.models import Q, F
@@ -27,7 +29,7 @@ from .utils import IsMemberLinkSelf, UserAlreadyInGroup, IsNotGroupMember, IsSel
 from .serializers import LoginSerializer, RegisterSerializer, GroupMemberListSerializer
 
 
-@api_view(['GET'])
+@api_view(['get'])
 def get_routes(request):
     return Response(routes)
 
@@ -374,7 +376,10 @@ class EventViewSet(ModelViewSet):
 
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = {key: value for key, value in request.data.items()} 
+        data['host'] = request.user.id
+
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -398,7 +403,7 @@ class EventViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         
-        if event.group is not None:
+        if event.group:
             group_data = {
                 'name': request.data.get('name', group.name),
                 'description': request.data.get('description', group.description)
@@ -418,7 +423,7 @@ class EventViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
     
-    @action(methods=['GET'], detail=True, url_path='participants')
+    @action(methods=['get'], detail=True, url_path='participants')
     def participants_list(self, request, *args, **kwargs):
         event = self.get_object()
         participants = event.participants.all()
@@ -427,20 +432,27 @@ class EventViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     
-    @action(methods=['GET'], detail=True)
+    @action(methods=['get'], detail=True)
     def join(self, request, *args, **kwargs):
         event = get_object_or_404(self.queryset, id=kwargs['pk'])
 
-        if event.max_participants <= event.participants.count() and event.max_participants > 0:
+        if event.max_participants and event.max_participants <= event.participants.count():
             msg = 'User cannot join this event because it has reached its maximal participants capacity.'
             return Response(msg, status=status.HTTP_403_FORBIDDEN)
 
+        try:
+            event.participants.get(id=request.user.id)
+            msg = 'User cannot join this event because they already participate in this event.'
+            return Response(msg, status=status.HTTP_403_FORBIDDEN)
+        except ObjectDoesNotExist:
+            pass
+
         event.participants.add(request.user)
 
-        if event.group is not None:
+        if event.group:
             group_member_data = {
-                'user': request.user,
-                'group': event.group,
+                'user': request.user.id,
+                'group': event.group.id,
                 'is_moderator': False
             }
 
@@ -453,12 +465,17 @@ class EventViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
-    @action(methods=['GET'], detail=True)
+    @action(methods=['get'], detail=True)
     def leave(self, request, *args, **kwargs):
         event = get_object_or_404(self.queryset, id=kwargs['pk'])
+
+        if event.host == request.user:
+            msg = 'Host cannot leave an event.'
+            return Response(msg, status=status.HTTP_403_FORBIDDEN)
+
         event.participants.remove(request.user)
 
-        if event.group is not None:
+        if event.group:
             try:
                 link = GroupMember.objects.get(Q(user=request.user) & Q(group=event.group))
                 link.delete()
@@ -468,7 +485,8 @@ class EventViewSet(ModelViewSet):
         return Response(None, status=status.HTTP_202_ACCEPTED)
 
 
-class EventGroupViewSet(GenericViewSet):
+class EventGroupViewSet(GenericViewSet,
+                        mixins.CreateModelMixin):
     serializer_class = DetailedConversationGroupSerializer
 
     
@@ -480,16 +498,18 @@ class EventGroupViewSet(GenericViewSet):
 
         return [permission() for permission in permission_classes]
 
+    def list(self, request, *args, **kwargs):
+        return self.retrieve_group(self, request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         event = get_object_or_404(Event, id=self.kwargs['event_pk'])
 
-        if event.group is not None:
+        if event.group:
             msg = 'Group for this event already exists.'
             return Response(msg, status=status.HTTP_403_FORBIDDEN)
 
         data = {
-            'host': request.user,
+            'host': request.user.id,
             'name': event.name,
             'description': event.description,
             'is_private': True,
@@ -498,12 +518,13 @@ class EventGroupViewSet(GenericViewSet):
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        event.group = serializer.save()
+        event.save()
         headers = self.get_success_headers(serializer.data)
 
         for user in event.participants.all():
             event_participant_data = {
-                'user': user,
+                'user': user.id,
                 'group': serializer.data['id'],
                 'is_moderator': False
             }
@@ -517,12 +538,10 @@ class EventGroupViewSet(GenericViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    
-    @action(methods=['GET'], detail=False, url_path='group') # False detail because I do not want {lookup}
     def retrieve_group(self, request, *args, **kwargs):
         event = get_object_or_404(Event, id=self.kwargs['event_pk'])
 
-        if event.group is not None:
+        if event.group is None:
             msg = 'This event does not have group assigned to it.'
             return Response(msg, status=status.HTTP_403_FORBIDDEN)
 

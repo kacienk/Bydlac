@@ -4,7 +4,7 @@ from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.dateparse import parse_datetime
 
-from base.models import ConversationGroup
+from base.models import ConversationGroup, GroupMember
 
 
 @pytest.mark.django_db
@@ -92,6 +92,7 @@ def test_conversation_group_create(auth_client, create_user):
         assert data['is_private'] == testgroup.is_private
         assert testgroup.name == 'testgroup'
         assert testgroup.is_private == False
+        assert len(GroupMember.objects.filter(group=testgroup.id)) == 1
     except ObjectDoesNotExist:
         assert False
 

@@ -206,7 +206,7 @@ class Event(models.Model):
         null=True
     )
 
-    location = models.URLField(null=True, blank=True)
+    location = models.CharField(null=True, blank=True, max_length=200)
 
     expires = models.DateTimeField(default=(timezone.now() + timedelta(minutes=15)))
     created = models.DateTimeField(auto_now_add=True)

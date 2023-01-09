@@ -115,7 +115,7 @@ def create_group(add_user_to_group):
 
 
 @pytest.fixture
-def add_user_to_event():
+def add_user_to_event(add_user_to_group):
     """
     Adds user to event. Expected user instance and event instance in kwargs.
     """
@@ -125,7 +125,12 @@ def add_user_to_event():
         if 'event' not in kwargs:
             raise Exception('Group instance not specified.')
 
-        return kwargs['event'].participants.add(kwargs['user'])
+        user = kwargs['user']
+        event = kwargs['event']
+        if event.group:
+            add_user_to_group(group=event.group, user=user)
+
+        return event.participants.add(user)
         
     return add
 
