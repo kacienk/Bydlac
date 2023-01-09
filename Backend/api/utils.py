@@ -76,6 +76,8 @@ class IsModerator(BasePermission):
                 group = get_object_or_404(ConversationGroup, id=view.kwargs['group_pk'])
             elif 'pk' in view.kwargs:
                 group = get_object_or_404(ConversationGroup, id=view.kwargs['pk'])
+            else:
+                return False
 
             return GroupMember.objects.get(Q(user=request.user) & Q(group=group)).is_moderator
         except ObjectDoesNotExist:
@@ -83,7 +85,10 @@ class IsModerator(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         try:
-            return GroupMember.objects.get(Q(user=request.user) & Q(group=obj)).is_moderator
+            if isinstance(obj, ConversationGroup):
+                return GroupMember.objects.get(Q(user=request.user) & Q(group=obj)).is_moderator
+            
+            return self.has_permission(request, view)
         except ObjectDoesNotExist:
             return False
 
@@ -100,6 +105,8 @@ class IsMember(BasePermission):
                 group = get_object_or_404(ConversationGroup, id=view.kwargs['group_pk'])
             elif 'pk' in view.kwargs:
                 group = get_object_or_404(ConversationGroup, id=view.kwargs['pk'])
+            else:
+                return False
             
             if GroupMember.objects.get(Q(user=request.user) & Q(group=group)):
                 return True

@@ -94,6 +94,7 @@ class MessageSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.body = validated_data.get('body', instance.body)
+        instance.save()
 
         return instance
 
