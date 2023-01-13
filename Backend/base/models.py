@@ -123,7 +123,6 @@ class ConversationGroup(models.Model):
         auto_now_add=True
     )
     
-
     class Meta:
         ordering = ['-last_message']
 
@@ -164,6 +163,7 @@ class Message(models.Model):
     body = models.TextField()
     edited = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    is_location = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.body[0:50]

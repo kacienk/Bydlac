@@ -418,7 +418,8 @@ class EventViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         group = self.get_object().group
-        group.delete()
+        if group:
+            group.delete()
 
         return super().destroy(request, *args, **kwargs)
 
