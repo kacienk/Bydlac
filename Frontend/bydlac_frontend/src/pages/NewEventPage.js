@@ -13,7 +13,7 @@ const NewEventPage = () => {
             </div>
 
             <div id='TEMPgroupList'>
-                <ListHeader />
+                <ListHeader whichToShow={false} />
             </div>
         </div>
     )

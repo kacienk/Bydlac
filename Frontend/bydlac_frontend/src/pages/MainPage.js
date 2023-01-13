@@ -11,7 +11,6 @@ const MainPage = () => {
 
     useEffect(() => {
         const navigateMainPage = () => {
-            //console.log("MainPage.js navigateMainPage: currentGroupId: ", currentGroupId) TODO
             if (userToken)
                 navigate(`/chat/${currentGroupId}`)
             else

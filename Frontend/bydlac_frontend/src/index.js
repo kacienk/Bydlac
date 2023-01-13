@@ -8,11 +8,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   //<React.StrictMode>
     <div className='all'>
-        <head>
-            <style>
-                @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
-            </style>
-        </head>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+        </style>
         <App />
     </div>
   //</React.StrictMode>

@@ -1,7 +1,6 @@
-import React, {useContext, useEffect, useReducer, useState} from "react";
+import React, {useContext, useState} from "react";
 import userContext from "../context/UserContext";
 import {useNavigate} from "react-router-dom";
-import CreatableSelect from "react-select/creatable";
 import {DateTimePicker} from "@mui/x-date-pickers";
 import {TextField} from "@mui/material";
 import LocationMaps from "./LocationMaps";
@@ -22,28 +21,20 @@ const NewEvent = () => {
     const [newEventMaxParticipants, setNewEventMaxParticipants] = useState(1)
     const [newEventLocation, setNewEventLocation] = useState('')
     const [newEventExpirationDate, setNewEventExpirationDate] = useState(Date())
-    const [newSelectedUser, setNewSelectedUser] = useState('');
-    const [selectedUsersList, setSelectedUsersList] = useState([]);
 
-    const handleKeyDown = (event) => {
-        if (!newSelectedUser)
-            return;
+    const [addGroupToEvent, setAddGroupToEvent] = useState(false)
+    const [newGroupName, setNewGroupName] = useState('')
+    const [newGroupDescription, setNewGroupDescription] = useState('')
 
-        switch (event.key) {
-            case 'Enter':
-            case 'Tab':
-                setSelectedUsersList((prev) => [...prev, newSelectedUser]);
-                setNewSelectedUser('');
-                event.preventDefault();
-        }
-    };
+    const addGroup = () => { setAddGroupToEvent(prevState => !prevState) }
+
 
     const navigate = useNavigate()
 
     const newEventSubmitHandler = async (e) => {
         e.preventDefault()
 
-        let response = await fetch(`http://127.0.0.1:8000/api/events/`, {
+        const createEventResponse = await fetch(`http://127.0.0.1:8000/api/events/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -58,36 +49,31 @@ const NewEvent = () => {
                 expires: newEventExpirationDate
             })
         })
-        const data = await response.json()
-        const newEventId = data['id']
-        userEvents = setUserEvents(userEvents => [...userEvents, data])
+        const newEventData = await createEventResponse.json()
+        const newEventId = newEventData['id']
+        //userEvents = setUserEvents(userEvents => [...userEvents, newEventData])
 
-        // TODO check this part after Kacper corrects endpoints
-        selectedUsersList.map(async (user) => {
-            const userIdResponse = await fetch(`http://127.0.0.1:8000/api/users/from-username/?username=${user}`, {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${userToken}`
-                }
-            })
-            const userData = await userIdResponse.json()
-
-
-            let addUserToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/participants/`, {
+        if (addGroupToEvent) {
+            const createGroupToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/group/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${userToken}`
                 },
-                body: JSON.stringify({
-                    user: userData.id,
-                    group: newEventId,
-                    is_moderator: false
-                })
+/*                body: JSON.stringify({
+                    host: userId,
+                    name: newGroupName,
+                    description: newGroupDescription,
+                    is_private: false // TODO ask Kacper if really groups from events are always public?
+                })*/
             })
-        })
-        if (response.ok) {
+            //const newGroupToEventData = await
+            if (!createGroupToEventResponse.ok)
+                alert("Błąd podczas tworzenia grupy do wydarzenia")
+        }
+
+
+        if (createEventResponse.ok) {
             navigate('/event/' + newEventId)
         }
         else
@@ -129,7 +115,7 @@ const NewEvent = () => {
                             onClick={ handleMapsPopup } >
                         Dodaj lokalizację wydarzenia
                     </button>
-                    { newEventLocation !== '' ?
+                    { newEventLocation !== '' ? // TODO politely make Kacper change location variable in DB!!!
                         (<p>Lokalizacja wybrana pomyślnie!</p>) :
                         (<p>Nie wybrano lokalizacji</p>) }
 
@@ -141,24 +127,30 @@ const NewEvent = () => {
                         value={newEventExpirationDate}
                         renderInput={(props) => <TextField {...props} /> /* TODO style all this */} />
 
-                    <p className='newGroupPageText'>Dodaj członków:</p>
-                    <div id='newGroupUsers'>
-                        <CreatableSelect
-                            components={{ DropdownIndicator: null, }}
-                            inputValue={newSelectedUser}
-                            isClearable
-                            isMulti
-                            menuIsOpen={false}
-                            onChange={(newValue) => setSelectedUsersList(newValue)}
-                            onInputChange={(newValue) => setNewSelectedUser(newValue)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Wpisz nazwy użytkowników oddzielając je enterem"
-                            value={selectedUsersList}
-                            getOptionLabel={(user) => user}
-                        />
-                    </div>
+                    <button type="button"
+                            onClick={ addGroup } >
+                        {addGroupToEvent ? "Anuluj tworzenie grupy do tego wydarzenia" : "Stwórz grupę do tego wydarzenia"}
+                    </button>
 
-                    <button id='newEventPageButton'>Stwórz konwersację</button>
+                    {addGroupToEvent && (
+                        <div>
+                            <p className='newGroupPageText'>Nazwa konwersacji: </p>
+                            <input id='newGroupPageInput'
+                                   type="text"
+                                   required
+                                   placeholder="Nazwa"
+                                   onChange={(event) => {setNewGroupName(event.target.value)}}
+                            />
+
+                            <p className='newGroupPageText'>Opis:</p>
+                            <textarea
+                                id='newGroupPageTextarea'
+                                onChange={(event) => {setNewGroupDescription(event.target.value)}}
+                            ></textarea>
+                        </div>
+                    )}
+
+                    <button id='newEventPageButton'>Stwórz wydarzenie</button>
                 </form>
             </div>
 

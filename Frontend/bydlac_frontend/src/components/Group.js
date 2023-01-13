@@ -6,7 +6,7 @@ import User from "./User";
 import "./Group.css"
 
 const GroupOptions = ({groupId, handlePopup}) => {
-    const {userToken} = useContext(userContext)
+    const {userId, userToken} = useContext(userContext)
 
     const navigate = useNavigate()
 
@@ -105,7 +105,6 @@ const GroupOptions = ({groupId, handlePopup}) => {
         })
     }
 
-
     return (
         <div id="groupOptionsPopupBackground" >
             <div id="groupOptionsPopup">
@@ -121,10 +120,10 @@ const GroupOptions = ({groupId, handlePopup}) => {
                         onClick={ () => handleTogglingButtons('changeModerators') /* TODO only when user is admin? */ }>
                         Edytuj moderatorów
                     </button>
-                    <button
-                        onClick={ () => handleTogglingButtons('deleteGroup') }>
+                    { group.host === userId && <button
+                        onClick={() => handleTogglingButtons('deleteGroup')}>
                         Usuń grupę
-                    </button>
+                    </button> }
                 </div>
 
                 <div id="contentWindow">
@@ -139,8 +138,8 @@ const GroupOptions = ({groupId, handlePopup}) => {
                             <p> {group.description} </p>
                             <h3> Członkowie: </h3>
                             <div>
-                                {groupMembers.map(user => (
-                                    <User key={user.id} className="otherPerson" otherUser={user} />
+                                {groupMembers.map(groupMember => (
+                                    <User key={groupMember.user} className="otherPerson" otherUser={groupMember} />
                                 )) /* TODO fit unlimited amount of members - scrolling! */}
                             </div>
                         </div>

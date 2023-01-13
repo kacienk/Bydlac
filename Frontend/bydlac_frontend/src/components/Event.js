@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import userContext from "../context/UserContext";
 import {Link} from "react-router-dom";
-import "./Event.css"
+import "./Event.css";
 
 const Event = ({event}) => {
     let {changeCurrentEventId} = useContext(userContext)
@@ -11,7 +11,7 @@ const Event = ({event}) => {
     }
 
     return (
-        <Link to={`/chat/${event.id}`}>
+        <Link to={`/event/${event.id}`}>
             <button
                 id="eventButton"
                 onClick={handleClick}

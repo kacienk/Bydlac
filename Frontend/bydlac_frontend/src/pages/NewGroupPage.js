@@ -15,7 +15,7 @@ const NewGroupPage = () => {
             </div>
 
             <div id='TEMPgroupList'>
-                <ListHeader />
+                <ListHeader whichToShow={true} />
             </div>
         </div>
     )

@@ -24,9 +24,13 @@ const Conversation = ({props, groupId}) => {
             }
         }
 
-        if (groupId !== null)
-            getMessages(groupId)
-    }, [userToken, groupId, messages]) // [groupId, currentMessage]
+        const interval = setInterval(() => {
+            if (groupId !== null)
+                getMessages(groupId)
+        }, 1000)
+
+        return () => clearInterval(interval)
+    }, [userToken, groupId]) // [groupId, currentMessage]
 
 
 

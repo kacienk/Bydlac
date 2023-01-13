@@ -15,96 +15,98 @@ export const UserProvider = ({children}) => {
     const [userId, setUserId] = useState(
         localStorage.getItem('userId') ? JSON.parse(localStorage.getItem('userId')) : null)
 
+    const [currentEventId, changeCurrentEventId] = useState(null)
+    const [currentGroupId, changeCurrentGroupId] = useState(null)
+    const [currentMessage, changeCurrentMessage] = useState('')
+
     const [userGroups, setUserGroups] = useState([])
     useEffect(() => {
         let isSubscribed = true
 
         const getUserGroups = async () => {
-            let response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${userToken}`,
                 }
             })
-
-            let data = await response.json()
-            //console.log("getusergroups data: ", data)
+            const data = await response.json()
+            // console.log("Lista grup:", data)
 
             if (isSubscribed)
                  await setUserGroups(data)
             return data
         }
 
+        const interval = setInterval(() => {
+            if (userId !== null)
+                getUserGroups()
+        }, 1000)
 
-        if (userId !== null) {
-            let tempUserGroups = getUserGroups() // TODO
-            //console.log("tempUserGroups: ", tempUserGroups)
-            //console.log("userGroups in if in useEffect: ", userGroups)
-        } else
-            alert("napraw: problem z pobieraniem grup przed pozyskaniem ID usera")
-
-        return () => {isSubscribed = false}
-    }) // TODO maybe fix constant re-rendering? XD
+        return () => clearInterval(interval)
+    }, []) // TODO maybe fix constant re-rendering? XD
 
     const [userEvents, setUserEvents] = useState([])
     useEffect(() => {
         let isSubscribed = true
 
         const getUserEvents = async () => {
-            let response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/events/`, {
+            // `http://127.0.0.1:8000/api/users/${userId}/events/`
+            let response = await fetch(`http://127.0.0.1:8000/api/events/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${userToken}`,
                 }
             })
-
             let data = await response.json()
-            console.log("getUserEvents: data: ", data)
 
             if (isSubscribed)
                 await setUserEvents(data)
-            return data
         }
 
-        if (userId !== null) {
-            let tempUserEvents = getUserEvents() // TODO
-            console.log("tempUserEvents: ", tempUserEvents)
-            console.log("userEvents in if in useEffect: ", userEvents)
-        } else
-            alert("napraw: problem z pobieraniem eventów przed pozyskaniem ID usera")
-    }, [userId])
 
-    const [currentEventId, changeCurrentEventId] = useState(null)
+        const interval = setInterval(() => {
+            if (userId !== null)
+                getUserEvents()
+        }, 1000)
 
+        return () => clearInterval(interval)
+    }, [])
 
+/*    const [currentGroup, setCurrentGroup] = useState({})
 
-    let [currentGroupId, changeCurrentGroupId] = useState(null)
-    let [currentMessage, changeCurrentMessage] = useState('')
+    useEffect(() => {
+        if (currentGroupId) {
+            const tempCurrentGroup = userGroups.find((group) => {return group.id === currentGroupId})
+            setCurrentGroup(tempCurrentGroup)
+        }
+
+    }, [currentGroupId])*/
 
 
     let contextData = {
-        userToken:userToken,
-        setUserToken:setUserToken,
+        userToken:userToken, // Conversation, GroupOptions, InputMessage, NewEvent, NewGroup, EventDetails, MainPage
+        setUserToken:setUserToken, // LogIn
 
-        currentUser:currentUser,
-        setCurrentUser:setCurrentUser,
+        currentUser:currentUser, // User
+        setCurrentUser:setCurrentUser, // LogIn
 
-        userId:userId,
-        setUserId:setUserId,
+        userId:userId, // GroupOptions, InputMessage, Message, NewEvent, NewGroup, UsersHeader, EventDetails
+        setUserId:setUserId, // LogIn
 
-        userGroups:userGroups,
-        setUserGroups:setUserGroups,
+        userGroups:userGroups, // GroupList
+        setUserGroups:setUserGroups, // NewGroup
 
-        currentGroupId:currentGroupId,
-        changeCurrentGroupId:changeCurrentGroupId,
+        currentGroupId:currentGroupId, // InputMessage, LogIn, MainPage, ChatPage
+        changeCurrentGroupId:changeCurrentGroupId, // Group
 
-        userEvents:userEvents,
-        setUserEvents:setUserEvents,
+        userEvents:userEvents, // EventList, EventDetails
+        setUserEvents:setUserEvents, // NewEvent
 
-        currentEventId:currentEventId,
-        changeCurrentEventId:changeCurrentEventId,
+        currentEventId:currentEventId, // EventDetails
+        changeCurrentEventId:changeCurrentEventId, // Event,
 
         currentMessage:currentMessage
     }

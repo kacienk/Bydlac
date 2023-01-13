@@ -8,32 +8,27 @@ import InputMessage from "../components/InputMessage";
 import ListHeader from "../components/ListHeader";
 import GetOtherUser from "../utils/GetOtherUser";
 
-import "./MainPageTEMP.css"
+import "./ChatPage.css"
+import UsersHeader from "../components/UsersHeader";
 
-const MainPageTEMP = () => {
+const ChatPage = () => {
     const {currentGroupId} = useContext(userContext)
-    let otherUser = GetOtherUser()
+    //let otherUser = GetOtherUser()
 
     return (
         <div className='mainView'>
             <div>
-                <div className='usersHeader'>
-                    <User className='otherPerson' otherUser={otherUser} favorite={true}/>
-                    <Link id='logoutContainer' to={'/logout'}>
-                        <button className="logoutButton">Wyloguj</button>
-                    </Link>
-                    <User className='you' favorite={null}/>
-                </div>
+                <UsersHeader />
 
-                <Conversation groupId={currentGroupId}/>
+                <Conversation groupId={ currentGroupId } />
 
                 <InputMessage/>
             </div>
             <div id='TEMPgroupList'>
-                <ListHeader/>
+                <ListHeader whichToShow={true}/>
             </div>
         </div>
     )
 }
 
-export default MainPageTEMP;
+export default ChatPage;
