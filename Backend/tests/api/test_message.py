@@ -78,20 +78,7 @@ def test_message_create_fail_not_member(auth_client, create_user, create_group):
 
 
 @pytest.mark.django_db
-def test_message_create_fail_not_member(auth_client, create_user, create_group):
-    user1 = create_user(username='testuser1')
-    client = auth_client(user1)
-
-    host = create_user(username='testhost')
-    group = create_group(host=host, name='testgroup')
-    payload = dict(group=group.id, author=user1.id, body='test')
-    response = client.post(f'/api/groups/{group.id}/messages/', payload)
-    
-    assert response.status_code == 403, f'{response.data}'
-
-
-@pytest.mark.django_db
-def test_message_retireve(auth_client, create_user, create_group, create_message):
+def test_message_retrieve(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -107,7 +94,7 @@ def test_message_retireve(auth_client, create_user, create_group, create_message
 
 
 @pytest.mark.django_db
-def test_message_retireve_fail_not_member(auth_client, create_user, create_group, create_message):
+def test_message_retrieve_fail_not_member(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 
@@ -120,7 +107,7 @@ def test_message_retireve_fail_not_member(auth_client, create_user, create_group
 
 
 @pytest.mark.django_db
-def test_message_retireve_fail_wrong_id(auth_client, create_user, create_group, create_message):
+def test_message_retrieve_fail_wrong_id(auth_client, create_user, create_group, create_message):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)
 

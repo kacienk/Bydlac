@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.dateparse import parse_datetime
 
 from base.models import ConversationGroup, GroupMember
+from base.serializers import GroupMemberSerializer
 
 
 @pytest.mark.django_db
@@ -294,6 +295,4 @@ def test_conversation_group_delete_fail_not_member(auth_client, create_user, cre
     response = client.delete(f'/api/groups/{group.id}/')
 
     assert response.status_code == 403, f'{response.data}'
-
-
 

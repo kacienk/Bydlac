@@ -382,30 +382,6 @@ def test_event_group_create(auth_client, create_user, create_group, create_event
 
 
 @pytest.mark.django_db
-def test_event_group_create(auth_client, create_user, create_event):
-    user1 = create_user(username='testuser1')
-    client = auth_client(user1)
-
-    expiration_date = datetime(2023, 3, 1, 12, 0, 0, 0, pytz.UTC)
-    event = create_event(host=user1, name='testevent', description='test', expires=expiration_date)
-
-    response = client.post(f'/api/events/{event.id}/group/')
-    data = response.data
-
-    print(data)
-    event.refresh_from_db()
-    group = event.group
-
-    assert response.status_code == 201, f'{response.data}'
-    assert group is not None
-    assert data['id'] == group.id
-    assert data['host'] == group.host.id
-    assert data['name'] == group.name
-    assert group.name == event.name
-    assert group.description == event.description
-
-
-@pytest.mark.django_db
 def test_event_group_create_fail_not_host(auth_client, create_user, create_group, create_event):
     user1 = create_user(username='testuser1')
     client = auth_client(user1)

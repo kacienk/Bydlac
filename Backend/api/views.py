@@ -1,14 +1,11 @@
-from datetime import datetime
-
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, logout
 from django.db.models import Q, F
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-from django.core import serializers
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import api_view, action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -25,7 +22,7 @@ from base.serializers import GroupMemberSerializer
 from base.serializers import MessageSerializer
 from base.serializers import EventSerializer
 
-from .utils import IsMemberLinkSelf, UserAlreadyInGroup, IsNotGroupMember, IsSelf, IsHost, IsMember, IsModerator, IsAuthor, IsNotEventGroup, IsEventParticipant, routes
+from .utils import IsMemberLinkSelf, UserAlreadyInGroupException, IsNotGroupMemberException, EventGroupException, IsSelf, IsConversationGroupHost, IsEventHost, IsMember, IsPublic, IsModerator, IsAuthor, IsEventParticipant, routes
 from .serializers import LoginSerializer, RegisterSerializer, GroupMemberListSerializer
 
 
@@ -155,17 +152,17 @@ class ConversationGroupViewSet(ModelViewSet):
 
 
     def get_permissions(self):
-        if self.action == ('update', 'partial_update'):
-            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsNotEventGroup]
+        if self.action in ('update', 'partial_update'):
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator]
         elif self.action == 'destroy':
-            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsHost, IsNotEventGroup]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsConversationGroupHost]
         elif self.action == 'list_all_groups':
             permission_classes = [permissions.IsAdminUser]
         else:
             # Here might slight change in logic might be necessary.
             # Maybe another permission that looks like 'IsMember | IsPublic' should be added.
             # We'll see in tests.
-            permission_classes = [permissions.IsAuthenticated]
+            permission_classes = [permissions.IsAuthenticated, IsMember | IsPublic]
 
         return [permission() for permission in permission_classes]
 
@@ -193,6 +190,22 @@ class ConversationGroupViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(host=self.request.user, is_event_group=False)
+
+    def update(self, request, *args, **kwargs):
+        group = self.get_object()
+
+        if group.is_event_group:
+            raise EventGroupException()
+
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        group = self.get_object()
+
+        if group.is_event_group:
+            raise EventGroupException()
+
+        return super().destroy(request, *args, **kwargs)
 
 
     @action(methods=['get'], detail=False, url_path='all')
@@ -230,11 +243,11 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
         if self.action == 'list':
             permission_classes = [permissions.IsAuthenticated, IsMember]
         elif self.action == 'create':
-            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator]
         elif self.action in ('update', 'partial_update'):
-            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator, IsHost]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator, IsConversationGroupHost]
         else: #  self.action == 'destroy':
-            permission_classes = [permissions.IsAuthenticated, IsNotEventGroup, IsMember, IsModerator | IsMemberLinkSelf]
+            permission_classes = [permissions.IsAuthenticated, IsMember, IsModerator | IsMemberLinkSelf]
 
         return [permission() for permission in permission_classes]
 
@@ -245,10 +258,16 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
             'user': request.data['user']
         }
 
+        group = get_object_or_404(ConversationGroup, id=data['group'])
+        user = get_object_or_404(User, id=data['user'])
+
+        if group.is_event_group:
+            raise EventGroupException()
+
         # Checking if user is not member already
         try:
-            if queryset.get(Q(user=data['user']) & Q(group=data['group'])):
-                raise UserAlreadyInGroup()
+            if queryset.get(Q(user=user) & Q(group=group)):
+                raise UserAlreadyInGroupException()
         except ObjectDoesNotExist:
             pass  
         
@@ -268,12 +287,15 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
 
         group = get_object_or_404(ConversationGroup, id=data['group'])
         user = get_object_or_404(User, id=data['user'])
+        
+        if group.is_event_group:
+            raise EventGroupException()
 
         try:
             instance = queryset.get(Q(user=user) & Q(group=group))
         except ObjectDoesNotExist:
             msg = 'User to change moderator status is not a member of the group'
-            raise IsNotGroupMember(msg)
+            raise IsNotGroupMemberException(msg)
 
         if user == group.host:
             msg = 'Host\'s moderator status cannot be changed'
@@ -295,11 +317,14 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
         group = get_object_or_404(ConversationGroup, id=data['group'])
         user = get_object_or_404(User, id=data['user'])
 
+        if group.is_event_group:
+            raise EventGroupException()
+
         try:
             instance = queryset.get(Q(user=user) & Q(group=group))
         except ObjectDoesNotExist:
             msg = 'User to be removed is not a member of the group'
-            raise IsNotGroupMember(msg)
+            raise IsNotGroupMemberException(msg)
 
         if user == group.host:
             msg = 'Host cannot be removed from the group'
@@ -367,8 +392,8 @@ class EventViewSet(ModelViewSet):
 
 
     def get_permissions(self):
-        if self.action == ('partial_update', 'update', 'destroy'):
-            permission_classes = [permissions.IsAuthenticated, IsHost]
+        if self.action in ('partial_update', 'update', 'destroy'):
+            permission_classes = [permissions.IsAuthenticated, IsEventHost]
         else:
             permission_classes = [permissions.IsAuthenticated]
 
@@ -418,7 +443,8 @@ class EventViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         group = self.get_object().group
-        group.delete()
+        if group:
+            group.delete()
 
         return super().destroy(request, *args, **kwargs)
 
@@ -492,7 +518,7 @@ class EventGroupViewSet(GenericViewSet,
     
     def get_permissions(self):
         if self.action == 'create':
-            permission_classes = [permissions.IsAuthenticated, IsHost]
+            permission_classes = [permissions.IsAuthenticated, IsEventHost]
         else:
             permission_classes = [permissions.IsAuthenticated, IsEventParticipant]
 
