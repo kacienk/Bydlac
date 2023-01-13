@@ -11,9 +11,6 @@ const SignUpPage = () => {
 
             <SignUp/>
 
-            <p className="lub">Lub:</p>
-            <button className="google">GOOGLE</button>
-
             <p className="maszJuzKonto">Masz już konto?</p>
 
             <Link to="/login" className="zalogujSie">Zaloguj się</Link>

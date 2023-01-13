@@ -10,7 +10,8 @@ const EventDetails = () => {
         userToken,
         userId,
         currentEventId,
-        userEvents
+        userEvents,
+        changeCurrentGroupId
     } = useContext(userContext)
 
     const [event, setEvent] = useState({})
@@ -150,7 +151,7 @@ const EventDetails = () => {
                 <h3> Uczestnicy wydarzenia: </h3>
                 <div>
                     { eventParticipants.map(participant =>
-                        <User key={participant.id} className="otherPerson" otherUser={participant} />) }
+                        <User key={participant.id} className="otherPerson" user={participant} />) }
                 </div>
 
 
@@ -167,7 +168,9 @@ const EventDetails = () => {
                     </button> ) }
 
                 { groupIdToCurrentEvent &&
-                    <button onClick={ () => { navigate(`/chat/${groupIdToCurrentEvent}`) } } >
+                    <button onClick={ () => {
+                        changeCurrentGroupId(groupIdToCurrentEvent)
+                        navigate(`/chat/${groupIdToCurrentEvent}`) } } >
                         Przejdź do konwersacji związanej z tym wydarzeniem
                     </button> }
 

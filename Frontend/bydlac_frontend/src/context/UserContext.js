@@ -32,10 +32,12 @@ export const UserProvider = ({children}) => {
                 }
             })
             const data = await response.json()
-            // console.log("Lista grup:", data)
+            //console.log("Lista grup:", data)
+            //console.log("Najnowsza grupa: ", data[0].id)
 
-            if (isSubscribed)
-                 await setUserGroups(data)
+            if (isSubscribed) {
+                await setUserGroups(data)
+            }
             return data
         }
 

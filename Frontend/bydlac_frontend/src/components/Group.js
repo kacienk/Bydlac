@@ -139,7 +139,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
                             <h3> Członkowie: </h3>
                             <div>
                                 {groupMembers.map(groupMember => (
-                                    <User key={groupMember.user} className="otherPerson" otherUser={groupMember} />
+                                    <User key={groupMember.user} className="otherPerson" user={groupMember} />
                                 )) /* TODO fit unlimited amount of members - scrolling! */}
                             </div>
                         </div>

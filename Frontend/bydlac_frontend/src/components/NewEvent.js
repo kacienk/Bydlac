@@ -59,13 +59,7 @@ const NewEvent = () => {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${userToken}`
-                },
-/*                body: JSON.stringify({
-                    host: userId,
-                    name: newGroupName,
-                    description: newGroupDescription,
-                    is_private: false // TODO ask Kacper if really groups from events are always public?
-                })*/
+                }
             })
             //const newGroupToEventData = await
             if (!createGroupToEventResponse.ok)
@@ -115,7 +109,7 @@ const NewEvent = () => {
                             onClick={ handleMapsPopup } >
                         Dodaj lokalizację wydarzenia
                     </button>
-                    { newEventLocation !== '' ? // TODO politely make Kacper change location variable in DB!!!
+                    { newEventLocation !== '' ?
                         (<p>Lokalizacja wybrana pomyślnie!</p>) :
                         (<p>Nie wybrano lokalizacji</p>) }
 
