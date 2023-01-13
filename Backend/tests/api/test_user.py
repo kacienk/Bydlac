@@ -55,6 +55,7 @@ def test_users_list(client, create_superuser, create_user, auth_user):
 
     all_users_serializer = UserSerializer(User.objects.all(), many=True)
 
+    assert response.status_code == 200
     assert data == all_users_serializer.data
 
 
