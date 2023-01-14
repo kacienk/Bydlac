@@ -9,6 +9,8 @@ djangorestframework = "*"
 django-cors-headers = "*"
 requests = "*"
 psycopg2-binary = "*"
+drf-nested-routers = "*"
+pillow = "*"
 
 [dev-packages]
 
