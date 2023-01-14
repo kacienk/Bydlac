@@ -360,7 +360,8 @@ class MessageViewSet(ModelViewSet):
         data = {
             'author': request.user.id,
             'group': self.kwargs['group_pk'],
-            'body': request.data['body']
+            'body': request.data['body'],
+            'is_location': request.data.get('is_location')
         }
 
         serializer = self.get_serializer(data=data)
