@@ -49,7 +49,6 @@ const GroupOptions = ({groupId, handlePopup}) => {
 
     const [selectedToDelete, setSelectedToDelete] = useState([])
 
-
     useEffect(() => {
         const getGroupDetails = async () => {
             const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
@@ -71,11 +70,11 @@ const GroupOptions = ({groupId, handlePopup}) => {
             })
             const dataMembers = await responseMembers.json()
             setGroupMembers(dataMembers)
+            //console.log("In GroupDetails dataMembers: ", dataMembers)
         }
 
         getGroupDetails()
     }, [selectedToDelete])
-
 
     const deleteUsers = () => {
         console.log("selectedToDelete: ", selectedToDelete)
@@ -94,6 +93,20 @@ const GroupOptions = ({groupId, handlePopup}) => {
         setSelectedToDelete([])
     }
 
+    const changeModerator = async (groupMember) => {
+        //console.log("In GroupOptions groupMember: ", groupMember)
+
+        const changeModeratorResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${groupMember.user}/`, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            },
+            body: JSON.stringify(groupMember)
+        })
+        const changeModeratorData = await changeModeratorResponse.json()
+        //console.log("In GroupOptions changeModeratorData: ", changeModeratorData)
+    }
 
     const deleteGroup = async () => {
         const deleteGroupResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
@@ -139,7 +152,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
                             <h3> Członkowie: </h3>
                             <div>
                                 {groupMembers.map(groupMember => (
-                                    <User key={groupMember.user} className="otherPerson" user={groupMember} />
+                                    <User key={groupMember.user} className="otherPerson" userId={groupMember.user} />
                                 )) /* TODO fit unlimited amount of members - scrolling! */}
                             </div>
                         </div>
@@ -165,7 +178,25 @@ const GroupOptions = ({groupId, handlePopup}) => {
 
                     {toggleChangeModeratorsButton && (
                         <div id="changeModerators">
-                            <h3> TODO </h3>
+                            {groupMembers.map(groupMember => (
+                                <div className="isModeratorBox" key={ groupMember.user } >
+                                    <p className="isModeratorUsername"> { groupMember.username } </p>
+
+                                    {group.host === groupMember.user ? (<p> HOST </p>) : (
+                                        <label className="switch">
+                                            <input
+                                                type="checkbox"
+                                                defaultChecked={groupMember.is_moderator}
+                                                onChange={() => {
+                                                    groupMember.is_moderator = !groupMember.is_moderator
+                                                    changeModerator(groupMember)
+                                                }}/>
+
+                                            <span className="slider"></span>
+                                        </label>
+                                    )}
+                                </div>
+                                )) }
                         </div>
                     )}
 

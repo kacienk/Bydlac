@@ -25,7 +25,7 @@ const UsersHeader = () => {
 
                 <h3> {currentGroup ? currentGroup.name : '' } </h3>
 
-                <User className='you' userId={userId} favorite={null}/>
+                <User className='you' userId={userId} />
             </div>
         </div>
     )

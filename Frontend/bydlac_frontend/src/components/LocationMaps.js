@@ -44,20 +44,25 @@ const LocationMaps = ({handleMapsPopup, setLocation, submitLocation, markerPosit
                         center={center}
                         zoom={13}
                         onLoad={onLoad}
-                        onClick={addPlace}
+                        onClick={(position) => {
+                            if (setLocation !== null)
+                                addPlace(position)
+                        }}
                         onUnmount={onUnmount}
                     >
                         <Marker
                             position={position}
                             visible={visible} />
                     </GoogleMap>
-                    <button
-                        onClick={ () => {
-                            if (setLocation !== null)
-                                setLocation(position)
-                            submitLocation()} } >
-                        Potwierdź
-                    </button>
+                    { setLocation !== null ?
+                        <button
+                            onClick={() => {
+                                if (setLocation !== null)
+                                    setLocation(position)
+                                submitLocation()
+                            }}>
+                            Potwierdź
+                        </button> : null }
                 </div>
             </div>
     ) : <></>

@@ -151,7 +151,7 @@ const EventDetails = () => {
                 <h3> Uczestnicy wydarzenia: </h3>
                 <div>
                     { eventParticipants.map(participant =>
-                        <User key={participant.id} className="otherPerson" user={participant} />) }
+                        <User key={participant.id} className="otherPerson" userId={participant.id} />) }
                 </div>
 
 
@@ -188,6 +188,8 @@ const EventDetails = () => {
 }
 
 const EventPage = () => {
+    const {userId} = useContext(userContext)
+
     return (
         <div className='mainView'>
             <div>
@@ -197,7 +199,7 @@ const EventPage = () => {
                             Wyloguj
                         </button>
                     </Link>
-                    <User className='you' favorite={ null }/>
+                    <User className='you' userId={userId}/>
                 </div>
 
                 <EventDetails />

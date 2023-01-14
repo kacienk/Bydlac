@@ -30,7 +30,8 @@ function InputMessage() {
             body: JSON.stringify({
                 'body': currentMessage,
                 'author': userId,
-                'group': currentGroupId
+                'group': currentGroupId,
+                'is_location': false
             })
         })
 
@@ -46,7 +47,7 @@ function InputMessage() {
 
     const [location, setLocation] = useState({})
     const sendLocation = async () => {
-        if (location) {
+        if (location !== {}) {
             let response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
                 method: 'POST',
                 headers: {
@@ -56,7 +57,8 @@ function InputMessage() {
                 body: JSON.stringify({
                     'body': JSON.stringify(location),
                     'author': userId,
-                    'group': currentGroupId
+                    'group': currentGroupId,
+                    'is_location': true
                 })
             })
 

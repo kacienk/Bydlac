@@ -3,11 +3,12 @@ import {useContext, useEffect} from "react";
 import userContext from "../context/UserContext";
 import UsersHeader from "../components/UsersHeader";
 import ListHeader from "../components/ListHeader";
+import Person1 from "../components/person1.jpg";
 
 const MainPage = () => {
     const {
         userToken,
-        currentGroupId
+        currentUser
     } = useContext(userContext)
     const navigate = useNavigate()
 
@@ -23,7 +24,11 @@ const MainPage = () => {
         <div className='mainView'>
             <div>
                 <UsersHeader />
-                {/* TODO display here everything tha same like in UserDetails return but not in popup */}
+
+                <h1> Witaj { currentUser.username }! </h1>
+                <img className="profileImage" src={ Person1 } alt=''/>
+
+                <p> Aby przejść do konwersacji, wybierz z listy po prawej </p>
             </div>
             <div id='TEMPgroupList'>
                 <ListHeader whichToShow={true}/>

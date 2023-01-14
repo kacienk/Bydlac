@@ -152,6 +152,7 @@ const NewEvent = () => {
                 <LocationMaps
                     handleMapsPopup={ handleMapsPopup }
                     setLocation={ setNewEventLocation }
+                    submitLocation={ handleMapsPopup }
                     markerPosition={ {lat: 0, lng: 0} }
                     markerVisibility={ false } /> }
         </div>
