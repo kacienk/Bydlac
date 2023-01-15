@@ -158,3 +158,12 @@ Frontend/bydlac_frontend/.env.production.local
 Frontend/bydlac_frontend/npm-debug.log*
 Frontend/bydlac_frontend/yarn-debug.log*
 Frontend/bydlac_frontend/yarn-error.log*
+
+# data
+Backend/data/
+
+# sonar-scanner stuff
+.scannerwork/
+
+# config files
+.config.sh
