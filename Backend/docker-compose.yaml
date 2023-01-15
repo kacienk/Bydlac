@@ -1,0 +1,23 @@
+version: "3"
+services:
+  bydlac_backend:
+    build: .
+    volumes:
+      - .:/backend
+    ports: 
+      - 8000:8000
+    image: bydlac_backend:bydlac_backend
+    container_name: bydlac_backend
+    command: python /backend/manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=bydlacdb
+      - POSTGRES_USER=bydlacdb_user
+      - POSTGRES_PASSWORD=bydlac_pswd$31hiald
+    container_name: bydlac_postgres
+
