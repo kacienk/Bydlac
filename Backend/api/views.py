@@ -1,14 +1,14 @@
 import json
-import os
 
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, logout
 from django.db.models import Q, F
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from django.views.decorators.http import require_safe
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -30,6 +30,7 @@ from .serializers import LoginSerializer, RegisterSerializer, GroupMemberListSer
 
 
 @api_view(['get'])
+@require_safe
 def get_routes(request):
     with open('/backend/api/routes.json', 'r') as fp:
         routes = json.load(fp)

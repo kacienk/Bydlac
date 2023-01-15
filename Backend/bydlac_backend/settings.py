@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-&-i*6$!vs!bmq3h=ac8b*sy5v)t=xc)d(*696_qcd&p!*1(fl("
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '172.19.0.2']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -85,11 +86,11 @@ WSGI_APPLICATION = "bydlac_backend.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bydlacdb',
-        'USER': 'bydlacdb_user',
-        'PASSWORD': 'bydlac_pswd$31hiald',
-        'HOST': '192.168.92.20',
-        'PORT': '5432',
+        'NAME': os.environ['POSTGRES_DB'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'HOST': os.environ['DB_IP'],
+        'PORT': int(os.environ['DB_PORT']),
     }
 }
 

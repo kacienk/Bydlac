@@ -15,9 +15,9 @@ def test_conversation_group_list_non_private(auth_client, create_user, create_gr
 
     user2 = create_user(username='testuser2')
     group1 = create_group(host=user2, name='group1', is_private=False)
-    group2 = create_group(host=user2, name='group2')
+    create_group(host=user2, name='group2')
     group3 = create_group(host=user2, name='group3', is_private=False)
-    group4 = create_group(host=user2, name='group4')
+    create_group(host=user2, name='group4')
 
     response = client.get('/api/groups/')
     data = response.data
@@ -65,10 +65,10 @@ def test_conversation_group_list_all_fail_not_admin(auth_client, create_user, cr
     client = auth_client(user)
 
     user2 = create_user(username='testuser2')
-    group1 = create_group(host=user2, name='group1', is_private=False)
-    group2 = create_group(host=user2, name='group2')
-    group3 = create_group(host=user2, name='group3', is_private=False)
-    group4 = create_group(host=user2, name='group4')
+    create_group(host=user2, name='group1', is_private=False)
+    create_group(host=user2, name='group2')
+    create_group(host=user2, name='group3', is_private=False)
+    create_group(host=user2, name='group4')
 
     response = client.get('/api/groups/all/')
 
@@ -102,7 +102,7 @@ def test_conversation_group_create(auth_client, create_user):
 def test_conversation_group_create_fail_two_groups_with_the_same_name(auth_client, create_user, create_group):
     user = create_user(username='testuser')
     client = auth_client(user)
-    group = create_group(host=user, name='testgroup')
+    create_group(host=user, name='testgroup')
 
     response = client.post('/api/groups/', dict(name='testgroup', is_private=False))
 

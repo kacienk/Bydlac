@@ -192,7 +192,7 @@ def test_group_member_delete_fail_regular_member_not_self(auth_client, create_us
     group = create_group(host=host, name='testgroup')
     add_user_to_group(group=group, user=user1, is_moderator=False)
     user2 = create_user(username='testuser2')
-    link = add_user_to_group(group=group, user=user2)
+    add_user_to_group(group=group, user=user2)
 
     response = client.delete(f'/api/groups/{group.id}/members/{user2.id}/')
     
@@ -207,7 +207,7 @@ def test_group_member_delete_fail_not_member(auth_client, create_user, create_gr
     host = create_user(username='testhost')
     group = create_group(host=host, name='testgroup')
     user2 = create_user(username='testuser2')
-    link = add_user_to_group(group=group, user=user2)
+    add_user_to_group(group=group, user=user2)
 
     response = client.delete(f'/api/groups/{group.id}/members/{user2.id}/')
     
@@ -223,7 +223,7 @@ def test_group_member_delete_fail_moderator_other_moderator(auth_client, create_
     group = create_group(host=host, name='testgroup')
     add_user_to_group(group=group, user=user1, is_moderator=True)
     user2 = create_user(username='testuser2')
-    link = add_user_to_group(group=group, user=user2, is_moderator=True)
+    add_user_to_group(group=group, user=user2, is_moderator=True)
 
     response = client.delete(f'/api/groups/{group.id}/members/{user2.id}/')
     
@@ -270,7 +270,7 @@ def test_group_member_patch_fail_not_host(auth_client, create_user, create_group
     group = create_group(host=host, name='testgroup')
     add_user_to_group(group=group, user=user1, is_moderator=True)
     user2 = create_user(username='testuser2')
-    link = add_user_to_group(group=group, user=user2)
+    add_user_to_group(group=group, user=user2)
 
     response = client.patch(f'/api/groups/{group.id}/members/{user2.id}/', dict(is_moderator=True))
     
@@ -296,7 +296,7 @@ def test_group_member_patch_fail_is_event_group(auth_client, create_user, create
 
     group = create_group(host=user1, name='testgroup', is_event_group=True)
     user2 = create_user(username='testuser2')
-    link = add_user_to_group(group=group, user=user2)
+    add_user_to_group(group=group, user=user2)
 
     response = client.patch(f'/api/groups/{group.id}/members/{user2.id}/', dict(is_moderator=True))
     

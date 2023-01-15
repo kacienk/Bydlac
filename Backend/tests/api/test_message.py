@@ -35,9 +35,9 @@ def test_message_list_fail_not_member(auth_client, create_user, create_group, cr
 
     host = create_user(username='testhost')
     group = create_group(host=host, name='testgroup')
-    message1 = create_message(group=group, author=host, body='test1')
-    message2 = create_message(group=group, author=host, body='test2')
-    message3 = create_message(group=group, author=host, body='test3')
+    create_message(group=group, author=host, body='test1')
+    create_message(group=group, author=host, body='test2')
+    create_message(group=group, author=host, body='test3')
 
     response = client.get(f'/api/groups/{group.id}/messages/')
     
