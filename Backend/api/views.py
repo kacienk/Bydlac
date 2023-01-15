@@ -357,12 +357,9 @@ class MessageViewSet(ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         self._update_group()
-        data = {
-            'author': request.user.id,
-            'group': self.kwargs['group_pk'],
-            'body': request.data['body'],
-            'is_location': request.data.get('is_location')
-        }
+        data = {key: value for key, value in request.data.items()} 
+        data['author'] = request.user.id
+        data['group'] = self.kwargs['group_pk']
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)

@@ -84,12 +84,8 @@ WSGI_APPLICATION = "bydlac_backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bydlacdb',
-        'USER': 'bydlacdb_user',
-        'PASSWORD': 'bydlac_pswd$31hiald',
-        'HOST': '192.168.92.20',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
 

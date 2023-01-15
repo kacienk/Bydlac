@@ -11,6 +11,9 @@ services:
     command: python /backend/manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
+    networks:
+      bydlac_network:
+        ipv4_address: 192.168.92.21
   db:
     image: postgres
     volumes:
@@ -20,4 +23,14 @@ services:
       - POSTGRES_USER=bydlacdb_user
       - POSTGRES_PASSWORD=bydlac_pswd$31hiald
     container_name: bydlac_postgres
+    networks:
+      bydlac_network:
+        ipv4_address: 192.168.92.20
+networks:
+  bydlac_network:
+    ipam: 
+      driver: default
+      config: 
+        - subnet: "192.168.92.0/24"
+    
 
