@@ -26,6 +26,10 @@ def test_message_list(auth_client, create_user, create_group, create_message):
     assert data[0]['body'] == message1.body
     assert data[1]['body'] == message2.body
     assert data[2]['body'] == message3.body
+    assert data[0]['username'] == user1.username
+    assert data[1]['username'] == user1.username
+    assert data[2]['username'] == user1.username
+
 
 
 @pytest.mark.django_db

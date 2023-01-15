@@ -26,7 +26,7 @@ from base.serializers import MessageSerializer
 from base.serializers import EventSerializer
 
 from .utils import IsMemberLinkSelf, UserAlreadyInGroupException, IsNotGroupMemberException, EventGroupException, IsSelf, IsConversationGroupHost, IsEventHost, IsMember, IsPublic, IsModerator, IsAuthor, IsEventParticipant
-from .serializers import LoginSerializer, RegisterSerializer, GroupMemberListSerializer
+from .serializers import LoginSerializer, RegisterSerializer, GroupMemberListSerializer, MessageListSerializer
 
 
 @api_view(['get'])
@@ -41,7 +41,6 @@ def get_routes(request):
 class LoginView(views.APIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = LoginSerializer
-
 
     def post(self, request, format=None):
         serializer = LoginSerializer(data=self.request.data, context={ 'request': self.request })
@@ -60,7 +59,6 @@ class LoginView(views.APIView):
 class LogoutView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
-
     def get(self, request, format=None):
         logout(request)
         return Response(None, status=status.HTTP_202_ACCEPTED)
@@ -78,7 +76,6 @@ class UserViewSet(GenericViewSet,
                   mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin):
     queryset = User.objects.all()
-
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -150,13 +147,11 @@ class ConversationGroupViewSet(ModelViewSet):
 
         return DetailedConversationGroupSerializer
 
-
     def get_queryset(self):
         if self.action == 'list':
             return ConversationGroup.objects.filter(is_private=False)
 
         return ConversationGroup.objects.all()
-
 
     def get_permissions(self):
         if self.action in ('update', 'partial_update'):
@@ -166,13 +161,9 @@ class ConversationGroupViewSet(ModelViewSet):
         elif self.action == 'list_all_groups':
             permission_classes = [permissions.IsAdminUser]
         else:
-            # Here might slight change in logic might be necessary.
-            # Maybe another permission that looks like 'IsMember | IsPublic' should be added.
-            # We'll see in tests.
             permission_classes = [permissions.IsAuthenticated, IsMember | IsPublic]
 
         return [permission() for permission in permission_classes]
-
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -194,7 +185,6 @@ class ConversationGroupViewSet(ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-
     def perform_create(self, serializer):
         serializer.save(host=self.request.user, is_event_group=False)
 
@@ -213,7 +203,6 @@ class ConversationGroupViewSet(ModelViewSet):
             raise EventGroupException()
 
         return super().destroy(request, *args, **kwargs)
-
 
     @action(methods=['get'], detail=False, url_path='all')
     def list_all_groups(self, request, *args, **kwargs):
@@ -234,7 +223,6 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
 
         return GroupMemberSerializer
 
-
     def get_queryset(self):
         group_pk = self.kwargs['group_pk']
 
@@ -244,7 +232,6 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
             return group_member.values('user', 'group', 'is_moderator', username=F('user__username'))
 
         return GroupMember.objects.filter(group=group_pk)
-
 
     def get_permissions(self):
         if self.action == 'list':
@@ -346,11 +333,27 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
 
 
 class MessageViewSet(ModelViewSet):
-    serializer_class = MessageSerializer
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return MessageListSerializer
+
+        return MessageSerializer
     
     def get_queryset(self):
-        return Message.objects.filter(group=self.kwargs['group_pk'])
+        group_pk = self.kwargs['group_pk']
 
+        if self.action == 'list':
+            messages = Message.objects.select_related('author').filter(group=group_pk)
+
+            return messages.values('author',
+                                    'group',
+                                    'body',
+                                    'edited',
+                                    'created',
+                                    'is_location',
+                                    username=F('author__username'))
+
+        return Message.objects.filter(group=group_pk)
 
     def get_permissions(self):
         if self.action in ('list', 'retreive', 'create'):
@@ -378,7 +381,6 @@ class MessageViewSet(ModelViewSet):
         group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
         serializer.save(author=self.request.user, group=group)
     
-
     def _update_group(self):
         group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
         group.last_message = timezone.now()
@@ -387,14 +389,12 @@ class MessageViewSet(ModelViewSet):
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
-    
-    
+     
     def get_serializer_class(self):
         if self.action == 'participants_list':
             return UserSerializer
 
         return EventSerializer
-
 
     def get_permissions(self):
         if self.action in ('partial_update', 'update', 'destroy'):
@@ -403,7 +403,6 @@ class EventViewSet(ModelViewSet):
             permission_classes = [permissions.IsAuthenticated]
 
         return [permission() for permission in permission_classes]
-
 
     def create(self, request, *args, **kwargs):
         data = {key: value for key, value in request.data.items()} 
@@ -419,10 +418,8 @@ class EventViewSet(ModelViewSet):
         event.participants.add(request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-
     def perform_create(self, serializer):
         serializer.save(host=self.request.user)
-
     
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -445,15 +442,13 @@ class EventViewSet(ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-
     def destroy(self, request, *args, **kwargs):
         group = self.get_object().group
         if group:
             group.delete()
 
         return super().destroy(request, *args, **kwargs)
-
-    
+   
     @action(methods=['get'], detail=True, url_path='participants')
     def participants_list(self, request, *args, **kwargs):
         event = self.get_object()
@@ -461,7 +456,6 @@ class EventViewSet(ModelViewSet):
 
         serializer = self.get_serializer(participants, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
     
     @action(methods=['get'], detail=True)
     def join(self, request, *args, **kwargs):
@@ -495,7 +489,6 @@ class EventViewSet(ModelViewSet):
         serializer = self.get_serializer(event, many=False)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-
     @action(methods=['get'], detail=True)
     def leave(self, request, *args, **kwargs):
         event = get_object_or_404(self.queryset, id=kwargs['pk'])
@@ -519,7 +512,6 @@ class EventViewSet(ModelViewSet):
 class EventGroupViewSet(GenericViewSet,
                         mixins.CreateModelMixin):
     serializer_class = DetailedConversationGroupSerializer
-
     
     def get_permissions(self):
         if self.action == 'create':
