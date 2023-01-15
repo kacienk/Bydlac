@@ -22,6 +22,8 @@ FROM base AS runtime
 
 EXPOSE 8000
 
+COPY . /backend
+
 # Copy virtual env from python-deps stage
 COPY --from=python-deps /.venv /.venv
 ENV PATH="/.venv/bin:$PATH"
@@ -30,6 +32,5 @@ ENV PATH="/.venv/bin:$PATH"
 # RUN useradd --create-home appuser
 # WORKDIR /home/appuser
 # USER appuser  
-# COPY . /backend
 
 # CMD ["python", "/backend/manage.py", "runserver", "0.0.0.0:8000"]

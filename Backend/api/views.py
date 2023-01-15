@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_safe
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.decorators import api_view, action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import GenericViewSet, ModelViewSet

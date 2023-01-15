@@ -2,8 +2,6 @@ version: "3"
 services:
   bydlac_backend:
     build: .
-    volumes:
-      - .:/backend
     ports: 
       - 8000:8000
     image: bydlac_backend:bydlac_backend
