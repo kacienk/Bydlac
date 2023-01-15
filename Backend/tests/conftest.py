@@ -3,6 +3,7 @@ import uuid
 from rest_framework.test import APIClient
 
 from base.models import User, ConversationGroup, Event, GroupMember, Message
+from .exceptions import NoHostException, NoEventException, NoUserException, NoConversationGroupException, NoAuthorException
 
 
 @pytest.fixture
@@ -85,9 +86,9 @@ def add_user_to_group():
     """
     def add(**kwargs):
         if 'user' not in kwargs:
-            raise Exception('User instance not specified.')
+            raise NoUserException('User instance not specified.')
         if 'group' not in kwargs:
-            raise Exception('Group instance not specified.')
+            raise NoConversationGroupException('Group instance not specified.')
 
         return GroupMember.objects.create(**kwargs)
 
@@ -104,7 +105,7 @@ def create_group(add_user_to_group):
         if 'name' not in kwargs:
             kwargs['name'] = str(uuid.uuid4())
         if 'host' not in kwargs:
-            raise Exception('Group host not specified.')
+            raise NoHostException('Group host not specified.')
 
         group = ConversationGroup.objects.create(**kwargs)
         add_user_to_group(user=kwargs['host'], group=group, is_moderator=True)
@@ -121,9 +122,9 @@ def add_user_to_event(add_user_to_group):
     """
     def add(**kwargs):
         if 'user' not in kwargs:
-            raise Exception('Event instance not specified.')
+            raise NoUserException('User instance not specified.')
         if 'event' not in kwargs:
-            raise Exception('Group instance not specified.')
+            raise NoEventException('Event instance not specified.')
 
         user = kwargs['user']
         event = kwargs['event']
@@ -145,7 +146,7 @@ def create_event(add_user_to_event):
         if 'name' not in kwargs:
             kwargs['name'] = str(uuid.uuid4())
         if 'host' not in kwargs:
-            raise Exception('Event host not specified.')
+            raise NoHostException('Event host not specified.')
 
         event =  Event.objects.create(**kwargs)
         add_user_to_event(user=kwargs['host'], event=event)
@@ -168,9 +169,9 @@ def create_message():
     """
     def make_message(**kwargs):
         if 'author' not in kwargs:
-            raise Exception('Message author not specified.')
+            raise NoAuthorException('Message author not specified.')
         if 'group' not in kwargs:
-            raise Exception('Message group not specified.')
+            raise NoConversationGroupException('Message group not specified.')
         if 'body' not in kwargs:
             kwargs['body'] = 'test'
         

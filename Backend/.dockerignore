@@ -1,0 +1,42 @@
+# ignore test stuff
+tests/
+bydlac_backend/test_settings.py
+.coverage
+.pytest_cache
+coverage.xml
+pytest.ini
+
+# ignore python stuff
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.cache
+nosetests.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.hypothesis
+
+# database data
+data/
+
+# test database
+db.sqlite3
+
+# unnecessary docker stuff
+.dockeignore
+Dockerfile
+docker-compose.yaml
+
+# environment config file
+.env
+
+# sonar scanner stuff
+.scannerwork
