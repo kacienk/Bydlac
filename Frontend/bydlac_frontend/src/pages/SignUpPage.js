@@ -1,22 +1,26 @@
 import React from "react";
 import {Link} from "react-router-dom";
-
 import SignUp from "../components/SignUp";
+
 import "./SignUpPage.css";
 
 const SignUpPage = () => {
     return (
         <div className='signUpPage'>
-            <p className="rejestracja">REJESTRACJA</p>
+            <div className="signUpBox">
+                <p className="signUpText">REJESTRACJA</p>
 
-            <SignUp/>
+                <SignUp/>
 
-            <p className="lub">Lub:</p>
-            <button className="google">GOOGLE</button>
+                <p style={{marginBottom: "0", color: "rgb(255, 255, 255)"}}>Masz już konto?</p>
 
-            <p className="maszJuzKonto">Masz już konto?</p>
+                <Link to="/login" style={{textDecoration: "unset"}}>
+                    <button className="logInButton">
+                        Zaloguj się
+                    </button>
+                </Link>
+            </div>
 
-            <Link to="/login" className="zalogujSie">Zaloguj się</Link>
         </div>
     )
 }

@@ -15,64 +15,86 @@ export const UserProvider = ({children}) => {
     const [userId, setUserId] = useState(
         localStorage.getItem('userId') ? JSON.parse(localStorage.getItem('userId')) : null)
 
+    const [currentEventId, changeCurrentEventId] = useState(null)
+    const [currentGroupId, changeCurrentGroupId] = useState(null)
+    const [currentMessage, changeCurrentMessage] = useState('')
+
     const [userGroups, setUserGroups] = useState([])
-
-
-
     useEffect(() => {
         let isSubscribed = true
 
         const getUserGroups = async () => {
-            let response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${userToken}`,
                 }
             })
+            const data = await response.json()
 
-            let data = await response.json()
-            console.log("getusergroups data: ", data)
-
-            if (isSubscribed)
-                 await setUserGroups(data)
+            if (isSubscribed) {
+                await setUserGroups(data)
+            }
             return data
         }
 
+        const interval = setInterval(() => {
+            if (userId !== null)
+                getUserGroups()
+        }, 1000)
 
-        if (userId !== null) {
-            let tempUserGroups = getUserGroups()
-            console.log("tempUserGroups: ", tempUserGroups)
-            console.log("userGroups in if in useEffect: ", userGroups)
-        } else
-            alert("napraw to")
+        return () => clearInterval(interval)
+    }, [])
 
-        return () => {isSubscribed = false}
-    }, [userId])
+    const [userEvents, setUserEvents] = useState([])
+    useEffect(() => {
+        let isSubscribed = true
+
+        const getUserEvents = async () => {
+            let response = await fetch(`http://127.0.0.1:8000/api/events/`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`,
+                }
+            })
+            let data = await response.json()
+
+            if (isSubscribed)
+                await setUserEvents(data)
+        }
 
 
+        const interval = setInterval(() => {
+            if (userId !== null)
+                getUserEvents()
+        }, 1000)
 
-    let [currentGroupId, changeCurrentGroupId] = useState(null)
-    let [currentMessage, setCurrentMessage] = useState('')
-
-    //let userGroupsFullData = GetGroups(userGroups) TODO maybe I can fix the problem with refreshing
+        return () => clearInterval(interval)
+    }, [])
 
     let contextData = {
-        userToken:userToken,
-        setUserToken:setUserToken,
+        userToken:userToken, // Conversation, GroupOptions, InputMessage, NewEvent, NewGroup, EventDetails, MainPage
+        setUserToken:setUserToken, // LogIn
 
-        currentUser:currentUser,
-        setCurrentUser:setCurrentUser,
+        currentUser:currentUser, // User
+        setCurrentUser:setCurrentUser, // LogIn
 
-        userId:userId,
-        setUserId:setUserId,
+        userId:userId, // GroupOptions, InputMessage, Message, NewEvent, NewGroup, UsersHeader, EventDetails
+        setUserId:setUserId, // LogIn
 
-        userGroups:userGroups,
-        setUserGroups:setUserGroups,
-        //userGroupsFullData:userGroupsFullData
+        userGroups:userGroups, // GroupList
+        setUserGroups:setUserGroups, // NewGroup
 
-        currentGroupId:currentGroupId,
-        changeCurrentGroupId:changeCurrentGroupId,
+        currentGroupId:currentGroupId, // InputMessage, LogIn, MainPage, ChatPage
+        changeCurrentGroupId:changeCurrentGroupId, // Group
+
+        userEvents:userEvents, // EventList, EventDetails
+        setUserEvents:setUserEvents, // NewEvent
+
+        currentEventId:currentEventId, // EventDetails
+        changeCurrentEventId:changeCurrentEventId, // Event,
 
         currentMessage:currentMessage
     }
@@ -83,25 +105,3 @@ export const UserProvider = ({children}) => {
         </UserContext.Provider>
     )
 }
-
-/*    useEffect(() => {
-        const getUserId = async () => {
-            let response = await fetch('http://127.0.0.1:8000/api/users/self/', {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${userToken}`
-                }
-            })
-            const data = await response.json()
-
-            localStorage.setItem('currentUser', JSON.stringify(data))
-            localStorage.setItem('userId', data['id'])
-            // setCurrentUser(data) I don't know why this is not working and I can't get it done, so I had to bypass it using localStorage
-        }
-
-        if (userToken !== null) {
-            getUserId()
-        }
-
-    }, [userToken])*/

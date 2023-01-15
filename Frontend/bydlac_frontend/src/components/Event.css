@@ -1,11 +1,8 @@
-.groupList {
-    display: grid;
-    align-items: center;
-}
-
-#newGroupButton {
+#eventButton {
     font-family: 'Patrick Hand', cursive;
     font-size: 25px;
+    text-align: left;
+    padding-left: 10px;
     height: 50px;
     width: 100%;
     border: none;
@@ -17,7 +14,7 @@
     z-index: 1;
 }
 
-#newGroupButton::before {
+#eventButton::before {
     content: '';
     width: 0;
     height: 1000%;
@@ -31,10 +28,10 @@
     z-index: -1;
 }
 
-#newGroupButton:hover::before {
+#eventButton:hover::before {
     width: 105%;
 }
 
-#newGroupButton:hover {
+#eventButton:hover {
     color: rgb(255, 255, 255);
 }

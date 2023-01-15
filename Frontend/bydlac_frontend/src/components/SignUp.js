@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
+
 import "./SignUp.css"
 
 const SignUp = () => {
@@ -22,9 +23,7 @@ const SignUp = () => {
         if (response.ok)
             navigate('/login')
         else
-            alert(response.status + ' ' + response.statusText)
-
-        /* TODO handling errors*/
+            alert("Błąd podczas tworzenia konta, spróbuj jeszcze raz")
     }
 
     return (
@@ -52,7 +51,7 @@ const SignUp = () => {
             <p className="signUpFormText">Hasło:</p>
             <input
                 className="signUpFormInput"
-                type="text"
+                type="password"
                 required
                 placeholder="Hasło"
                 value={password}
@@ -62,7 +61,7 @@ const SignUp = () => {
             <p className="signUpFormText">Powtórz hasło:</p>
             <input
                 className="signUpFormInput"
-                type="text"
+                type="password"
                 required
                 placeholder="Powtórz hasło"
                 value={passwordRepeated}

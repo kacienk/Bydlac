@@ -11,7 +11,7 @@ const GetUserGroups = async (userId, userToken) => {
     })
 
     let data = await response.json()
-    console.log("getusergroups data: ", data)
+    console.log("GetUserGroups data: ", data)
 
     return data
 }

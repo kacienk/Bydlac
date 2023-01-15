@@ -1,34 +1,42 @@
-.usersHeader {
-    display: flex;
-    flex-direction: row;
-    width: 66vw;
-    border-bottom: 1px solid gray;
-    justify-content: space-between;
-}
-
-#logoutContainer {
-    text-decoration: none;
+#mapsPopupBackground {
+    position: fixed;
+    background: rgba(0, 0, 0, 50%);
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    align-items: center;
+    text-align: center;
     display: flex;
     justify-content: center;
+
+    z-index: 2;
 }
 
-.logoutButton {
+#mapsPopup {
+    width: 66vw;
+    height: 66vh;
+
+    z-index: 3;
+}
+
+.submitLocation {
     font-family: 'Patrick Hand', cursive;
     font-size: 25px;
+    padding: 5px 20px 5px 20px;
 
     border: none;
     border-radius: 15px;
 
     position: relative;
     overflow: hidden;
-    background-color: transparent;
+    background-color: #e0e0e0;
     text-align: center;
-    text-transform: uppercase;
     transition: .3s;
     z-index: 1;
 }
 
-.logoutButton::before {
+.submitLocation::before {
     content: '';
     width: 0;
     height: 300%;
@@ -42,15 +50,10 @@
     z-index: -1;
 }
 
-.logoutButton:hover::before {
+.submitLocation:hover::before {
     width: 105%;
 }
 
-.logoutButton:hover {
+.submitLocation:hover {
     color: rgb(255, 255, 255);
-}
-
-#groupNameHeader {
-    margin-top: auto;
-    margin-bottom: auto;
 }

@@ -1,4 +1,4 @@
-#newGroupBox {
+#newEventBox {
     height: calc(100% - 50px);
     width: 66vw;
     align-items: center;
@@ -7,21 +7,24 @@
     justify-content: center;
 }
 
-#newGroupForm {
+#newEventForm {
     border: none;
     border-radius: 20px;
     background: rgb(158, 176, 173);
+
     height: 45vh;
     width: 30vw;
+    min-width: 350px;
+    min-height: 620px;
+    box-shadow: 17px 17px 47px #aaaaaa;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    box-shadow: 17px 17px 47px #aaaaaa;
 }
 
-.newGroupPageText {
+.newEventPageText {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-top: 0;
@@ -29,7 +32,7 @@
     color: rgb(255, 255, 255);
 }
 
-#newGroupPageInput {
+#newEventPageInput {
     font-family: 'Patrick Hand', cursive;
     font-size: 22px;
     height: 40px;
@@ -38,7 +41,7 @@
     border-radius: 10px;
 }
 
-#newGroupPageTextarea {
+#newEventPageTextarea {
     font-family: 'Patrick Hand', cursive;
     font-size: 22px;
     height: 9vh;
@@ -47,16 +50,7 @@
     border-radius: 10px;
 }
 
-#newGroupIsPrivate {
-    width: 20vw;
-}
-
-#newGroupUsers {
-    width: 20vw;
-}
-
-#newGroupPageButton {
-    margin-top: 6px;
+#newEventPageButton {
     font-family: 'Patrick Hand', cursive;
     font-size: 22px;
     color: rgb(255, 255, 255);
@@ -67,9 +61,11 @@
     background-color: rgb(158, 176, 173);
     cursor: pointer;
     transition-duration: 0.5s;
+
+    margin: unset;
 }
 
-#newGroupPageButton:hover {
+#newEventPageButton:hover {
     background-color: rgb(233, 233, 237);
     color: rgb(158, 176, 173);
 }

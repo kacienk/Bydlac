@@ -1,23 +1,23 @@
-import React, {useContext} from "react";
+import React from "react";
+import {Link} from "react-router-dom";
 
 import "./LogOutPage.css"
-import {Link} from "react-router-dom";
-import userContext from "../context/UserContext";
 
-const LogOutPage = () => { /* TODO should there be an option that sth went wrong? */
+const LogOutPage = () => {
     localStorage.clear()
-    //let {userId, userGroups, currentGroupId, currentMessage} = useContext(userContext)
-    //userId = null
-    //userGroups = null
-    //currentGroupId = null
-    //currentMessage = null
 
     return (
         <div className="logOutPage">
-            <p>Nastąpiło poprawne wylogowanie</p>
+            <div className="logOutBox">
+                <p style={{color: "#ffffff", marginTop: "0"}}>Nastąpiło poprawne wylogowanie</p>
 
-            <p>Chcesz zalogować się jeszcze raz?</p>
-            <Link to="/login">Zaloguj się</Link>
+                <p style={{color: "#ffffff", marginBottom: "10px"}}>Chcesz zalogować się jeszcze raz?</p>
+                <Link to="/login" style={{textDecoration: "unset"}}>
+                    <button className="logInAgainButton">
+                        Zaloguj się
+                    </button>
+                </Link>
+            </div>
         </div>
   )
 }

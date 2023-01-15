@@ -1,18 +1,30 @@
-import {useContext, useRef} from "react";
-import './InputMessage.css';
+import {useContext, useRef, useState} from "react";
 import userContext from "../context/UserContext";
+import LocationMaps from "./LocationMaps";
+
+import sendIcon from "../images/send_icon.png";
+import locationIcon from "../images/location_icon.png";
+
+import './InputMessage.css';
 
 function InputMessage() {
-    const {currentGroupId, userId, userToken} = useContext(userContext)
+    const {
+        currentGroupId,
+        userId,
+        userToken
+    } = useContext(userContext)
+
     let {currentMessage} = useContext(userContext)
     const messageRef = useRef();
 
-    const sendMessageHandler = async () => {
+    const sendMessageHandler = async (event) => {
+        event.preventDefault()
+
         currentMessage = messageRef.current.value;
         if (currentMessage === '')
             return;
 
-        let response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -21,28 +33,73 @@ function InputMessage() {
             body: JSON.stringify({
                 'body': currentMessage,
                 'author': userId,
-                'group': Number(currentGroupId)
+                'group': currentGroupId,
+                'is_location': false
             })
         })
 
         messageRef.current.value = null;
     }
 
-    function inputPhotoHandler() {
-        /*TODO*/
-    }
+    const [toggleMaps, setToggleMaps] = useState(false)
+    const handleMapsPopup = () => { setToggleMaps(prevState => !prevState) }
 
-    function inputLocationHandler() {
-        /*TODO*/
+    const [location, setLocation] = useState({})
+    const sendLocation = async () => {
+        console.log("location ", location)
+        if (JSON.stringify(location) !== "{}") {
+            const response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                },
+                body: JSON.stringify({
+                    'body': JSON.stringify(location),
+                    'author': userId,
+                    'group': currentGroupId,
+                    'is_location': true
+                })
+            })
+
+            handleMapsPopup()
+        }
+        else
+            alert("Lokalizacja nie została wybrana, spróbuj jeszcze raz")
     }
 
     return (
-        <div className="inputMessage">
-            <input className='inputMessageField' ref={messageRef} type="text" placeholder='Aa...'></input>
-            <button className='inputSendButton' onClick={sendMessageHandler}>S</button>
-            <button className='inputPhotoButton' onClick={inputPhotoHandler}>P</button>
-            <button className='inputLocationButton' onClick={inputLocationHandler}>L</button>
+        <div className="inputMessage" onSubmit={sendMessageHandler}>
+            <form className="inputMessage">
+                <input
+                    className='inputMessageField'
+                    ref={messageRef}
+                    type="text"
+                    placeholder='Aa...' >
+                </input>
+                <button
+                    className='inputSendButton'
+                    type="submit" >
+                    <img className="sendIcon" src={ sendIcon } alt=''/>
+                </button>
+
+                <button
+                    type="button"
+                    className='inputLocationButton'
+                    onClick={ handleMapsPopup } >
+                    <img className="locationIcon" src={ locationIcon } alt=''/>
+                </button>
+            </form>
+
+            {toggleMaps &&
+                <LocationMaps
+                    handleMapsPopup={ handleMapsPopup }
+                    setLocation={ setLocation }
+                    submitLocation={ sendLocation }
+                    markerPosition={ {lat: 0, lng: 0} }
+                    markerVisibility={ false } />}
         </div>
+
     );
 }
 

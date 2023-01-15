@@ -1,23 +1,20 @@
 import UsersHeader from "../components/UsersHeader";
 import NewGroup from "../components/NewGroup";
-import GroupList from "../components/GroupList";
+import ListHeader from "../components/ListHeader";
 
 import "./NewGroupPage.css"
-
 
 const NewGroupPage = () => {
 
     return (
         <div className='mainView'>
-            <div id='test'>
+            <div>
                 <UsersHeader/>
 
                 <NewGroup/>
             </div>
 
-            <div id='TEMPgroupList'>
-                <GroupList/>
-            </div>
+            <ListHeader whichToShow={true} />
         </div>
     )
 }

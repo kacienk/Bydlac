@@ -1,21 +1,26 @@
 import React from "react";
 import {Link} from "react-router-dom";
-
 import LogIn from "../components/LogIn";
+
 import "./LogInPage.css";
 
 const LogInPage = () => {
   return (
       <div className="logInComponent">
-          <p className="logowanie">LOGOWANIE</p>
+          <div className="logInBox">
+              <p className="logInText">LOGOWANIE</p>
 
-          <LogIn/>
-          <p className="lub">Lub:</p>
-          <button className="google">GOOGLE</button>
+              <LogIn/>
 
-          <p className="nieMaszJeszczeKonta">Nie masz jeszcze konta?</p>
+              <p style={{marginBottom: "0", color: "rgb(255, 255, 255)"}}>Nie masz jeszcze konta?</p>
 
-          <Link to="/signup" className="zarejestrujSieJuzTeraz">Zarejestruj się już teraz!</Link>
+              <Link to="/signup" style={{textDecoration: "unset"}}>
+                  <button className="signUpButton">
+                      Zarejestruj się teraz!
+                  </button>
+              </Link>
+          </div>
+
       </div>
   )
 }

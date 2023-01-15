@@ -1,0 +1,78 @@
+#eventDetailsBox {
+    height: calc(100% - 50px);
+    width: 66vw;
+    display: grid;
+    place-items: center;
+}
+
+#eventDetailsInnerBox {
+    width: 80%;
+    max-width: 700px;
+    min-height: 700px;
+    max-height: 750px;
+    background: #e0e0e0;
+    border-radius: 15%;
+    box-shadow: 15px 15px 30px #bebebe,
+    -15px -15px 30px #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#eventDetailsName {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 50px;
+}
+
+.eventDetailsH {
+    margin-top: 10px;
+    margin-bottom: unset;
+}
+
+.eventDetailsText {
+    margin: unset;
+}
+
+#eventDetailsParticipants {
+    overflow-y: scroll;
+}
+
+.eventDetailsButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+
+
+    border: none;
+    border-radius: 15px;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    text-align: center;
+    transition: .3s;
+    z-index: 1;
+}
+
+.eventDetailsButton::before {
+    content: '';
+    width: 0;
+    height: 1000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+.eventDetailsButton:hover::before {
+    width: 105%;
+}
+
+.eventDetailsButton:hover {
+    color: rgb(255, 255, 255);
+}

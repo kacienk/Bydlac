@@ -1,14 +1,17 @@
-.groupList {
-    display: grid;
-    align-items: center;
+#inListHeader {
+    border-left: 1px solid gray;
+    width: 100%;
 }
 
-#newGroupButton {
+#whichListToShowButton {
     font-family: 'Patrick Hand', cursive;
     font-size: 25px;
-    height: 50px;
+    text-align: center;
+    padding-bottom: 1px;
+    height: 53px;
     width: 100%;
     border: none;
+    border-bottom: 1px solid gray;
 
     position: relative;
     overflow: hidden;
@@ -17,7 +20,7 @@
     z-index: 1;
 }
 
-#newGroupButton::before {
+#whichListToShowButton::before {
     content: '';
     width: 0;
     height: 1000%;
@@ -31,10 +34,10 @@
     z-index: -1;
 }
 
-#newGroupButton:hover::before {
+#whichListToShowButton:hover::before {
     width: 105%;
 }
 
-#newGroupButton:hover {
+#whichListToShowButton:hover {
     color: rgb(255, 255, 255);
 }

@@ -1,12 +1,131 @@
-.userMessage {
-    text-align: right;
-    padding-top: 3px;
-    padding-right: 10px;
+.userMessageBox {
+    display: flex;
+    flex-direction: row;
+}
 
+.userMessage {
+    font-size: 25px;
+    text-align: right;
+    margin-top: 3px;
+    margin-right: 10px;
+
+    padding: 5px 10px 5px 10px;
+    background: rgb(158, 176, 173);
+    border-radius: 10px;
+}
+
+.userMessageAuthor {
+    font-size: 18px;
+}
+
+.userMessageTime {
+    font-size: 16px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.userMessageLocationButton {
+    margin-top: 3px;
+    margin-right: 10px;
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+
+    border: none;
+    border-radius: 15px;
+
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(158, 176, 173);
+    text-align: center;
+    transition: .3s;
+    z-index: 1;
+}
+
+.userMessageLocationButton::before {
+    content: '';
+    width: 0;
+    height: 500%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: #bfcbc9;
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+.userMessageLocationButton:hover::before {
+    width: 105%;
+}
+
+.otherMessageBox {
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 .otherMessage {
-    padding-top: 3px;
-    padding-left: 10px;
+    font-size: 25px;
     text-align: left;
+    margin-top: 3px;
+    margin-left: 10px;
+
+    padding: 5px 10px 5px 10px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+.otherMessageAuthor {
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.otherMessageTime {
+    font-size: 16px;
+    text-align: right;
+}
+
+.otherMessageLocationButton {
+    margin-top: 3px;
+    margin-left: 10px;
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+
+    border: none;
+    border-radius: 15px;
+
+    position: relative;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    text-align: center;
+    transition: .3s;
+    z-index: 1;
+}
+
+.otherMessageLocationButton::before {
+    content: '';
+    width: 0;
+    height: 500%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: #d1d1d1;
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+.otherMessageLocationButton:hover::before {
+    width: 105%;
+}
+
+.blankSpace {
+    flex-grow: 1;
 }

@@ -1,0 +1,11 @@
+.mainView {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+#listHeader {
+    overflow-y: auto;
+    height: 100vh;
+    width: 33vw;
+}

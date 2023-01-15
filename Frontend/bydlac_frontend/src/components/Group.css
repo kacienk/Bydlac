@@ -1,7 +1,229 @@
+#group {
+    display: inline;
+}
+
 .groupButton {
     font-family: 'Patrick Hand', cursive;
     font-size: 25px;
+    text-align: left;
+    padding-left: 10px;
     height: 50px;
-    width: 33vw;
+    width: 90%;
     border: none;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    transition: .5s;
+    z-index: 1;
+}
+
+.groupButton::before {
+    content: '';
+    width: 0;
+    height: 1000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+.groupButton:hover::before {
+    width: 105%;
+}
+
+.groupButton:hover {
+    color: rgb(255, 255, 255);
+}
+
+#groupOptions {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+    height: 50px;
+    width: 10%;
+    border: none;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    transition: .5s;
+    z-index: 1;
+}
+
+#groupOptions::before {
+    content: '';
+    width: 0;
+    height: 1000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+#groupOptions:hover::before {
+    width: 200%;
+}
+
+#groupOptions:hover {
+    color: rgb(255, 255, 255);
+}
+
+#groupOptionsPopupBackground {
+    position: fixed;
+    background: rgba(0, 0, 0, 50%);
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+
+    z-index: 2;
+}
+
+#groupOptionsPopup {
+    background: rgb(255, 255, 255);
+    display: flex;
+    width: 66vw;
+    height: 33vh;
+    border-radius: 40px;
+
+    z-index: 3;
+}
+
+#groupOptionsButtonList {
+    display: inline-grid;
+}
+
+#groupMembersMap {
+    overflow-y: scroll;
+}
+
+#deleteGroup {
+
+}
+
+#closePopupButton {
+    float: right;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: none;
+}
+
+#groupOptionsButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+
+
+    border: 3px solid rgb(158, 176, 173);
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    text-align: center;
+    transition: .3s;
+    z-index: 0;
+}
+
+#groupOptionsButton::before {
+    content: '';
+    width: 0;
+    height: 1000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -2;
+}
+
+#groupOptionsButton:hover::before {
+    width: 150%;
+}
+
+#groupOptionsButton:hover {
+    color: rgb(255, 255, 255);
+}
+
+.isModeratorBox {
+    display: flex;
+}
+
+.isModeratorUsername {
+    width: 90%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.switch {
+    --secondary-container: rgba(158, 176, 173, 50%);
+    --primary: rgb(158, 176, 173);
+    font-size: 17px;
+    position: relative;
+    display: inline-block;
+    width: 4.7em;
+    height: 1.8em;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.switch input {
+    display: none;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: lightgray;
+    transition: .2s;
+    border-radius: 30px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 1.4em;
+    width: 1.4em;
+    border-radius: 20px;
+    left: 0.2em;
+    bottom: 0.2em;
+    background-color: #aeaaae;
+    transition: .4s;
+}
+
+input:checked + .slider::before {
+    background-color: var(--primary);
+}
+
+input:checked + .slider {
+    background-color: var(--secondary-container);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--secondary-container);
+}
+
+input:checked + .slider:before {
+    transform: translateX(1.4em);
 }

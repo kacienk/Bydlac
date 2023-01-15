@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
-
-import './LogIn.css';
 import userContext from "../context/UserContext";
 import {useNavigate} from "react-router-dom";
+
+import './LogIn.css';
 
 const LogIn = () => {
     const {
@@ -50,10 +50,10 @@ const LogIn = () => {
             setUserId(data['id'])
             localStorage.setItem('userId', data['id'])
 
-            navigate(`/chat/${currentGroupId}`) // TODO fix currentGroupId
+            navigate(`/chat/${currentGroupId}`)
         }
         else
-            alert("Problem z logowaniem")
+            alert("Problem z logowaniem, spróbuj jeszcze raz")
     }
 
     return (
@@ -64,17 +64,15 @@ const LogIn = () => {
                 type="text"
                 required
                 name="email"
-                placeholder="E-mail"
-            />
+                placeholder="E-mail" />
 
             <p className='logInFormText'>Hasło:</p>
             <input
                 className='logInFormInput'
-                type="text"
+                type="password"
                 required
                 name="password"
-                placeholder="Hasło"
-            />
+                placeholder="Hasło" />
 
             <br/>
             <button className='logInFormButton'>Zaloguj się</button>

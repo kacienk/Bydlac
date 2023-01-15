@@ -1,38 +1,45 @@
 import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import userContext from "../context/UserContext";
 
+import "./NewGroup.css";
 
 const NewGroup = () => {
-    const {userId, userToken} = useContext(userContext)
+    const {
+        userId,
+        userToken,
+        setUserGroups
+    } = useContext(userContext)
+
     let {userGroups} = useContext(userContext)
+
     const isPrivateOptions = [
         {label: "Prywatna", value: "true"},
         {label: "Publiczna", value: "false"}
     ]
 
-    let [allUsersList, setAllUsersList] = useState([])
-    useEffect((() => {
-        const getAllUsersList = async () => {
-            let response = await fetch('http://127.0.0.1:8000/api/users/', {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${userToken}`
-                }
-            })
-            let data = await response.json()
-            setAllUsersList(data)
-        }
-
-        getAllUsersList()
-    }), [])
 
     let [newGroupName, setNewGroupName] = useState('')
     let [newGroupIsPrivate, setNewGroupIsPrivate] = useState(true)
     let [newGroupDescription, setNewGroupDescription] = useState('')
-    let [selectedUsers, setSelectedUsers] = useState([])
+    const [newSelectedUser, setNewSelectedUser] = useState('');
+    const [selectedUsersList, setSelectedUsersList] = useState([]);
+
+    const handleKeyDown = (event) => {
+        if (!newSelectedUser)
+            return;
+
+        switch (event.key) {
+            case 'Enter':
+            case 'Tab':
+                setSelectedUsersList((prev) => [...prev, newSelectedUser]);
+                setNewSelectedUser('');
+                event.preventDefault();
+        }
+    };
+
+
     const navigate = useNavigate()
     const newGroupSubmitHandler = async (event) => {
         event.preventDefault()
@@ -44,7 +51,7 @@ const NewGroup = () => {
             is_private: newGroupIsPrivate
         }
 
-        let response = await fetch('http://127.0.0.1:8000/api/groups/create/', {
+        let createGroupResponse = await fetch('http://127.0.0.1:8000/api/groups/', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -52,37 +59,43 @@ const NewGroup = () => {
             },
             body: JSON.stringify(newGroup)
         })
+        const data = await createGroupResponse.json()
+        const newGroupId = data['id']
+        userGroups = setUserGroups(userGroups => [...userGroups, data])
 
-        let response2 = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Token ${userToken}`
-            }
-        })
+        if (!createGroupResponse.ok)
+            alert("Błąd podczas procesu tworzenia konwersacji")
 
-        userGroups = await response2.json()
+        selectedUsersList.map(async (user) => {
+            const userIdResponse = await fetch(`http://127.0.0.1:8000/api/users/from-username/?username=${user}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                }
+            })
+            const userData = await userIdResponse.json()
 
-        let newGroupId = Math.max(...userGroups.map(object => object.group)) // TODO make it less dumb
-        selectedUsers.map(async (user) => {
-            let response3 = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/`, {
+            let addUserResponse = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/members/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Token ${userToken}`
                 },
                 body: JSON.stringify({
-                    user: user.id,
+                    user: userData.id,
                     group: newGroupId,
                     is_moderator: false
                 })
             })
-            if (response.ok && response2.ok && response3.ok) {
-                navigate('/chat/' + newGroupId)
+
+            if (!addUserResponse.ok) {
+                alert(`Błąd podczas dodawania użytkownika o nicku: ${user}`)
+                //console.log(await addUserResponse.json())
             }
-            else
-                alert("Błąd podczas procesu tworzenia konwersacji")
         })
+
+        navigate('/chat/' + newGroupId)
     }
 
 
@@ -102,7 +115,8 @@ const NewGroup = () => {
                     <CreatableSelect
                         options={isPrivateOptions}
                         defaultValue={isPrivateOptions[0]}
-                        onChange={(selected) => {selected.value === "false" ? setNewGroupIsPrivate(false) : setNewGroupIsPrivate(true)}}
+                        onChange={(selected) =>
+                        {selected.value === "false" ? setNewGroupIsPrivate(false) : setNewGroupIsPrivate(true)}}
                     />
                 </div>
 
@@ -113,16 +127,19 @@ const NewGroup = () => {
                 ></textarea>
 
                 <p className='newGroupPageText'>Dodaj członków:</p>
-                {/* TODO AsyncSelect*/}
                 <div id='newGroupUsers'>
                     <CreatableSelect
-                        required
+                        components={{ DropdownIndicator: null, }}
+                        inputValue={newSelectedUser}
                         isClearable
                         isMulti
-                        options={allUsersList}
-                        getOptionLabel={(user) => user.username}
-                        getOptionValue={(user) => user.id}
-                        onChange={(selected) => setSelectedUsers(selected)}
+                        menuIsOpen={false}
+                        onChange={(newValue) => setSelectedUsersList(newValue)}
+                        onInputChange={(newValue) => setNewSelectedUser(newValue)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Wpisz nazwy użytkowników oddzielając je enterem"
+                        value={selectedUsersList}
+                        getOptionLabel={(user) => user}
                     />
                 </div>
 
