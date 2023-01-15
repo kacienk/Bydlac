@@ -9,10 +9,13 @@
     text-align: center;
     display: flex;
     justify-content: center;
+
+    z-index: 2;
 }
 
 #mapsPopup {
     width: 66vw;
     height: 33vh;
 
+    z-index: 3;
 }

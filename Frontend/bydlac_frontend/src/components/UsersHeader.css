@@ -1,1 +1,57 @@
-/* TODO move and refactor from ChatPage.css */
+.usersHeader {
+    display: flex;
+    flex-direction: row;
+    width: 66vw;
+    border-bottom: 1px solid gray;
+    justify-content: space-between;
+}
+
+#logoutContainer {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+}
+
+.logoutButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+
+
+    border: none;
+    border-radius: 15px;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .3s;
+    z-index: 1;
+}
+
+.logoutButton::before {
+    content: '';
+    width: 0;
+    height: 300%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+.logoutButton:hover::before {
+    width: 105%;
+}
+
+.logoutButton:hover {
+    color: rgb(255, 255, 255);
+}
+
+#groupNameHeader {
+    margin-top: auto;
+    margin-bottom: auto;
+}

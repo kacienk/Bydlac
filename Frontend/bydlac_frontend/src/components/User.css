@@ -1,67 +1,37 @@
-/*
-.otherPerson {
-    width: 33vw;
+#userDetailsButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+    border-radius: 10px;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    text-align: center;
+    transition: .3s;
+    z-index: 1;
 }
 
-.otherPersonData {
-    padding-left: 50px;
-    margin-top: 10px;
-    margin-bottom: 0;
-    border-radius: 1px;
-    border: solid aqua;
+#userDetailsButton::before {
+    content: '';
+    width: 0;
+    height: 300%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
 }
 
-.otherPersonStatus {
-    padding-left: 50px;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 14px;
-    border-radius: 1px;
-    border: solid aqua;
+#userDetailsButton:hover::before {
+    width: 105%;
 }
 
-.otherPersonImage {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    float: left;
-    margin-top: 13px;
-    padding-left: 5px;
+#userDetailsButton:hover {
+    color: rgb(255, 255, 255);
 }
-
-.you {
-    width: 33vw;
-
-}
-
-.youData {
-    text-align: right;
-    padding-right: 50px;
-    margin-top: 10px;
-    margin-bottom: 0;
-    border-radius: 1px;
-    border: solid aqua;
-}
-
-.youImage {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    float: right;
-    margin-top: 13px;
-    padding-right: 5px;
-}
-
-.youStatus {
-    text-align: right;
-    padding-right: 50px;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 14px;
-    border-radius: 1px;
-    border: solid aqua;
-}
- */
 
 .you {
     display: inline-flex;
@@ -71,7 +41,6 @@
     height: 50px;
     width: 50px;
     border-radius: 50%;
-
 }
 
 .username {
@@ -87,4 +56,119 @@
 
 .otherPerson {
     display: inline-flex;
+}
+
+#userDetailsPopupBackground {
+    position: fixed;
+    background: rgba(0, 0, 0, 50%);
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+
+    z-index: 2;
+}
+
+#userDetailsPopup {
+    background: rgb(255, 255, 255);
+    width: 33vh;
+    height: 55vh;
+    border-radius: 40px;
+
+    z-index: 3;
+}
+
+#contentWindow {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    overflow-y: scroll;
+}
+
+#profileImageMedium {
+    width: 50%;
+    border-radius: 50%;
+    box-shadow:  17px 17px 47px #aaaaaa;
+}
+
+#userDetailsPopupUsername {
+    font-size: 50px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#userDetailsPopupBio {
+     margin: unset;
+}
+
+#userDetailsPopupBioContent {
+    margin: unset;
+    margin-bottom: 10px;
+}
+
+#userDetailsPopupCreated {
+    margin: unset;
+    margin-top: 10px;
+}
+
+#userDetailsPopupCreatedContent {
+    margin: unset;
+}
+
+#editBioButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+
+
+    border: 3px solid rgb(158, 176, 173);
+    border-radius: 15px;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    text-align: center;
+    transition: .3s;
+    z-index: 1;
+}
+
+#editBioButton::before {
+    content: '';
+    width: 0;
+    height: 2000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+#editBioButton:hover::before {
+    width: 105%;
+}
+
+#editBioButton:hover {
+    color: rgb(255, 255, 255);
+}
+
+#editBio {
+    display: flex;
+    flex-direction: column;
+}
+#editBioTextarea {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 16px;
+    border: 3px solid rgb(158, 176, 173);
+    border-radius: 10px;
 }

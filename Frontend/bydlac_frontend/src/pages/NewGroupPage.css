@@ -1,17 +1,6 @@
-#test {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
 #newGroupBox {
-    height: 93vh;
+    height: calc(100% - 50px);
     width: 66vw;
-    /* border: solid aqua;
-    border-radius: 1px;*/
-    border-top: 1px solid gray;
-    border-right: 1px solid gray;
-    padding-top: 8px; /* TODO fix this*/
     align-items: center;
     text-align: center;
     display: flex;
@@ -20,7 +9,7 @@
 
 #newGroupForm {
     border: none;
-    border-radius: 10px;
+    border-radius: 20px;
     background: rgb(158, 176, 173);
     height: 45vh;
     width: 30vw;
@@ -28,6 +17,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    box-shadow: 17px 17px 47px #aaaaaa;
 }
 
 .newGroupPageText {

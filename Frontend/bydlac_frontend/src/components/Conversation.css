@@ -1,6 +1,5 @@
 .conversationBox {
-    height: 90vh;
+    height: calc(100% - 100px);
     width: 66vw;
-    border-top: 1px solid gray;
-    border-right: 1px solid gray;
+    overflow-y: scroll;
 }

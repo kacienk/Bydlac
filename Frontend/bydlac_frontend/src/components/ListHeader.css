@@ -1,0 +1,43 @@
+#inListHeader {
+    border-left: 1px solid gray;
+    width: 100%;
+}
+
+#whichListToShowButton {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+    text-align: center;
+    padding-bottom: 1px;
+    height: 53px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid gray;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    transition: .5s;
+    z-index: 1;
+}
+
+#whichListToShowButton::before {
+    content: '';
+    width: 0;
+    height: 1000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+#whichListToShowButton:hover::before {
+    width: 105%;
+}
+
+#whichListToShowButton:hover {
+    color: rgb(255, 255, 255);
+}

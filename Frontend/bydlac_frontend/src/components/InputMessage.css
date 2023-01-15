@@ -1,12 +1,14 @@
 .inputMessage {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     width: 66vw;
-    border-right: 1px solid gray;
 }
 
 .inputMessageField {
     background-color: rgb(118, 176, 206);
     height: 30px;
-    width: 60vw;
+    flex-grow: 1;
     border: none;
     border-radius: 15px 0 0 15px;
     outline: none;
@@ -21,7 +23,6 @@
     border: 1px rgb(118, 176, 206);
     border-radius: 0 50% 50% 0;
     cursor: pointer;
-    /*margin-right: ;*/
 }
 
 .inputPhotoButton {

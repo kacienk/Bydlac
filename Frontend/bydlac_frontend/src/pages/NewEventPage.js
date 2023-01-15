@@ -6,15 +6,13 @@ import "./NewEventPage.css";
 const NewEventPage = () => {
     return (
         <div className='mainView'>
-            <div id='test'>
+            <div>
                 <UsersHeader />
 
                 <NewEvent />
             </div>
 
-            <div id='TEMPgroupList'>
-                <ListHeader whichToShow={false} />
-            </div>
+            <ListHeader whichToShow={false} />
         </div>
     )
 }

@@ -1,24 +1,23 @@
 #newEventBox {
-    height: 93vh;
+    height: calc(100% - 50px);
     width: 66vw;
-    /* border: solid aqua;
-    border-radius: 1px;*/
-    border-top: 1px solid gray;
-    border-right: 1px solid gray;
-    padding-top: 8px; /* TODO fix this*/
     align-items: center;
     text-align: center;
     display: flex;
     justify-content: center;
 }
 
-#newEventInnerBox {
-    border: none;
-    border-radius: 10px;
-    background: rgb(158, 176, 173);
-}
-
 #newEventForm {
+    border: none;
+    border-radius: 20px;
+    background: rgb(158, 176, 173);
+
+    height: 45vh;
+    width: 30vw;
+    min-width: 350px;
+    min-height: 620px;
+    box-shadow: 17px 17px 47px #aaaaaa;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,7 +51,6 @@
 }
 
 #newEventPageButton {
-    margin-top: 6px;
     font-family: 'Patrick Hand', cursive;
     font-size: 22px;
     color: rgb(255, 255, 255);
@@ -63,7 +61,8 @@
     background-color: rgb(158, 176, 173);
     cursor: pointer;
     transition-duration: 0.5s;
-    margin-bottom: 15px;
+
+    margin: unset;
 }
 
 #newEventPageButton:hover {

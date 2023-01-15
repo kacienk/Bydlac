@@ -4,6 +4,7 @@ import Person1 from './person1.jpg';
 import {useContext, useEffect, useState} from "react";
 import userContext from "../context/UserContext";
 import {useNavigate} from "react-router-dom";
+import {format, formatDistanceToNowStrict, parseISO} from "date-fns";
 
 const UserDetails = ({handlePopup, user, setReRenderTrigger}) => {
     const {userToken, userId} = useContext(userContext)
@@ -31,41 +32,43 @@ const UserDetails = ({handlePopup, user, setReRenderTrigger}) => {
             alert("nie udało się zmienić bio") // TODO
     }
 
+    const [userCreatedDate, setUserCreatedDate] = useState(new Date(parseISO(user.created)))
+    const [userCreatedInterval, setUserCreatedInterval] = useState(formatDistanceToNowStrict(userCreatedDate, {unit: 'day'}).replace(/days?/, ''))
+
     return (
-        <div id="groupOptionsPopupBackground" >
-            <div id="groupOptionsPopup">
+        <div id="userDetailsPopupBackground" >
+            <div id="userDetailsPopup">
+                <button id="closePopupButton"
+                        onClick={handlePopup}>
+                    X
+                </button>
 
                 <div id="contentWindow">
-                    <button id="closePopupButton"
-                            onClick={handlePopup}>
-                        X
-                    </button>
+                    <img id="profileImageMedium" src={ Person1 } alt=''/>
 
-                    <img className="profileImage" src={ Person1 } alt=''/>
-
-                    <h1> { user.username } </h1>
+                    <h1 id="userDetailsPopupUsername"> { user.username } </h1>
 
                     {user.bio !== "" ?
                         <div>
-                            <h3> Bio: </h3>
-                            <p> { user.bio } </p>
+                            <h3 id="userDetailsPopupBio"> Bio: </h3>
+                            <p id="userDetailsPopupBioContent"> { user.bio } </p>
                         </div> : null}
 
                     {user.id === userId ?
-                        <button onClick={() => setToggleEditBio(prevState => !prevState)}>
+                        <button id="editBioButton" onClick={() => setToggleEditBio(prevState => !prevState)}>
                             {!toggleEditBio ? "Edytuj bio" : "Anuluj edycję"}
                         </button> : null}
 
                     {toggleEditBio &&
-                        <div>
-                            <textarea onChange={ event => setNewBio(event.target.value) }/>
-                            <button onClick={editBio} >
+                        <div id="editBio">
+                            <textarea id="editBioTextarea" onChange={ event => setNewBio(event.target.value) }/>
+                            <button id="editBioButton" onClick={editBio} >
                                 Zatwierdź zmiany
                             </button>
                         </div>}
 
-                    <h3> {user.id === userId ? "Jesteś z nami od:" : "W serwisie od:"} </h3>
-                    <p> {user.created} </p>
+                    <h3 id="userDetailsPopupCreated"> {user.id === userId ? "Jesteś z nami od:" : "W serwisie od:"} </h3>
+                    <p id="userDetailsPopupCreatedContent"> {userCreatedInterval} dni ({format(userCreatedDate, 'dd.MM.y')}) </p>
                 </div>
             </div>
         </div>
@@ -102,7 +105,7 @@ const User = ({className, userId}) => {
 
     return (
         <div>
-            <button onClick={ handlePopup }>
+            <button id="userDetailsButton" onClick={ handlePopup }>
                 {(className === "you") ? (
                     <div className="you">
                         <p className="username">

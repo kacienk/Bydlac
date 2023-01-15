@@ -122,35 +122,38 @@ const GroupOptions = ({groupId, handlePopup}) => {
         <div id="groupOptionsPopupBackground" >
             <div id="groupOptionsPopup">
                 <div id="groupOptionsButtonList">
-                    <button onClick={ () => handleTogglingButtons('groupDetails') }>
+                    <button id="groupOptionsButton" style={{borderRadius: "40px 0 0 0"}}
+                            onClick={ () => handleTogglingButtons('groupDetails') }>
                         Dane grupy
                     </button>
-                    <button
-                        onClick={ () => handleTogglingButtons('deleteUsers') }>
+                    <button id="groupOptionsButton"
+                            onClick={ () => handleTogglingButtons('deleteUsers') }>
                         Usuń uczestników
                     </button>
-                    <button
-                        onClick={ () => handleTogglingButtons('changeModerators') /* TODO only when user is admin? */ }>
-                        Edytuj moderatorów
-                    </button>
-                    { group.host === userId && <button
+                    {group.host === userId ?
+                        <button id="groupOptionsButton"
+                                onClick={ () => handleTogglingButtons('changeModerators') /* TODO only when user is admin? */ }>
+                            Edytuj moderatorów
+                        </button> :
+                        <button id="groupOptionsButton" style={{borderRadius: "0 0 0 40px"}}
+                                onClick={ () => handleTogglingButtons('changeModerators') /* TODO only when user is admin? */ }>
+                            Edytuj moderatorów
+                        </button>}
+
+                    { group.host === userId && <button id="groupOptionsButton" style={{borderRadius: "0 0 0 40px"}}
                         onClick={() => handleTogglingButtons('deleteGroup')}>
                         Usuń grupę
                     </button> }
                 </div>
 
                 <div id="contentWindow">
-                    <button id="closePopupButton"
-                            onClick={handlePopup}>
-                        X
-                    </button>
 
                     {toggleGroupDetailsButton && (
                         <div id="groupDetails">
                             <h3> Opis grupy: </h3>
-                            <p> {group.description} </p>
+                            <p style={{margin: "unset"}}> {group.description} </p>
                             <h3> Członkowie: </h3>
-                            <div>
+                            <div id="groupMembersMap">
                                 {groupMembers.map(groupMember => (
                                     <User key={groupMember.user} className="otherPerson" userId={groupMember.user} />
                                 )) /* TODO fit unlimited amount of members - scrolling! */}
@@ -170,7 +173,8 @@ const GroupOptions = ({groupId, handlePopup}) => {
                                 getOptionValue={(user) => user.user}
                                 onChange={(selected) => setSelectedToDelete(selected)}
                             />
-                            <button onClick={ deleteUsers } >
+                            <button id="groupOptionsButton" style={{borderRadius: "15px", marginTop: "15px"}}
+                                    onClick={ deleteUsers } >
                                 Potwierdź
                             </button>
                         </div>
@@ -182,7 +186,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
                                 <div className="isModeratorBox" key={ groupMember.user } >
                                     <p className="isModeratorUsername"> { groupMember.username } </p>
 
-                                    {group.host === groupMember.user ? (<p> HOST </p>) : (
+                                    {group.host === groupMember.user ? (<p style={{marginTop: "10px", marginBottom: "10PX"}}> HOST </p>) : (
                                         <label className="switch">
                                             <input
                                                 type="checkbox"
@@ -209,6 +213,11 @@ const GroupOptions = ({groupId, handlePopup}) => {
                         </div>
                     )}
                 </div>
+
+                <button id="closePopupButton"
+                        onClick={handlePopup}>
+                    X
+                </button>
             </div>
         </div>
     )

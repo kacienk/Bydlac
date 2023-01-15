@@ -20,7 +20,7 @@ const Message = ({message}) => {
     return (
         <div>
             { message.is_location ?
-                <button> Pokaż lokalizację </button> :
+                <button onClick={ handleMapsPopup }> Pokaż lokalizację </button> :
                 <div className={whoseMessage}>{message.body} {message.is_location}</div> }
 
             { toggleMaps &&

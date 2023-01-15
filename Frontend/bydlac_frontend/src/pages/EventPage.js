@@ -1,9 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import User from "../components/User";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import ListHeader from "../components/ListHeader";
 import userContext from "../context/UserContext";
 import LocationMaps from "../components/LocationMaps";
+import UsersHeader from "../components/UsersHeader";
+
+import "./EventPage.css";
+import {format, parseISO} from "date-fns";
 
 const EventDetails = () => {
     const {
@@ -43,8 +47,6 @@ const EventDetails = () => {
             })
             const eventParticipantsData = await eventParticipantsResponse.json()
             setEventParticipants(eventParticipantsData)
-            console.log("getEventParticipants: ", eventParticipantsData)
-            console.log("event details: ", event)
         }
 
         getEventParticipants()
@@ -74,6 +76,20 @@ const EventDetails = () => {
 
         getGroupToEvent()
     }, [currentEventId])
+
+    const [eventCreatedDate, setEventCreatedDate] = useState(new Date())
+    const [eventExpiresDate, setEventExpiresDate] = useState(new Date())
+
+    useEffect(() => {
+        const setDates = () => {
+            if (event.created) {
+                setEventCreatedDate(parseISO(event.created))
+                setEventExpiresDate(parseISO(event.expires))
+            }
+        }
+
+        setDates()
+    }, [event])
 
     const [toggleMaps, setToggleMaps] = useState(false)
     const handleMapsPopup = () => { setToggleMaps(prevState => !prevState) }
@@ -128,47 +144,47 @@ const EventDetails = () => {
     }
 
     return (
-        <div>
-            <div>
-                <h2> {event.name} </h2>
+        <div id="eventDetailsBox">
+            <div id="eventDetailsInnerBox">
+                <h2 id="eventDetailsName"> {event.name} </h2>
 
-                <h3> Opis: </h3>
-                <p> {event.description} </p>
+                <h3 className="eventDetailsH" > Opis: </h3>
+                <p className="eventDetailsText" > {event.description} </p>
 
-                <h3> Stworzony: </h3>
-                <p> {event.created} </p>
-                <h3> Kończy się: </h3>
-                <p> {event.expires} </p>
+                <h3 className="eventDetailsH" > Stworzony: </h3>
+                <p className="eventDetailsText" > {format(eventCreatedDate, 'dd.MM.y HH:mm')} </p>
+                <h3 className="eventDetailsH" > Kończy się: </h3>
+                <p className="eventDetailsText" > {format(eventExpiresDate, 'dd.MM.y HH:mm')} </p>
 
-                <h3> Lokalizacja: </h3>
-                <button onClick={ handleMapsPopup }>
+                <h3 className="eventDetailsH" > Lokalizacja: </h3>
+                <button className="eventDetailsButton" onClick={ handleMapsPopup }>
                     Pokaż lokalizację
                 </button>
 
-                <h3> Ilość uczestników: </h3>
-                <p> {eventParticipants.length} / {event.max_participants} </p>
+                <h3 className="eventDetailsH" > Ilość uczestników: </h3>
+                <p className="eventDetailsText" > {eventParticipants.length} / {event.max_participants} </p>
 
-                <h3> Uczestnicy wydarzenia: </h3>
-                <div>
+                <h3 className="eventDetailsH" > Uczestnicy wydarzenia: </h3>
+                <div id="eventDetailsParticipants">
                     { eventParticipants.map(participant =>
                         <User key={participant.id} className="otherPerson" userId={participant.id} />) }
                 </div>
 
 
                 { event.host === userId ? (
-                    <button onClick={ deleteEvent }>
+                    <button className="eventDetailsButton" style={{marginBottom: "10px", marginTop: "10px"}} onClick={ deleteEvent }>
                         Usuń wydarzenie
                     </button>
                 ) : (isParticipant ?
-                    <button onClick={ leaveEvent } >
+                    <button className="eventDetailsButton" style={{marginBottom: "10px", marginTop: "10px"}} onClick={ leaveEvent } >
                         Opuść wydarzenie
                     </button> :
-                    <button onClick={ joinEvent } >
+                    <button className="eventDetailsButton" style={{marginBottom: "10px", marginTop: "10px"}} onClick={ joinEvent } >
                         Dołącz do wydarzenia
                     </button> ) }
 
                 { groupIdToCurrentEvent &&
-                    <button onClick={ () => {
+                    <button className="eventDetailsButton" style={{marginBottom: "10px"}} onClick={ () => {
                         changeCurrentGroupId(groupIdToCurrentEvent)
                         navigate(`/chat/${groupIdToCurrentEvent}`) } } >
                         Przejdź do konwersacji związanej z tym wydarzeniem
@@ -193,20 +209,12 @@ const EventPage = () => {
     return (
         <div className='mainView'>
             <div>
-                <div className='usersHeader'>
-                    <Link id='logoutContainer' to={'/logout'}>
-                        <button className="logoutButton">
-                            Wyloguj
-                        </button>
-                    </Link>
-                    <User className='you' userId={userId}/>
-                </div>
+                <UsersHeader />
 
                 <EventDetails />
             </div>
-            <div id='TEMPgroupList'>
-                <ListHeader whichToShow={ false }/>
-            </div>
+
+            <ListHeader whichToShow={ false }/>
         </div>
     )
 }

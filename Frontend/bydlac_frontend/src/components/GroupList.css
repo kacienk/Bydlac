@@ -3,20 +3,47 @@
     align-items: center;
 }
 
-.groupListText {
+/*.groupListText {
     margin-top: 10px;
     padding-bottom: 6px;
     margin-bottom: 0;
     text-align: center;
     font-size: 30px;
     border-bottom: 1px solid gray;
-
-}
+}*/
 
 #newGroupButton {
     font-family: 'Patrick Hand', cursive;
     font-size: 25px;
     height: 50px;
-    width: 33vw;
+    width: 100%;
     border: none;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    transition: .5s;
+    z-index: 1;
+}
+
+#newGroupButton::before {
+    content: '';
+    width: 0;
+    height: 1000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+#newGroupButton:hover::before {
+    width: 105%;
+}
+
+#newGroupButton:hover {
+    color: rgb(255, 255, 255);
 }

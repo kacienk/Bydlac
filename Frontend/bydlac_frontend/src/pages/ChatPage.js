@@ -24,9 +24,8 @@ const ChatPage = () => {
 
                 <InputMessage/>
             </div>
-            <div id='TEMPgroupList'>
-                <ListHeader whichToShow={true}/>
-            </div>
+
+            <ListHeader whichToShow={true}/>
         </div>
     )
 }

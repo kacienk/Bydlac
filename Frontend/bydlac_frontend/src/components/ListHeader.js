@@ -2,12 +2,15 @@ import GroupList from "./GroupList";
 import EventList from "./EventList";
 import {useState} from "react";
 
+import "./ListHeader.css"
+
 const ListHeader = ({whichToShow}) => {
     const [whichListToShow, setWhichListToShow] = useState(whichToShow)
 
     return (
-        <div>
-            <button onClick={ () => setWhichListToShow(prevState => !prevState) } >
+        <div id="inListHeader">
+            <button id="whichListToShowButton"
+                    onClick={ () => setWhichListToShow(prevState => !prevState) } >
                 {whichListToShow ? "Pokaż wydarzenia" : "Pokaż konwersacje"}
             </button>
 

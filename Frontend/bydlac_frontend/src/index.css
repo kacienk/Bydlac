@@ -2,3 +2,7 @@
     font-family: 'Patrick Hand', cursive;
     font-size: 22px;
 }
+
+.body, html, root {
+    height: 100vh;
+}

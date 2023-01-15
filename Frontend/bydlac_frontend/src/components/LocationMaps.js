@@ -44,9 +44,11 @@ const LocationMaps = ({handleMapsPopup, setLocation, submitLocation, markerPosit
                         center={center}
                         zoom={13}
                         onLoad={onLoad}
-                        onClick={(position) => {
-                            if (setLocation !== null)
-                                addPlace(position)
+                        onClick={(pos) => {
+                            if (setLocation !== null) {
+                                addPlace(pos)
+                                setLocation({lat: pos.latLng.lat(), lng: pos.latLng.lng()})
+                            }
                         }}
                         onUnmount={onUnmount}
                     >
@@ -57,8 +59,6 @@ const LocationMaps = ({handleMapsPopup, setLocation, submitLocation, markerPosit
                     { setLocation !== null ?
                         <button
                             onClick={() => {
-                                if (setLocation !== null)
-                                    setLocation(position)
                                 submitLocation()
                             }}>
                             Potwierdź

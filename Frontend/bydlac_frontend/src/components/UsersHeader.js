@@ -1,7 +1,10 @@
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import User from "./User";
 import userContext from "../context/UserContext";
 import {useContext, useEffect, useState} from "react";
+
+
+import "./UsersHeader.css"
 
 const UsersHeader = () => {
     const {
@@ -11,9 +14,13 @@ const UsersHeader = () => {
     } = useContext(userContext)
     const [currentGroup, setCurrentGroup] = useState({})
 
+    const params = useParams()
+    const [showGroupName, setShowGroupName] = useState(false)
+
     useEffect(() => {
         const tempCurrentGroup = userGroups.find((group) => {return group.id === currentGroupId})
         setCurrentGroup(tempCurrentGroup)
+        setShowGroupName(Number(params.groupId) === currentGroupId)
     }, [currentGroupId])
 
     return (
@@ -23,7 +30,8 @@ const UsersHeader = () => {
                     <button className="logoutButton">Wyloguj</button>
                 </Link>
 
-                <h3> {currentGroup ? currentGroup.name : '' } </h3>
+                {showGroupName &&
+                    <h3 id="groupNameHeader"> {currentGroup.name} </h3>}
 
                 <User className='you' userId={userId} />
             </div>

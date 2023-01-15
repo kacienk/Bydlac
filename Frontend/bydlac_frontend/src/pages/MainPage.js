@@ -5,6 +5,8 @@ import UsersHeader from "../components/UsersHeader";
 import ListHeader from "../components/ListHeader";
 import Person1 from "../components/person1.jpg";
 
+import "./MainPage.css";
+
 const MainPage = () => {
     const {
         userToken,
@@ -25,14 +27,20 @@ const MainPage = () => {
             <div>
                 <UsersHeader />
 
-                <h1> Witaj { currentUser.username }! </h1>
-                <img className="profileImage" src={ Person1 } alt=''/>
+                <div id="profileInfoBox">
+                    <div id="profileInfoInnerBox">
+                        <h1 id="helloUserText">
+                            Witaj { currentUser.username }!
+                        </h1>
 
-                <p> Aby przejść do konwersacji, wybierz z listy po prawej </p>
+                        <img id="profileImageBig" src={ Person1 } alt=''/>
+
+                        <p id="promptText"> Aby przejść do konwersacji, wybierz z listy po prawej </p>
+                    </div>
+                </div>
             </div>
-            <div id='TEMPgroupList'>
-                <ListHeader whichToShow={true}/>
-            </div>
+
+            <ListHeader whichToShow={true}/>
         </div>
     )
 }

@@ -8,15 +8,13 @@ const NewGroupPage = () => {
 
     return (
         <div className='mainView'>
-            <div id='test'>
+            <div>
                 <UsersHeader/>
 
                 <NewGroup/>
             </div>
 
-            <div id='TEMPgroupList'>
-                <ListHeader whichToShow={true} />
-            </div>
+            <ListHeader whichToShow={true} />
         </div>
     )
 }

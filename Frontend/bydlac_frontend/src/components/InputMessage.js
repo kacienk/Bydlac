@@ -38,16 +38,13 @@ function InputMessage() {
         messageRef.current.value = null;
     }
 
-    function inputPhotoHandler() {
-        /*TODO*/
-    }
-
     const [toggleMaps, setToggleMaps] = useState(false)
     const handleMapsPopup = () => { setToggleMaps(prevState => !prevState) }
 
     const [location, setLocation] = useState({})
     const sendLocation = async () => {
-        if (location !== {}) {
+        console.log("location ", location)
+        if (JSON.stringify(location) !== "{}") {
             let response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
                 method: 'POST',
                 headers: {
@@ -71,7 +68,7 @@ function InputMessage() {
 
     return (
         <div className="inputMessage" onSubmit={sendMessageHandler}>
-            <form>
+            <form className="inputMessage">
                 <input
                     className='inputMessageField'
                     ref={messageRef}
@@ -83,18 +80,14 @@ function InputMessage() {
                     type="submit" >
                     S
                 </button>
-            </form>
 
-            <button
-                className='inputPhotoButton'
-                onClick={inputPhotoHandler} >
-                P
-            </button>
-            <button
-                className='inputLocationButton'
-                onClick={ handleMapsPopup } >
-                L
-            </button>
+                <button
+                    type="button"
+                    className='inputLocationButton'
+                    onClick={ handleMapsPopup } >
+                    L
+                </button>
+            </form>
 
             {toggleMaps &&
                 <LocationMaps

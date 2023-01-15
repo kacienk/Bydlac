@@ -9,7 +9,6 @@ const GroupList = () => {
 
     return (
         <div className="groupList">
-
             <Link to={'/new/group'}>
                 <button id='newGroupButton'>Nowa konwersacja</button>
             </Link>

@@ -4,6 +4,34 @@
     text-align: left;
     padding-left: 10px;
     height: 50px;
-    width: 33vw;
+    width: 100%;
     border: none;
+
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    transition: .5s;
+    z-index: 1;
+}
+
+#eventButton::before {
+    content: '';
+    width: 0;
+    height: 1000%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+#eventButton:hover::before {
+    width: 105%;
+}
+
+#eventButton:hover {
+    color: rgb(255, 255, 255);
 }

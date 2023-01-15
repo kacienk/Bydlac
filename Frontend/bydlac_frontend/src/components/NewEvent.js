@@ -23,9 +23,6 @@ const NewEvent = () => {
     const [newEventExpirationDate, setNewEventExpirationDate] = useState(Date())
 
     const [addGroupToEvent, setAddGroupToEvent] = useState(false)
-    const [newGroupName, setNewGroupName] = useState('')
-    const [newGroupDescription, setNewGroupDescription] = useState('')
-
     const addGroup = () => { setAddGroupToEvent(prevState => !prevState) }
 
 
@@ -80,7 +77,7 @@ const NewEvent = () => {
 
     return (
         <div id='newEventBox'>
-            <div id='newEventInnerBox'>
+            <div >
                 <form id='newEventForm' onSubmit={newEventSubmitHandler}>
                     <p className='newEventPageText'>Nazwa wydarzenia: </p>
                     <input id='newEventPageInput'
@@ -104,47 +101,31 @@ const NewEvent = () => {
                            onChange={(event) => setNewEventMaxParticipants(Number(event.target.value))}
                     />
 
-
-                    <button type="button"
+                    <button type="button" id="newEventPageButton" style={{marginTop: "10px"}}
                             onClick={ handleMapsPopup } >
                         Dodaj lokalizację wydarzenia
                     </button>
                     { newEventLocation !== '' ?
-                        (<p>Lokalizacja wybrana pomyślnie!</p>) :
-                        (<p>Nie wybrano lokalizacji</p>) }
+                        (<p className='newEventPageText' style={{margin: "unset"}} >Lokalizacja wybrana pomyślnie!</p>) :
+                        (<p className='newEventPageText' style={{margin: "unset"}} >Nie wybrano lokalizacji</p>) }
 
-
+                    <p className='newEventPageText' style={{margin: "unset"}} >
+                        Dodaj termin wydarzenia:
+                    </p>
                     <DateTimePicker
                         ampm={false}
                         disablePast={true}
                         onChange={(newValue) => setNewEventExpirationDate(newValue)}
                         value={newEventExpirationDate}
+                        inputFormat="dd.MM.yyyy HH:mm"
                         renderInput={(props) => <TextField {...props} /> /* TODO style all this */} />
 
-                    <button type="button"
+                    <button type="button" id="newEventPageButton" style={{height: "70px", marginTop: "10px", marginBottom: "10px"}}
                             onClick={ addGroup } >
-                        {addGroupToEvent ? "Anuluj tworzenie grupy do tego wydarzenia" : "Stwórz grupę do tego wydarzenia"}
+                        {addGroupToEvent ? "Anuluj tworzenie konwersacji do wydarzenia" : "Stwórz konwersację do wydarzenia"}
                     </button>
 
-                    {addGroupToEvent && (
-                        <div>
-                            <p className='newGroupPageText'>Nazwa konwersacji: </p>
-                            <input id='newGroupPageInput'
-                                   type="text"
-                                   required
-                                   placeholder="Nazwa"
-                                   onChange={(event) => {setNewGroupName(event.target.value)}}
-                            />
-
-                            <p className='newGroupPageText'>Opis:</p>
-                            <textarea
-                                id='newGroupPageTextarea'
-                                onChange={(event) => {setNewGroupDescription(event.target.value)}}
-                            ></textarea>
-                        </div>
-                    )}
-
-                    <button id='newEventPageButton'>Stwórz wydarzenie</button>
+                    <button id='newEventPageButton' style={{marginBottom: "10px"}} >Stwórz wydarzenie</button>
                 </form>
             </div>
 
