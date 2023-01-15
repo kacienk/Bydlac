@@ -5,9 +5,9 @@ import ListHeader from "../components/ListHeader";
 import userContext from "../context/UserContext";
 import LocationMaps from "../components/LocationMaps";
 import UsersHeader from "../components/UsersHeader";
+import {format, parseISO} from "date-fns";
 
 import "./EventPage.css";
-import {format, parseISO} from "date-fns";
 
 const EventDetails = () => {
     const {
@@ -204,8 +204,6 @@ const EventDetails = () => {
 }
 
 const EventPage = () => {
-    const {userId} = useContext(userContext)
-
     return (
         <div className='mainView'>
             <div>

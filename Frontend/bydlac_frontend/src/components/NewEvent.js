@@ -11,10 +11,7 @@ const NewEvent = () => {
     const {
         userId,
         userToken,
-        setUserEvents
     } = useContext(userContext)
-    let {userEvents} = useContext(userContext)
-
 
     const [newEventName, setNewEventName] = useState('')
     const [newEventDescription, setNewEventDescription] = useState('')
@@ -24,7 +21,6 @@ const NewEvent = () => {
 
     const [addGroupToEvent, setAddGroupToEvent] = useState(false)
     const addGroup = () => { setAddGroupToEvent(prevState => !prevState) }
-
 
     const navigate = useNavigate()
 
@@ -48,7 +44,6 @@ const NewEvent = () => {
         })
         const newEventData = await createEventResponse.json()
         const newEventId = newEventData['id']
-        //userEvents = setUserEvents(userEvents => [...userEvents, newEventData])
 
         if (addGroupToEvent) {
             const createGroupToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/group/`, {
@@ -58,11 +53,9 @@ const NewEvent = () => {
                     "Authorization": `Token ${userToken}`
                 }
             })
-            //const newGroupToEventData = await
             if (!createGroupToEventResponse.ok)
                 alert("Błąd podczas tworzenia grupy do wydarzenia")
         }
-
 
         if (createEventResponse.ok) {
             navigate('/event/' + newEventId)
@@ -73,7 +66,6 @@ const NewEvent = () => {
 
     const [toggleMaps, setToggleMaps] = useState(false)
     const handleMapsPopup = () => { setToggleMaps(prevState => !prevState) }
-
 
     return (
         <div id='newEventBox'>
@@ -118,7 +110,7 @@ const NewEvent = () => {
                         onChange={(newValue) => setNewEventExpirationDate(newValue)}
                         value={newEventExpirationDate}
                         inputFormat="dd.MM.yyyy HH:mm"
-                        renderInput={(props) => <TextField {...props} /> /* TODO style all this */} />
+                        renderInput={(props) => <TextField {...props} />} />
 
                     <button type="button" id="newEventPageButton" style={{height: "70px", marginTop: "10px", marginBottom: "10px"}}
                             onClick={ addGroup } >

@@ -1,6 +1,7 @@
 import {useContext} from "react";
 import userContext from "../context/UserContext";
 import {Link} from "react-router-dom";
+
 import "./Event.css";
 
 const Event = ({event}) => {

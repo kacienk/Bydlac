@@ -15,7 +15,45 @@
 
 #mapsPopup {
     width: 66vw;
-    height: 33vh;
+    height: 66vh;
 
     z-index: 3;
+}
+
+.submitLocation {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 25px;
+    padding: 5px 20px 5px 20px;
+
+    border: none;
+    border-radius: 15px;
+
+    position: relative;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    text-align: center;
+    transition: .3s;
+    z-index: 1;
+}
+
+.submitLocation::before {
+    content: '';
+    width: 0;
+    height: 300%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: rgb(158, 176, 173);
+    transition: .5s ease;
+    display: block;
+    z-index: -1;
+}
+
+.submitLocation:hover::before {
+    width: 105%;
+}
+
+.submitLocation:hover {
+    color: rgb(255, 255, 255);
 }

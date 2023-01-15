@@ -1,10 +1,10 @@
-import './Conversation.css';
 import {useContext, useEffect, useState} from "react";
-
 import Message from "./Message";
 import userContext from "../context/UserContext";
 
-const Conversation = ({props, groupId}) => {
+import './Conversation.css';
+
+const Conversation = ({groupId}) => {
     let [messages, setMessages] = useState([])
     const {userToken} = useContext(userContext)
 
@@ -20,7 +20,6 @@ const Conversation = ({props, groupId}) => {
                 })
                 let data = await response.json()
                 setMessages(data)
-                console.log("/Conversation.js/getMessages/", data)
             }
         }
 
@@ -30,9 +29,7 @@ const Conversation = ({props, groupId}) => {
         }, 1000)
 
         return () => clearInterval(interval)
-    }, [userToken, groupId]) // [groupId, currentMessage]
-
-
+    }, [userToken, groupId])
 
     return (
         <div className='conversationBox'>

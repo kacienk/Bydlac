@@ -32,8 +32,6 @@ export const UserProvider = ({children}) => {
                 }
             })
             const data = await response.json()
-            //console.log("Lista grup:", data)
-            //console.log("Najnowsza grupa: ", data[0].id)
 
             if (isSubscribed) {
                 await setUserGroups(data)
@@ -47,14 +45,13 @@ export const UserProvider = ({children}) => {
         }, 1000)
 
         return () => clearInterval(interval)
-    }, []) // TODO maybe fix constant re-rendering? XD
+    }, [])
 
     const [userEvents, setUserEvents] = useState([])
     useEffect(() => {
         let isSubscribed = true
 
         const getUserEvents = async () => {
-            // `http://127.0.0.1:8000/api/users/${userId}/events/`
             let response = await fetch(`http://127.0.0.1:8000/api/events/`, {
                 method: 'GET',
                 headers: {
@@ -76,17 +73,6 @@ export const UserProvider = ({children}) => {
 
         return () => clearInterval(interval)
     }, [])
-
-/*    const [currentGroup, setCurrentGroup] = useState({})
-
-    useEffect(() => {
-        if (currentGroupId) {
-            const tempCurrentGroup = userGroups.find((group) => {return group.id === currentGroupId})
-            setCurrentGroup(tempCurrentGroup)
-        }
-
-    }, [currentGroupId])*/
-
 
     let contextData = {
         userToken:userToken, // Conversation, GroupOptions, InputMessage, NewEvent, NewGroup, EventDetails, MainPage

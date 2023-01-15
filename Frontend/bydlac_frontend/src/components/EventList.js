@@ -1,8 +1,9 @@
 import Event from "./Event";
-import "./EventList.css"
 import {Link} from "react-router-dom";
 import {useContext} from "react";
 import userContext from "../context/UserContext";
+
+import "./EventList.css"
 
 const EventList = () => {
     const {userEvents} = useContext(userContext)
@@ -14,9 +15,7 @@ const EventList = () => {
                 <button id='newEventButton'>Nowe wydarzenie</button>
             </Link>
 
-            {
-                userEvents.map(event => (<Event key={event.id} event={event}/>))
-            }
+            { userEvents.map(event => (<Event key={event.id} event={event}/>)) }
         </div>
     )
 }

@@ -1,7 +1,11 @@
 import {useContext, useRef, useState} from "react";
-import './InputMessage.css';
 import userContext from "../context/UserContext";
 import LocationMaps from "./LocationMaps";
+
+import sendIcon from "../images/send_icon.png";
+import locationIcon from "../images/location_icon.png";
+
+import './InputMessage.css';
 
 function InputMessage() {
     const {
@@ -20,8 +24,7 @@ function InputMessage() {
         if (currentMessage === '')
             return;
 
-        //console.log("currentGroupId in sendMessageHandler: ", currentGroupId)
-        let response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -45,7 +48,7 @@ function InputMessage() {
     const sendLocation = async () => {
         console.log("location ", location)
         if (JSON.stringify(location) !== "{}") {
-            let response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -62,8 +65,7 @@ function InputMessage() {
             handleMapsPopup()
         }
         else
-            alert("nie ma jakiej lokalizacji wysłać") // TODO
-
+            alert("Lokalizacja nie została wybrana, spróbuj jeszcze raz")
     }
 
     return (
@@ -78,14 +80,14 @@ function InputMessage() {
                 <button
                     className='inputSendButton'
                     type="submit" >
-                    S
+                    <img className="sendIcon" src={ sendIcon } alt=''/>
                 </button>
 
                 <button
                     type="button"
                     className='inputLocationButton'
                     onClick={ handleMapsPopup } >
-                    L
+                    <img className="locationIcon" src={ locationIcon } alt=''/>
                 </button>
             </form>
 
@@ -97,6 +99,7 @@ function InputMessage() {
                     markerPosition={ {lat: 0, lng: 0} }
                     markerVisibility={ false } />}
         </div>
+
     );
 }
 

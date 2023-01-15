@@ -3,7 +3,6 @@ import User from "./User";
 import userContext from "../context/UserContext";
 import {useContext, useEffect, useState} from "react";
 
-
 import "./UsersHeader.css"
 
 const UsersHeader = () => {

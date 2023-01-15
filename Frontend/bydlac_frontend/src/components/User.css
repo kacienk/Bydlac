@@ -49,11 +49,6 @@
     font-size: 35px;
 }
 
-.userStatus {
-    border-radius: 1px;
-    border: solid aqua;
-}
-
 .otherPerson {
     display: inline-flex;
 }

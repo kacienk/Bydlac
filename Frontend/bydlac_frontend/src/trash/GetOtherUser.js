@@ -21,7 +21,7 @@ const GetOtherUser = () => {
             }
         })
         let data = await response.json()
-        if (data.length !== 0) // Easiest way to get rid of an error XD
+        if (data.length !== 0)
             setOtherUserList(data)
     }
 

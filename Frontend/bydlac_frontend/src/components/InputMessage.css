@@ -6,7 +6,7 @@
 }
 
 .inputMessageField {
-    background-color: rgb(118, 176, 206);
+    background-color: rgb(158, 176, 173);
     height: 30px;
     flex-grow: 1;
     border: none;
@@ -23,6 +23,10 @@
     border: 1px rgb(118, 176, 206);
     border-radius: 0 50% 50% 0;
     cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .inputPhotoButton {
@@ -39,4 +43,16 @@
     border: none;
     border-radius: 50%;
     cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sendIcon {
+    height: 80%;
+}
+
+.locationIcon {
+    height: 90%;
 }

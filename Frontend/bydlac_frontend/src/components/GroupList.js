@@ -1,8 +1,9 @@
 import Group from "./Group";
-import "./GroupList.css"
 import {Link} from "react-router-dom";
 import {useContext} from "react";
 import userContext from "../context/UserContext";
+
+import "./GroupList.css"
 
 const GroupList = () => {
     const {userGroups} = useContext(userContext)

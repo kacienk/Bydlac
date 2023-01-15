@@ -1,8 +1,32 @@
 .logOutPage {
-    height: 36vh;
-    width: 36vw;
+    height: 98vh;
+    width: 100vw;
+    display: grid;
+    place-items: center;
+}
+
+.logOutBox {
+    background: rgb(158, 176, 173);
+    padding: 30px;
+    border-radius: 40px;
     text-align: center;
-    position: absolute;
-    top: 32%;
-    left: 32%;
+}
+
+.logInAgainButton {
+    margin-top: 6px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    height: 40px;
+    width: 200px;
+    border: 3px solid rgb(233, 233, 237);
+    border-radius: 10px;
+    background-color: rgb(158, 176, 173);
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+
+.logInAgainButton:hover {
+    background-color: rgb(233, 233, 237);
+    color: rgb(158, 176, 173);
 }

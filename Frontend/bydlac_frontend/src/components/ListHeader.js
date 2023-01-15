@@ -2,7 +2,7 @@ import GroupList from "./GroupList";
 import EventList from "./EventList";
 import {useState} from "react";
 
-import "./ListHeader.css"
+import "./ListHeader.css";
 
 const ListHeader = ({whichToShow}) => {
     const [whichListToShow, setWhichListToShow] = useState(whichToShow)

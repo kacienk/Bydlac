@@ -1,14 +1,13 @@
-import './User.css';
-
-import Person1 from './person1.jpg';
 import {useContext, useEffect, useState} from "react";
 import userContext from "../context/UserContext";
-import {useNavigate} from "react-router-dom";
 import {format, formatDistanceToNowStrict, parseISO} from "date-fns";
+
+import Person1 from './person1.jpg';
+
+import './User.css';
 
 const UserDetails = ({handlePopup, user, setReRenderTrigger}) => {
     const {userToken, userId} = useContext(userContext)
-    const navigate = useNavigate()
 
     const [toggleEditBio, setToggleEditBio] = useState(false)
     const [newBio, setNewBio] = useState('')
@@ -29,7 +28,7 @@ const UserDetails = ({handlePopup, user, setReRenderTrigger}) => {
             setToggleEditBio(prevState => !prevState)
         }
         else
-            alert("nie udało się zmienić bio") // TODO
+            alert("Wystąpił problem podczas edycji bio, spróbuj jeszcze raz")
     }
 
     const [userCreatedDate, setUserCreatedDate] = useState(new Date(parseISO(user.created)))
@@ -93,7 +92,6 @@ const User = ({className, userId}) => {
             })
             const getUserData = await getUserResponse.json()
             setUser(getUserData)
-            //console.log("In User component getUserData: ", getUserData)
         }
 
         getUser()

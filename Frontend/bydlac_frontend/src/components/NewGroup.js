@@ -1,8 +1,9 @@
 import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import userContext from "../context/UserContext";
 
+import "./NewGroup.css";
 
 const NewGroup = () => {
     const {

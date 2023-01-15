@@ -3,12 +3,11 @@ import userContext from "../context/UserContext";
 import {Link, useNavigate} from "react-router-dom";
 import CreatableSelect from "react-select/creatable";
 import User from "./User";
+
 import "./Group.css"
 
 const GroupOptions = ({groupId, handlePopup}) => {
     const {userId, userToken} = useContext(userContext)
-
-    const navigate = useNavigate()
 
     const [group, setGroup] = useState({})
 
@@ -94,8 +93,6 @@ const GroupOptions = ({groupId, handlePopup}) => {
     }
 
     const changeModerator = async (groupMember) => {
-        //console.log("In GroupOptions groupMember: ", groupMember)
-
         const changeModeratorResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${groupMember.user}/`, {
             method: 'PATCH',
             headers: {
@@ -104,8 +101,6 @@ const GroupOptions = ({groupId, handlePopup}) => {
             },
             body: JSON.stringify(groupMember)
         })
-        const changeModeratorData = await changeModeratorResponse.json()
-        //console.log("In GroupOptions changeModeratorData: ", changeModeratorData)
     }
 
     const deleteGroup = async () => {
@@ -156,7 +151,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
                             <div id="groupMembersMap">
                                 {groupMembers.map(groupMember => (
                                     <User key={groupMember.user} className="otherPerson" userId={groupMember.user} />
-                                )) /* TODO fit unlimited amount of members - scrolling! */}
+                                )) }
                             </div>
                         </div>
                     )}

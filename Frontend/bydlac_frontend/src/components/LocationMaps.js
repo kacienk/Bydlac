@@ -1,13 +1,12 @@
 import React, {useCallback, useMemo, useState} from "react";
 import {GoogleMap, useJsApiLoader, Marker} from "@react-google-maps/api";
+
 import "./LocationMaps.css";
 
 const containerStyle = {
     width: '100%',
     height: '100%'
 };
-
-
 
 const LocationMaps = ({handleMapsPopup, setLocation, submitLocation, markerPosition, markerVisibility}) => {
     const center = useMemo(() => ({
@@ -50,14 +49,13 @@ const LocationMaps = ({handleMapsPopup, setLocation, submitLocation, markerPosit
                                 setLocation({lat: pos.latLng.lat(), lng: pos.latLng.lng()})
                             }
                         }}
-                        onUnmount={onUnmount}
-                    >
+                        onUnmount={onUnmount} >
                         <Marker
                             position={position}
                             visible={visible} />
                     </GoogleMap>
                     { setLocation !== null ?
-                        <button
+                        <button className="submitLocation"
                             onClick={() => {
                                 submitLocation()
                             }}>

@@ -3,6 +3,7 @@ import {useContext, useEffect} from "react";
 import userContext from "../context/UserContext";
 import UsersHeader from "../components/UsersHeader";
 import ListHeader from "../components/ListHeader";
+
 import Person1 from "../components/person1.jpg";
 
 import "./MainPage.css";
