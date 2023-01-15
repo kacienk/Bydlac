@@ -159,5 +159,10 @@ Frontend/bydlac_frontend/npm-debug.log*
 Frontend/bydlac_frontend/yarn-debug.log*
 Frontend/bydlac_frontend/yarn-error.log*
 
-# images
-Backend/user_images
+
+# data
+Backend/data/
+
+# sonar-scanner stuff
+.scannerwork/
+
