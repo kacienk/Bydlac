@@ -1,3 +1,6 @@
+import json
+import os
+
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, logout
 from django.db.models import Q, F
@@ -22,12 +25,15 @@ from base.serializers import GroupMemberSerializer
 from base.serializers import MessageSerializer
 from base.serializers import EventSerializer
 
-from .utils import IsMemberLinkSelf, UserAlreadyInGroupException, IsNotGroupMemberException, EventGroupException, IsSelf, IsConversationGroupHost, IsEventHost, IsMember, IsPublic, IsModerator, IsAuthor, IsEventParticipant, routes
+from .utils import IsMemberLinkSelf, UserAlreadyInGroupException, IsNotGroupMemberException, EventGroupException, IsSelf, IsConversationGroupHost, IsEventHost, IsMember, IsPublic, IsModerator, IsAuthor, IsEventParticipant
 from .serializers import LoginSerializer, RegisterSerializer, GroupMemberListSerializer
 
 
 @api_view(['get'])
 def get_routes(request):
+    with open('/backend/api/routes.json', 'r') as fp:
+        routes = json.load(fp)
+
     return Response(routes)
 
 
