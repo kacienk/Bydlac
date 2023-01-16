@@ -1,7 +1,7 @@
 version: "3"
 services:
   bydlac_backend:
-    build: .
+    build: Backend/
     ports: 
       - 8000:8000
     image: bydlac_backend:bydlac_backend
@@ -22,7 +22,7 @@ services:
   db:
     image: postgres
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - Backend/data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
