@@ -17,7 +17,7 @@ const SignUp = () => {
         event.preventDefault()
         const newUser = {username, password, password2: passwordRepeated, email}
 
-        let response = await fetch(`http://192.168.92.21:8000/api/register/`, {
+        let response = await fetch(`http://127.0.0.1:8000/api/register/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(newUser)

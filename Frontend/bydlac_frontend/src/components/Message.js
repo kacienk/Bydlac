@@ -14,7 +14,7 @@ const Message = ({message}) => {
 
     useEffect(() => {
         const findAuthor = async () => { // TODO
-            const findAuthorResponse = await fetch(`http://192.168.92.21:8000/api/users/${message.author}/`, {
+            const findAuthorResponse = await fetch(`http://127.0.0.1:8000/api/users/${message.author}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

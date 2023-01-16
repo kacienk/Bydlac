@@ -50,7 +50,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
 
     useEffect(() => {
         const getGroupDetails = async () => {
-            const response = await fetch(`http://192.168.92.21:8000/api/groups/${groupId}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
             const data = await response.json()
             setGroup(data)
 
-            const responseMembers = await fetch(`http://192.168.92.21:8000/api/groups/${groupId}/members/`, {
+            const responseMembers = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
     const deleteUsers = () => {
         console.log("selectedToDelete: ", selectedToDelete)
         selectedToDelete.map(async (user) => {
-            const response = await fetch(`http://192.168.92.21:8000/api/groups/${groupId}/members/${user.user}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${user.user}/`, {
                 method: 'DELETE',
                 headers: {
                     "Content-Type": "application/json",
@@ -92,7 +92,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
     }
 
     const changeModerator = async (groupMember) => {
-        const changeModeratorResponse = await fetch(`http://192.168.92.21:8000/api/groups/${groupId}/members/${groupMember.user}/`, {
+        const changeModeratorResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${groupMember.user}/`, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
     }
 
     const deleteGroup = async () => {
-        const deleteGroupResponse = await fetch(`http://192.168.92.21:8000/api/groups/${groupId}/`, {
+        const deleteGroupResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
