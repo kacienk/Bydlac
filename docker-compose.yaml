@@ -5,7 +5,7 @@ services:
     ports:
       - "3000:3000"
     container_name: bydlac-frontend
-    command: npx serve build
+    # command: npx serve build
     environment:
       - REACT_APP_GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
       - REACT_APP_BACKEND_IP=${BACKEND_IP}

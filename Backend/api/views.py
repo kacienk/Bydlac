@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_safe
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -31,7 +31,11 @@ from .serializers import LoginSerializer, RegisterSerializer, GroupMemberListSer
 
 @api_view(['get'])
 @require_safe
+@permission_classes([permissions.AllowAny])
 def get_routes(request):
+    """
+    Root view for getting available routes.
+    """
     with open('/backend/api/routes.json', 'r') as fp:
         routes = json.load(fp)
 
@@ -39,10 +43,17 @@ def get_routes(request):
 
 
 class LoginView(views.APIView):
+    """
+    View allowing user to log in.
+    """
     permission_classes = [permissions.AllowAny]
     serializer_class = LoginSerializer
 
     def post(self, request, format=None):
+        """
+        Post method where request data is their credentials.
+        User access token is sent in response.
+        """
         serializer = LoginSerializer(data=self.request.data, context={ 'request': self.request })
         serializer.is_valid(raise_exception=True)
 
@@ -57,6 +68,9 @@ class LoginView(views.APIView):
 
 
 class LogoutView(views.APIView):
+    """
+    Allows user to log out.
+    """
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
@@ -65,6 +79,9 @@ class LogoutView(views.APIView):
 
 
 class RegisterView(generics.CreateAPIView):
+    """
+    View allowing to register a new user.
+    """
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = RegisterSerializer
@@ -75,6 +92,9 @@ class UserViewSet(GenericViewSet,
                   mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin):
+    """
+    Viewset handling all actions sent to user related endpoints.
+    """
     queryset = User.objects.all()
 
     def get_serializer_class(self):
@@ -113,6 +133,9 @@ class UserViewSet(GenericViewSet,
     
     @action(methods=['get'], detail=True, url_path='groups')
     def groups(self, request, *args, **kwargs):
+        """
+        Returns groups that request user is a member of.
+        """
         groups = self.get_queryset()
         serializer = self.get_serializer(groups, many=True)
 
@@ -120,6 +143,9 @@ class UserViewSet(GenericViewSet,
 
     @action(methods=['get'], detail=True, url_path='events')
     def events(self, request, *args, **kwargs):
+        """
+        Returns events in which request user participates.
+        """
         events = self.get_queryset()
         serializer = self.get_serializer(events, many=True)
 
@@ -127,12 +153,18 @@ class UserViewSet(GenericViewSet,
 
     @action(methods=['get'], detail=False, url_path='self')
     def user_self(self, request, *args, **kwargs):
+        """
+        Returns data about user sending request.
+        """
         serializer = self.get_serializer(request.user)
 
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False, url_path='from-username')
     def get_user_given_username(self, request, *args, **kwargs):
+        """
+        Allows to retrieve data about user using their username.
+        """
         username = self.request.query_params.get('username')
         user = get_object_or_404(User, username=username)
         serializer = self.get_serializer(user)
@@ -141,6 +173,9 @@ class UserViewSet(GenericViewSet,
         
 
 class ConversationGroupViewSet(ModelViewSet):
+    """
+    Viewset handling all actions sent to conversation group (except those in relation with event) related endpoints.
+    """
     def get_serializer_class(self):
         if self.action in ('list', 'list_all_groups'):
             return ConversationGroupSerializer
@@ -166,6 +201,10 @@ class ConversationGroupViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """
+        Creates new conversation group and creates link (GroupMember object) between host and the group.
+        Returns created group data.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -189,6 +228,9 @@ class ConversationGroupViewSet(ModelViewSet):
         serializer.save(host=self.request.user, is_event_group=False)
 
     def update(self, request, *args, **kwargs):
+        """
+        Updates conversation group, if it is not event group.
+        """
         group = self.get_object()
 
         if group.is_event_group:
@@ -197,6 +239,9 @@ class ConversationGroupViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Deletes conversation group, if it is not event group.
+        """
         group = self.get_object()
 
         if group.is_event_group:
@@ -206,6 +251,10 @@ class ConversationGroupViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=False, url_path='all')
     def list_all_groups(self, request, *args, **kwargs):
+        """
+        Lists all conversation groups in the database (not only public).
+        Allowed only for admin user.
+        """
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
@@ -217,6 +266,10 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
                          mixins.DestroyModelMixin,
                          mixins.ListModelMixin,
                          GenericViewSet):
+    """
+    Viewset handling all actions sent to group member 
+    (except those, in which conversation group is relation with event) related endpoints.
+    """
     def get_serializer_class(self):
         if self.action == 'list':
             return GroupMemberListSerializer
@@ -246,6 +299,10 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """
+        Creates new group member object.
+        Request data can be empty.
+        """
         queryset = self.get_queryset()
         data = {
             'group': self.kwargs['group_pk'],
@@ -272,6 +329,10 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def update(self, request, *args, **kwargs):
+        """
+        Updates group member object.
+        Only moderator sattus can be updated.
+        """
         queryset = self.get_queryset()
         data= {
             'user': kwargs['pk'], 
@@ -302,6 +363,9 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Deletes group member object. 
+        """
         queryset = self.get_queryset()
         data= {
             'user': kwargs['pk'], 
@@ -333,6 +397,9 @@ class GroupMemberViewSet(mixins.CreateModelMixin,
 
 
 class MessageViewSet(ModelViewSet):
+    """
+    Viewset handling all actions sent to message related endpoints.
+    """
     def get_serializer_class(self):
         if self.action == 'list':
             return MessageListSerializer
@@ -366,6 +433,9 @@ class MessageViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
     
     def create(self, request, *args, **kwargs):
+        """
+        Creates new message and notifies group.
+        """
         self._update_group()
         data = {key: value for key, value in request.data.items()} 
         data['author'] = request.user.id
@@ -382,12 +452,18 @@ class MessageViewSet(ModelViewSet):
         serializer.save(author=self.request.user, group=group)
     
     def _update_group(self):
+        """
+        Notifies group that message has been sent.
+        """
         group = get_object_or_404(ConversationGroup, id=self.kwargs['group_pk'])
         group.last_message = timezone.now()
         group.save()
 
 
 class EventViewSet(ModelViewSet):
+    """
+    Viewset handling all actions sent to event related endpoints.
+    """
     queryset = Event.objects.all()
      
     def get_serializer_class(self):
@@ -405,6 +481,9 @@ class EventViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        """
+        Creates new event and adds host to its participants.
+        """
         data = {key: value for key, value in request.data.items()} 
         data['host'] = request.user.id
 
@@ -422,6 +501,9 @@ class EventViewSet(ModelViewSet):
         serializer.save(host=self.request.user)
     
     def update(self, request, *args, **kwargs):
+        """
+        Updates event and (if it exists) conversation group related to th given event.
+        """
         partial = kwargs.pop('partial', False)
         event = self.get_object()
         group = event.group
@@ -443,6 +525,9 @@ class EventViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Deletes event and (if it exists) conversation group. 
+        """
         group = self.get_object().group
         if group:
             group.delete()
@@ -451,6 +536,9 @@ class EventViewSet(ModelViewSet):
    
     @action(methods=['get'], detail=True, url_path='participants')
     def participants_list(self, request, *args, **kwargs):
+        """
+        Returns list of all users that participate in given event.
+        """
         event = self.get_object()
         participants = event.participants.all()
 
@@ -459,6 +547,10 @@ class EventViewSet(ModelViewSet):
     
     @action(methods=['get'], detail=True)
     def join(self, request, *args, **kwargs):
+        """
+        Allows user to join the event.
+        If conversation group related to this event exists then user joins this group too. 
+        """
         event = get_object_or_404(self.queryset, id=kwargs['pk'])
 
         if event.max_participants and event.max_participants <= event.participants.count():
@@ -491,6 +583,10 @@ class EventViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=True)
     def leave(self, request, *args, **kwargs):
+        """
+        Allows user to leave the event.
+        If conversation group related to this event exists then user leaves this group too. 
+        """
         event = get_object_or_404(self.queryset, id=kwargs['pk'])
 
         if event.host == request.user:
@@ -511,6 +607,9 @@ class EventViewSet(ModelViewSet):
 
 class EventGroupViewSet(GenericViewSet,
                         mixins.CreateModelMixin):
+    """
+    Viewset handling all actions sent to event related conversation group endpoints.
+    """
     serializer_class = DetailedConversationGroupSerializer
     
     def get_permissions(self):
@@ -525,6 +624,11 @@ class EventGroupViewSet(GenericViewSet,
         return self.retrieve_group(self, request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
+        """
+        Creates new group for a given event.
+        Sets event host as gost, event name as name and event description as description.
+        Creates GroupMember objects for every participant in event.
+        """
         event = get_object_or_404(Event, id=self.kwargs['event_pk'])
 
         if event.group:
@@ -562,6 +666,9 @@ class EventGroupViewSet(GenericViewSet,
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def retrieve_group(self, request, *args, **kwargs):
+        """
+        Retrieves data about event group.
+        """
         event = get_object_or_404(Event, id=self.kwargs['event_pk'])
 
         if event.group is None:
