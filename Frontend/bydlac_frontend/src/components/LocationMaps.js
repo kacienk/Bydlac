@@ -3,6 +3,8 @@ import {GoogleMap, useJsApiLoader, Marker} from "@react-google-maps/api";
 
 import "./LocationMaps.css";
 
+require("dotenv").config();
+
 const containerStyle = {
     width: '100%',
     height: '100%'
@@ -16,8 +18,7 @@ const LocationMaps = ({handleMapsPopup, setLocation, submitLocation, markerPosit
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: "AIzaSyDn3aelRR6FsVFR6qmS13J4yEl8qUsVt_A"
-        /** This key is going to be changed after I finish working on this part */
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
     })
 
     const [map, setMap] = useState(null)

@@ -6,6 +6,7 @@ import User from "./User";
 
 import "./Group.css"
 
+const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const GroupOptions = ({groupId, handlePopup}) => {
     const {userId, userToken} = useContext(userContext)
 
@@ -50,7 +51,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
 
     useEffect(() => {
         const getGroupDetails = async () => {
-            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
+            const response = await fetch(`${ADDRESS}/groups/${groupId}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -60,7 +61,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
             const data = await response.json()
             setGroup(data)
 
-            const responseMembers = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/`, {
+            const responseMembers = await fetch(`${ADDRESS}/groups/${groupId}/members/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -69,7 +70,6 @@ const GroupOptions = ({groupId, handlePopup}) => {
             })
             const dataMembers = await responseMembers.json()
             setGroupMembers(dataMembers)
-            //console.log("In GroupDetails dataMembers: ", dataMembers)
         }
 
         getGroupDetails()
@@ -78,7 +78,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
     const deleteUsers = () => {
         console.log("selectedToDelete: ", selectedToDelete)
         selectedToDelete.map(async (user) => {
-            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${user.user}/`, {
+            const response = await fetch(`${ADDRESS}/groups/${groupId}/members/${user.user}/`, {
                 method: 'DELETE',
                 headers: {
                     "Content-Type": "application/json",
@@ -93,7 +93,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
     }
 
     const changeModerator = async (groupMember) => {
-        const changeModeratorResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${groupMember.user}/`, {
+        const changeModeratorResponse = await fetch(`${ADDRESS}/groups/${groupId}/members/${groupMember.user}/`, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
@@ -104,7 +104,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
     }
 
     const deleteGroup = async () => {
-        const deleteGroupResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
+        const deleteGroupResponse = await fetch(`${ADDRESS}/groups/${groupId}/`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",

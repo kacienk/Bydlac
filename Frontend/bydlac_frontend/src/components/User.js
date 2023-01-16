@@ -6,13 +6,14 @@ import Person1 from './person1.jpg';
 
 import './User.css';
 
+const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const UserDetails = ({handlePopup, user, setReRenderTrigger}) => {
     const {userToken, userId} = useContext(userContext)
 
     const [toggleEditBio, setToggleEditBio] = useState(false)
     const [newBio, setNewBio] = useState('')
     const editBio = async () => {
-        const editBioResponse = await fetch(`http://127.0.0.1:8000/api/users/${user.id}/`, {
+        const editBioResponse = await fetch(`${ADDRESS}/users/${user.id}/`, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
@@ -83,7 +84,7 @@ const User = ({className, userId}) => {
     const [reRenderTrigger, setReRenderTrigger] = useState(false)
     useEffect(() => {
         const getUser = async () => {
-            const getUserResponse = await fetch(`http://127.0.0.1:8000/api/users/${userId}/`, {
+            const getUserResponse = await fetch(`${ADDRESS}/users/${userId}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

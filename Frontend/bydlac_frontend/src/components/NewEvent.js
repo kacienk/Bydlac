@@ -7,6 +7,7 @@ import LocationMaps from "./LocationMaps";
 
 import "./NewEvent.css";
 
+const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const NewEvent = () => {
     const {
         userId,
@@ -27,7 +28,7 @@ const NewEvent = () => {
     const newEventSubmitHandler = async (e) => {
         e.preventDefault()
 
-        const createEventResponse = await fetch(`http://127.0.0.1:8000/api/events/`, {
+        const createEventResponse = await fetch(`${ADDRESS}/events/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -46,7 +47,7 @@ const NewEvent = () => {
         const newEventId = newEventData['id']
 
         if (addGroupToEvent) {
-            const createGroupToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/group/`, {
+            const createGroupToEventResponse = await fetch(`${ADDRESS}/events/${newEventId}/group/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

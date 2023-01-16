@@ -3,7 +3,7 @@ import Message from "./Message";
 import userContext from "../context/UserContext";
 
 import './Conversation.css';
-
+const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const Conversation = ({groupId}) => {
     let [messages, setMessages] = useState([])
     const {userToken} = useContext(userContext)
@@ -11,7 +11,7 @@ const Conversation = ({groupId}) => {
     useEffect(() => {
         const getMessages = async (groupId) => {
             if (groupId !== null) {
-                let response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/messages/`, {
+                let response = await fetch(`${ADDRESS}/groups/${groupId}/messages/`, {
                     method: 'GET',
                     headers: {
                         "Content-Type": "application/json",

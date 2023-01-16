@@ -5,6 +5,7 @@ import {format, parseISO} from "date-fns";
 
 import "./Message.css";
 
+const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const Message = ({message}) => {
     const {userId, userToken} = useContext(userContext)
 
@@ -14,7 +15,7 @@ const Message = ({message}) => {
 
     useEffect(() => {
         const findAuthor = async () => {
-            const findAuthorResponse = await fetch(`http://127.0.0.1:8000/api/users/${message.author}/`, {
+            const findAuthorResponse = await fetch(`${ADDRESS}/users/${message.author}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
