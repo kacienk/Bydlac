@@ -5,6 +5,11 @@ import {format, parseISO} from "date-fns";
 
 import "./Message.css";
 
+/**
+ * Custom Component which represents single message from specific Conversation Group
+ * @param message object obtained from backend server containing all of message's details
+ * @returns {JSX.Element} element which displays message, author and date of sending it or button to open maps popup to display location (see: {@link LocationMaps})
+ */
 const Message = ({message}) => {
     const {ADDRESS, userId} = useContext(userContext)
 
