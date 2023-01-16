@@ -160,6 +160,7 @@
 
 .isModeratorBox {
     display: flex;
+    flex-direction: row;
 }
 
 .isModeratorUsername {
@@ -226,4 +227,8 @@ input:focus + .slider {
 
 input:checked + .slider:before {
     transform: translateX(1.4em);
+}
+
+.blankSpace {
+    flex-grow: 1;
 }

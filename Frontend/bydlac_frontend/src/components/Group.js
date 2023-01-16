@@ -10,8 +10,9 @@ const GroupOptions = ({groupId, handlePopup}) => {
     const {ADDRESS, userId, userToken} = useContext(userContext)
 
     const [group, setGroup] = useState({})
-
     const [groupMembers, setGroupMembers] = useState([])
+
+    const navigate = useNavigate()
 
     const [toggleGroupDetailsButton, setToggleGroupDetailsButton] = useState(true)
     const [toggleDeleteUsersButton, setToggleDeleteUsersButton] = useState(false)
@@ -110,6 +111,8 @@ const GroupOptions = ({groupId, handlePopup}) => {
                 "Authorization": `Token ${userToken}`
             }
         })
+        if (deleteGroupResponse.ok)
+            navigate(`/`)
     }
 
     return (
@@ -179,6 +182,8 @@ const GroupOptions = ({groupId, handlePopup}) => {
                             {groupMembers.map(groupMember => (
                                 <div className="isModeratorBox" key={ groupMember.user } >
                                     <p className="isModeratorUsername"> { groupMember.username } </p>
+
+                                    <div className="blankSpace"></div>
 
                                     {group.host === groupMember.user ? (<p style={{marginTop: "10px", marginBottom: "10PX"}}> HOST </p>) : (
                                         <label className="switch">

@@ -51,7 +51,7 @@ const LogIn = () => {
             setUserId(data['id'])
             localStorage.setItem('userId', data['id'])
 
-            navigate(`/chat/${currentGroupId}`)
+            navigate(`/`)
         }
         else
             alert("Problem z logowaniem, spróbuj jeszcze raz")

@@ -150,10 +150,8 @@ Frontend/bydlac_frontend/build
 
 # misc
 Frontend/bydlac_frontend/.DS_Store
-Frontend/bydlac_frontend/.env.local
-Frontend/bydlac_frontend/.env.development.local
-Frontend/bydlac_frontend/.env.test.local
-Frontend/bydlac_frontend/.env.production.local
+Frontend/bydlac_frontend/.env
+Frontend/bydlac_frontend/.env.staging
 
 Frontend/bydlac_frontend/npm-debug.log*
 Frontend/bydlac_frontend/yarn-debug.log*
