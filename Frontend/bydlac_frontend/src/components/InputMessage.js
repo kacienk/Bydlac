@@ -25,7 +25,7 @@ function InputMessage() {
         if (currentMessage === '')
             return;
 
-        const response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
+        const response = await fetch(`${ADDRESS}/groups/${currentGroupId}/messages/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +49,7 @@ function InputMessage() {
     const sendLocation = async () => {
         console.log("location ", location)
         if (JSON.stringify(location) !== "{}") {
-            const response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
+            const response = await fetch(`${ADDRESS}/groups/${currentGroupId}/messages/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

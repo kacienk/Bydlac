@@ -18,7 +18,7 @@ const LogIn = () => {
         event.preventDefault()
 
         // send request to backend to log and authorize user
-        let response = await fetch(`http://127.0.0.1:8000/api/login/`, {
+        let response = await fetch(`${ADDRESS}/login/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -34,7 +34,7 @@ const LogIn = () => {
             localStorage.setItem('userToken', JSON.stringify(data['token']))
 
             // obtain all currently logged user's information
-            response = await fetch(`http://127.0.0.1:8000/api/users/self/`, {
+            response = await fetch(`${ADDRESS}/users/self/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
