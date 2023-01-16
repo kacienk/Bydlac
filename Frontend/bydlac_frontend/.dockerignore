@@ -3,5 +3,5 @@
 Dockerfile
 
 # react stuff
-node_modules
-build
+# node_modules
+# build

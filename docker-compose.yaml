@@ -3,7 +3,7 @@ services:
   frontend:
     build: Frontend/bydlac_frontend/
     ports:
-      - 3000:3000
+      - "3000:3000"
     container_name: bydlac-frontend
     command: npx serve build
     environment:
@@ -19,10 +19,10 @@ services:
   backend:
     build: ./Backend/
     ports: 
-      - 8000:8000
+      - ${BACKEND_PORT}:${BACKEND_PORT}
     image: bydlac-backend:bydlac-backend
     container_name: bydlac-backend
-    command: python /backend/manage.py runserver 0.0.0.0:8000
+    command: python /backend/manage.py runserver 0.0.0.0:${BACKEND_PORT}
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - POSTGRES_DB=${POSTGRES_DB}

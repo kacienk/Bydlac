@@ -4,6 +4,12 @@ const UserContext = createContext(null);
 
 export default UserContext;
 
+console.log(process.env)
+
+const ADDRESS = `http://${process.env.REACT_APP_BACKEND_PORT}:${process.env.REACT_APP_BACKEND_PORT}/api`
+console.log(ADDRESS)
+alert(ADDRESS)
+
 export const UserProvider = ({children}) => {
 
     const [userToken, setUserToken] = useState(

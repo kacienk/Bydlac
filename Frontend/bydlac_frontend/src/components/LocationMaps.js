@@ -3,7 +3,7 @@ import {GoogleMap, useJsApiLoader, Marker} from "@react-google-maps/api";
 
 import "./LocationMaps.css";
 
-require("dotenv").config();
+//require("dotenv").config();
 
 const containerStyle = {
     width: '100%',
