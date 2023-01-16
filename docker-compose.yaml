@@ -1,5 +1,20 @@
 version: "3"
 services:
+  bydlac_frontend:
+    build: Frontend/bydlac_frontend/
+    ports:
+      - 3000:3000
+    container_name: bydlac_frontend
+    command: npx serve build
+    environment:
+      - REACT_APP_GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - REACT_APP_BACKEND_IP=${BACKEND_IP}
+    depends_on:
+      - bydlac_backend
+    networks:
+      bydlac_network:
+        ipv4_address: ${FRONTEND_ID}
+
   bydlac_backend:
     build: Backend/
     ports: 
@@ -19,6 +34,7 @@ services:
     networks:
       bydlac_network:
         ipv4_address: ${BACKEND_IP}
+
   db:
     image: postgres
     volumes:
