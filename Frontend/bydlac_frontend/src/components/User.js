@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import userContext from "../context/UserContext";
 import {format, formatDistanceToNowStrict, parseISO} from "date-fns";
 
-import Person1 from './person1.jpg';
+import Person1 from '../images/person1.jpg';
 
 import './User.css';
 

@@ -5,3 +5,4 @@ Dockerfile
 # react stuff
 node_modules
 build
+dist
