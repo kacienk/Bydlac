@@ -61,13 +61,14 @@ Proper .env file should be created in parent directory (Bydlac). For safety purp
 Before the first launch you need to build and apply django migrations.
 To do that you need to run from parent directory following commands:
 
-``` console
+``` sh
 docker compose build
 docker compose run backend python /backend/manage.py migrate --no-input 
 ```
 
 To launch app you need to run from parent directory:
-```
+
+``` sh
 docker compose up
 ```
 
