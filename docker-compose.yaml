@@ -1,7 +1,13 @@
 version: "3"
 services:
   frontend:
-    build: Frontend/bydlac_frontend/
+    build: 
+      context: Frontend/bydlac_frontend/
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+        REACT_APP_BACKEND_IP: ${BACKEND_IP}
+        REACT_APP_BACKEND_PORT: ${BACKEND_PORT}
     ports:
       - "3000:3000"
     container_name: bydlac-frontend
