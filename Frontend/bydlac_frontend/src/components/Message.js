@@ -5,17 +5,16 @@ import {format, parseISO} from "date-fns";
 
 import "./Message.css";
 
-const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const Message = ({message}) => {
-    const {userId, userToken} = useContext(userContext)
+    const {ADDRESS, userId, userToken} = useContext(userContext)
 
     const [whoseMessage, setWhoseMessage] = useState('')
     const [messageAuthor, setMessageAuthor] = useState('')
     const [messageTime, setMessageTime] = useState(new Date(parseISO(message.edited)))
 
     useEffect(() => {
-        const findAuthor = async () => {
-            const findAuthorResponse = await fetch(`${ADDRESS}/users/${message.author}/`, {
+        const findAuthor = async () => { // TODO
+            const findAuthorResponse = await fetch(`http://192.168.92.21:8000/api/users/${message.author}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

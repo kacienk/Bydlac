@@ -9,9 +9,9 @@ import {format, parseISO} from "date-fns";
 
 import "./EventPage.css";
 
-const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const EventDetails = () => {
     const {
+        ADDRESS,
         userToken,
         userId,
         currentEventId,
@@ -39,7 +39,7 @@ const EventDetails = () => {
 
     useEffect(() => {
         const getEventParticipants = async () => {
-            const eventParticipantsResponse = await fetch(`${ADDRESS}/events/${currentEventId}/participants/`, {
+            const eventParticipantsResponse = await fetch(`http://192.168.92.21:8000/api/events/${currentEventId}/participants/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const EventDetails = () => {
 
     useEffect(() => {
         const getGroupToEvent = async () => {
-            const response = await fetch(`${ADDRESS}/events/${currentEventId}/group/`, {
+            const response = await fetch(`http://192.168.92.21:8000/api/events/${currentEventId}/group/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const EventDetails = () => {
     const navigate = useNavigate()
 
     const deleteEvent = async () => {
-        const deletedResponse = await fetch(`${ADDRESS}/events/${currentEventId}/`, {
+        const deletedResponse = await fetch(`http://192.168.92.21:8000/api/events/${currentEventId}/`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
@@ -113,7 +113,7 @@ const EventDetails = () => {
     }
 
     const joinEvent = async () => {
-        const userJoinedEventResponse = await fetch(`${ADDRESS}/events/${currentEventId}/join/`, {
+        const userJoinedEventResponse = await fetch(`http://192.168.92.21:8000/api/events/${currentEventId}/join/`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
@@ -129,7 +129,7 @@ const EventDetails = () => {
     }
 
     const leaveEvent = async () => {
-        const userLeftEventResponse = await fetch(`${ADDRESS}/events/${currentEventId}/leave/`, {
+        const userLeftEventResponse = await fetch(`http://192.168.92.21:8000/api/events/${currentEventId}/leave/`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",

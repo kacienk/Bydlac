@@ -6,11 +6,8 @@ export default UserContext;
 
 console.log(process.env)
 
-const ADDRESS = `http://${process.env.REACT_APP_BACKEND_PORT}:${process.env.REACT_APP_BACKEND_PORT}/api`
-console.log(ADDRESS)
-alert(ADDRESS)
-
 export const UserProvider = ({children}) => {
+    const ADDRESS = `http://${process.env.REACT_APP_BACKEND_PORT}:${process.env.REACT_APP_BACKEND_PORT}/api`
 
     const [userToken, setUserToken] = useState(
         localStorage.getItem('userToken') ? JSON.parse(localStorage.getItem('userToken')) : null)
@@ -30,7 +27,7 @@ export const UserProvider = ({children}) => {
         let isSubscribed = true
 
         const getUserGroups = async () => {
-            const response = await fetch(`${ADDRESS}/users/${userId}/groups/`, {
+            const response = await fetch(`http://192.168.92.21:8000/api/users/${userId}/groups/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -58,7 +55,7 @@ export const UserProvider = ({children}) => {
         let isSubscribed = true
 
         const getUserEvents = async () => {
-            let response = await fetch(`${ADDRESS}/events/`, {
+            let response = await fetch(`http://192.168.92.21:8000/api/events/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -81,6 +78,8 @@ export const UserProvider = ({children}) => {
     }, [])
 
     let contextData = {
+        ADDRESS:ADDRESS,
+
         userToken:userToken, // Conversation, GroupOptions, InputMessage, NewEvent, NewGroup, EventDetails, MainPage
         setUserToken:setUserToken, // LogIn
 

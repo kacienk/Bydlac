@@ -1,10 +1,12 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import userContext from "../context/UserContext";
 
 import "./SignUp.css"
 
-const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const SignUp = () => {
+    const {ADDRESS} = useContext(userContext)
+
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -15,7 +17,7 @@ const SignUp = () => {
         event.preventDefault()
         const newUser = {username, password, password2: passwordRepeated, email}
 
-        let response = await fetch(`${ADDRESS}/register/`, {
+        let response = await fetch(`http://192.168.92.21:8000/api/register/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(newUser)

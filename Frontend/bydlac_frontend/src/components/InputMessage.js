@@ -7,9 +7,9 @@ import locationIcon from "../images/location_icon.png";
 
 import './InputMessage.css';
 
-const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 function InputMessage() {
     const {
+        ADDRESS,
         currentGroupId,
         userId,
         userToken
@@ -25,7 +25,7 @@ function InputMessage() {
         if (currentMessage === '')
             return;
 
-        const response = await fetch(`${ADDRESS}/groups/${currentGroupId}/messages/`, {
+        const response = await fetch(`http://192.168.92.21:8000/api/groups/${currentGroupId}/messages/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +49,7 @@ function InputMessage() {
     const sendLocation = async () => {
         console.log("location ", location)
         if (JSON.stringify(location) !== "{}") {
-            const response = await fetch(`${ADDRESS}/groups/${currentGroupId}/messages/`, {
+            const response = await fetch(`http://192.168.92.21:8000/api/groups/${currentGroupId}/messages/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

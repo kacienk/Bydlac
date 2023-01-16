@@ -4,9 +4,9 @@ import {useNavigate} from "react-router-dom";
 
 import './LogIn.css';
 
-const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 const LogIn = () => {
     const {
+        ADDRESS,
         setUserToken,
         setCurrentUser,
         setUserId,
@@ -18,7 +18,7 @@ const LogIn = () => {
         event.preventDefault()
 
         // send request to backend to log and authorize user
-        let response = await fetch(`${ADDRESS}/login/`, {
+        let response = await fetch(`http://192.168.92.21:8000/api/login/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -34,7 +34,7 @@ const LogIn = () => {
             localStorage.setItem('userToken', JSON.stringify(data['token']))
 
             // obtain all currently logged user's information
-            response = await fetch(`${ADDRESS}/users/self/`, {
+            response = await fetch(`http://192.168.92.21:8000/api/users/self/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
