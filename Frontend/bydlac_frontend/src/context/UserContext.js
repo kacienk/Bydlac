@@ -27,7 +27,7 @@ export const UserProvider = ({children}) => {
         let isSubscribed = true
 
         const getUserGroups = async () => {
-            const response = await fetch(`http://192.168.92.21:8000/api/users/${userId}/groups/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export const UserProvider = ({children}) => {
         let isSubscribed = true
 
         const getUserEvents = async () => {
-            let response = await fetch(`http://192.168.92.21:8000/api/events/`, {
+            let response = await fetch(`http://127.0.0.1:8000/api/events/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

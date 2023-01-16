@@ -28,7 +28,7 @@ const NewEvent = () => {
     const newEventSubmitHandler = async (e) => {
         e.preventDefault()
 
-        const createEventResponse = await fetch(`http://192.168.92.21:8000/api/events/`, {
+        const createEventResponse = await fetch(`http://127.0.0.1:8000/api/events/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const NewEvent = () => {
         const newEventId = newEventData['id']
 
         if (addGroupToEvent) {
-            const createGroupToEventResponse = await fetch(`http://192.168.92.21:8000/api/events/${newEventId}/group/`, {
+            const createGroupToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/group/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

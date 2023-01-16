@@ -52,7 +52,7 @@ const NewGroup = () => {
             is_private: newGroupIsPrivate
         }
 
-        let createGroupResponse = await fetch(`http://192.168.92.21:8000/api/groups/`, {
+        let createGroupResponse = await fetch(`http://127.0.0.1:8000/api/groups/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const NewGroup = () => {
             alert("Błąd podczas procesu tworzenia konwersacji")
 
         selectedUsersList.map(async (user) => {
-            const userIdResponse = await fetch(`http://192.168.92.21:8000/api/users/from-username/?username=${user}`, {
+            const userIdResponse = await fetch(`http://127.0.0.1:8000/api/users/from-username/?username=${user}`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const NewGroup = () => {
             })
             const userData = await userIdResponse.json()
 
-            let addUserResponse = await fetch(`http://192.168.92.21:8000/api/groups/${newGroupId}/members/`, {
+            let addUserResponse = await fetch(`http://127.0.0.1:8000/api/groups/${newGroupId}/members/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
