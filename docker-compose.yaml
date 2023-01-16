@@ -1,11 +1,27 @@
 version: "3"
 services:
-  bydlac_backend:
-    build: Backend/
+  frontend:
+    build: Frontend/bydlac_frontend/
+    ports:
+      - 3000:3000
+    container_name: bydlac-frontend
+    command: npx serve build
+    environment:
+      - REACT_APP_GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - REACT_APP_BACKEND_IP=${BACKEND_IP}
+      - REACT_APP_BACKEND_PORT=${BACKEND_PORT}
+    depends_on:
+      - backend
+    networks:
+      network:
+        ipv4_address: ${FRONTEND_IP}
+
+  backend:
+    build: ./Backend/
     ports: 
       - 8000:8000
-    image: bydlac_backend:bydlac_backend
-    container_name: bydlac_backend
+    image: bydlac-backend:bydlac-backend
+    container_name: bydlac-backend
     command: python /backend/manage.py runserver 0.0.0.0:8000
     environment:
       - SECRET_KEY=${SECRET_KEY}
@@ -17,22 +33,23 @@ services:
     depends_on:
       - db
     networks:
-      bydlac_network:
+      network:
         ipv4_address: ${BACKEND_IP}
+
   db:
     image: postgres
     volumes:
-      - Backend/data/db:/var/lib/postgresql/data
+      - ./Backend/data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    container_name: bydlac_postgres
+    container_name: bydlac-postgres
     networks:
-      bydlac_network:
+      network:
         ipv4_address: ${DB_IP}
 networks:
-  bydlac_network:
+  network:
     ipam: 
       driver: default
       config: 
