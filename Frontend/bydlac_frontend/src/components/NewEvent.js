@@ -39,12 +39,12 @@ const NewEvent = () => {
                 name: newEventName,
                 description: newEventDescription,
                 max_participants: newEventMaxParticipants,
-                location: newEventLocation,
+                location: JSON.stringify(newEventLocation),
                 expires: newEventExpirationDate
             })
         })
         const newEventData = await createEventResponse.json()
-        const newEventId = newEventData['id']
+        const newEventId = await newEventData['id']
 
         if (addGroupToEvent) {
             const createGroupToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/group/`, {
