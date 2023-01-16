@@ -4,28 +4,21 @@ import {useNavigate} from "react-router-dom";
 
 import './LogIn.css';
 
-/**
- * Custom Component which represents log in form
- * @returns {JSX.Element} LogIn form containing email and password inputs and buttons to submit credentials
- */
 const LogIn = () => {
     const {
         ADDRESS,
         setUserToken,
         setCurrentUser,
-        setUserId
+        setUserId,
+        currentGroupId
     } = useContext(userContext)
 
     const navigate = useNavigate()
-    /**
-     * Function to send User credentials and validate them
-     * @param event event from submitting input value in HTML element
-     */
     const logInHandler = async (event) => {
         event.preventDefault()
 
         // send request to backend to log and authorize user
-        let response = await fetch(`${ADDRESS}/login/`, {
+        let response = await fetch(`http://127.0.0.1:8000/api/login/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -41,7 +34,7 @@ const LogIn = () => {
             localStorage.setItem('userToken', JSON.stringify(data['token']))
 
             // obtain all currently logged user's information
-            response = await fetch(`${ADDRESS}/users/self/`, {
+            response = await fetch(`http://127.0.0.1:8000/api/users/self/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

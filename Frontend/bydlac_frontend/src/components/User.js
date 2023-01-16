@@ -2,27 +2,17 @@ import {useContext, useEffect, useState} from "react";
 import userContext from "../context/UserContext";
 import {format, formatDistanceToNowStrict, parseISO} from "date-fns";
 
-import Person1 from '../images/person1.jpg';
+import Person1 from './person1.jpg';
 
 import './User.css';
 
-/**
- * Custom Component which represents popup with user's detailed information: username, profile picture, bio with edit option and date of creating an account
- * @param handlePopup function to close popup
- * @param user object containing detailed user's information
- * @param setReRenderTrigger auxiliary function to trigger rerendering of user's detailed information
- * @returns {JSX.Element} popup with user's detailed information: username, profile picture, bio with edit option and date of creating an account
- */
 const UserDetails = ({handlePopup, user, setReRenderTrigger}) => {
     const {ADDRESS, userToken, userId} = useContext(userContext)
 
     const [toggleEditBio, setToggleEditBio] = useState(false)
     const [newBio, setNewBio] = useState('')
-    /**
-     * Function to send request with new bio to update it
-     */
     const editBio = async () => {
-        const editBioResponse = await fetch(`${ADDRESS}/users/${user.id}/`, {
+        const editBioResponse = await fetch(`http://127.0.0.1:8000/api/users/${user.id}/`, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
@@ -84,25 +74,16 @@ const UserDetails = ({handlePopup, user, setReRenderTrigger}) => {
     )
 }
 
-/**
- * Custom Component which represents user
- * @param className variable to switch between styling for currently logged-in user or other users
- * @param userId ID of a user which information is to be displayed
- * @returns {JSX.Element} button containing user's username and profile picture which when clicked shows popup with all user information (see: {@link UserDetails})
- */
 const User = ({className, userId}) => {
-    const {ADDRESS, userToken} = useContext(userContext)
+    const {userToken} = useContext(userContext)
 
     const [userDetailsPopup, setUserDetailsPopup] = useState(false)
 
     const [user, setUser] = useState({})
     const [reRenderTrigger, setReRenderTrigger] = useState(false)
     useEffect(() => {
-        /**
-         * Function to obtain user's information from backend server
-         */
         const getUser = async () => {
-            const getUserResponse = await fetch(`${ADDRESS}/users/${userId}/`, {
+            const getUserResponse = await fetch(`http://127.0.0.1:8000/api/users/${userId}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

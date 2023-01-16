@@ -6,12 +6,6 @@ import User from "./User";
 
 import "./Group.css"
 
-/**
- * Custom Component which represents Conversation Group's options: Group's details, option to delete members, option to change moderators, option to delete Group
- * @param groupId Conversation Group ID which details are to be obtained and displayed
- * @param handlePopup auxiliary function to close popup
- * @returns {JSX.Element} Group options popup which contains options described above
- */
 const GroupOptions = ({groupId, handlePopup}) => {
     const {ADDRESS, userId, userToken} = useContext(userContext)
 
@@ -24,11 +18,6 @@ const GroupOptions = ({groupId, handlePopup}) => {
     const [toggleDeleteUsersButton, setToggleDeleteUsersButton] = useState(false)
     const [toggleChangeModeratorsButton, setToggleChangeModeratorsButton] = useState(false)
     const [toggleDeleteGroupButton, setToggleDeleteGroupButton] = useState(false)
-
-    /**
-     * Auxiliary function to change displayed HTML elements
-     * @param button string containing one of available options from where to choose specific Group option
-     */
     const handleTogglingButtons = (button) => {
         switch (button) {
             case 'groupDetails':
@@ -61,11 +50,8 @@ const GroupOptions = ({groupId, handlePopup}) => {
     const [selectedToDelete, setSelectedToDelete] = useState([])
 
     useEffect(() => {
-        /**
-         * Function to obtain detailed information about specific Conversation Group and its members
-         */
         const getGroupDetails = async () => {
-            const response = await fetch(`${ADDRESS}/groups/${groupId}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -75,7 +61,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
             const data = await response.json()
             setGroup(data)
 
-            const responseMembers = await fetch(`${ADDRESS}/groups/${groupId}/members/`, {
+            const responseMembers = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -89,13 +75,10 @@ const GroupOptions = ({groupId, handlePopup}) => {
         getGroupDetails()
     }, [selectedToDelete])
 
-    /**
-     * Function to delete (one-by-one) selected Group Members -
-     * meaning sending request to backend server with information about deletions
-     */
     const deleteUsers = () => {
+        console.log("selectedToDelete: ", selectedToDelete)
         selectedToDelete.map(async (user) => {
-            const response = await fetch(`${ADDRESS}/groups/${groupId}/members/${user.user}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${user.user}/`, {
                 method: 'DELETE',
                 headers: {
                     "Content-Type": "application/json",
@@ -109,13 +92,8 @@ const GroupOptions = ({groupId, handlePopup}) => {
         setSelectedToDelete([])
     }
 
-    /**
-     * Function to change User's moderator status -
-     * meaning sending request to backend server with information about change
-     * @param groupMember specific User - Group Member
-     */
     const changeModerator = async (groupMember) => {
-        const changeModeratorResponse = await fetch(`${ADDRESS}/groups/${groupId}/members/${groupMember.user}/`, {
+        const changeModeratorResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${groupMember.user}/`, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
@@ -125,12 +103,8 @@ const GroupOptions = ({groupId, handlePopup}) => {
         })
     }
 
-    /**
-     * Function to delete Conversation Group -
-     * meaning sending request to backend server with information about Group deletion
-     */
     const deleteGroup = async () => {
-        const deleteGroupResponse = await fetch(`${ADDRESS}/groups/${groupId}/`, {
+        const deleteGroupResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
@@ -232,7 +206,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
                     {toggleDeleteGroupButton && (
                         <div id="deleteGroup">
                             <h3> Czy na pewno chcesz usunąć tę grupę? </h3>
-                            <button id="groupOptionsButton" onClick={ deleteGroup } >
+                            <button onClick={ deleteGroup } >
                                 Potwierdź
                             </button>
                         </div>
@@ -248,11 +222,6 @@ const GroupOptions = ({groupId, handlePopup}) => {
     )
 }
 
-/**
- * Custom Component which represents Conversation Group
- * @param group Conversation Group object obtained from server
- * @returns {JSX.Element} HTML button element representing link to Conversation Group chat with messages and HTML button element allowing to display group's options popup (see: {@link GroupOptions})
- */
 const Group = ({group}) => {
     const {changeCurrentGroupId} = useContext(userContext)
 

@@ -4,13 +4,10 @@ const UserContext = createContext(null);
 
 export default UserContext;
 
-/**
- * Custom Component implemented to be a container for information which needs to be accessed by multiple components
- * @param children
- * @returns {JSX.Element} UserProvider Component
- */
+console.log(process.env)
+
 export const UserProvider = ({children}) => {
-    const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
+    const ADDRESS = `http://${process.env.REACT_APP_BACKEND_PORT}:${process.env.REACT_APP_BACKEND_PORT}/api`
 
     const [userToken, setUserToken] = useState(
         localStorage.getItem('userToken') ? JSON.parse(localStorage.getItem('userToken')) : null)
@@ -29,11 +26,8 @@ export const UserProvider = ({children}) => {
     useEffect(() => {
         let isSubscribed = true
 
-        /**
-         * Function to get Conversation Groups of a specific User from backend server
-         */
         const getUserGroups = async () => {
-            const response = await fetch(`${ADDRESS}/users/${userId}/groups/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -60,11 +54,8 @@ export const UserProvider = ({children}) => {
     useEffect(() => {
         let isSubscribed = true
 
-        /**
-         * Function to get all Events from backend server
-         */
         const getUserEvents = async () => {
-            let response = await fetch(`${ADDRESS}/events/`, {
+            let response = await fetch(`http://127.0.0.1:8000/api/events/`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
@@ -87,7 +78,7 @@ export const UserProvider = ({children}) => {
     }, [])
 
     let contextData = {
-        ADDRESS:ADDRESS, // Conversation, GroupOptions, InputMessage, NewEvent, NewGroup, EventDetails, MainPage
+        ADDRESS:ADDRESS,
 
         userToken:userToken, // Conversation, GroupOptions, InputMessage, NewEvent, NewGroup, EventDetails, MainPage
         setUserToken:setUserToken, // LogIn

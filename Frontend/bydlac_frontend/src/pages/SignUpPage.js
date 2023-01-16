@@ -4,10 +4,6 @@ import SignUp from "../components/SignUp";
 
 import "./SignUpPage.css";
 
-/**
- * Custom Component which represents complete view of sign up page
- * @returns {JSX.Element} SignUp Component with button to log in page
- */
 const SignUpPage = () => {
     return (
         <div className='signUpPage'>

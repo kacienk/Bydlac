@@ -5,10 +5,6 @@ import userContext from "../context/UserContext";
 
 import "./GroupList.css"
 
-/**
- * Custom Component which represents list of Conversation Groups (see: {@link Group})
- * @returns {JSX.Element} HTML element button - link to create new Group and all Group components
- */
 const GroupList = () => {
     const {userGroups} = useContext(userContext)
 

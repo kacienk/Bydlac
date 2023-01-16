@@ -24,10 +24,5 @@ ENV NODE_ENV production
 # Expose the port on which the app will be running (3000 is the default that `serve` uses)
 EXPOSE 3000
 
-# Create and switch to a new user
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser  
-
 # Start the app
 CMD [ "npx", "serve", "build" ]

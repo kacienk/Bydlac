@@ -7,7 +7,7 @@ import "./EventList.css"
 
 /**
  * Custom Component which represents list of Events (see: {@link ./Event.js})
- * @returns {JSX.Element} HTML element button - link to create new Event and all Event components
+ * @returns {JSX.Element} HTML element with button - link to create new Event and all Event elements
  */
 const EventList = () => {
     const {userEvents} = useContext(userContext)

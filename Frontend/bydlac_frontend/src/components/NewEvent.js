@@ -7,11 +7,6 @@ import LocationMaps from "./LocationMaps";
 
 import "./NewEvent.css";
 
-/**
- * Custom Component which represents new Event form and
- * handles sending requests to create Event alongside with Conversation Group in backend server
- * @returns {JSX.Element} Form containing all new Event's details to fulfill: name, description, number of participants, location, expiration date, option to create Conversation Group attached to Event
- */
 const NewEvent = () => {
     const {
         ADDRESS,
@@ -30,14 +25,10 @@ const NewEvent = () => {
 
     const navigate = useNavigate()
 
-    /**
-     * Function to send request to backend server with all information about new Event and new Conversation Group (if chosen)
-     * @param e event from submitting input value in HTML element
-     */
     const newEventSubmitHandler = async (e) => {
         e.preventDefault()
 
-        const createEventResponse = await fetch(`${ADDRESS}/events/`, {
+        const createEventResponse = await fetch(`http://127.0.0.1:8000/api/events/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -56,7 +47,7 @@ const NewEvent = () => {
         const newEventId = await newEventData['id']
 
         if (addGroupToEvent) {
-            const createGroupToEventResponse = await fetch(`${ADDRESS}/events/${newEventId}/group/`, {
+            const createGroupToEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${newEventId}/group/`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

@@ -1,0 +1,1465 @@
+{
+    "openapi": "3.1.0",
+    "x-stoplight": {
+      "id": "g8z0p8urij15z"
+    },
+    "info": {
+      "title": "BAYDLAC_API",
+      "version": "1.0",
+      "license": {
+        "identifier": "BSD-2-Clause",
+        "name": "BSD 2-Clause \"Simplified\" License"
+      },
+      "description": "This API allows frontend side to communicate with database. ",
+      "summary": "API for Bydlac app"
+    },
+    "servers": [
+      {
+        "url": "http://127.0.0.1:8000/api/"
+      }
+    ],
+    "paths": {
+      "/login": {
+        "post": {
+          "summary": "Login User",
+          "operationId": "post-login",
+          "responses": {
+            "202": {
+              "description": "{\n    \"token\": \"{randomized_token}\"\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Access denied: wrong email or password"
+            }
+          },
+          "description": "Logs in user with data sent in post request, permisson: Any.",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "password": {
+                      "type": "string",
+                      "format": "password"
+                    }
+                  },
+                  "required": [
+                    "email",
+                    "password"
+                  ]
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "email": "user@example.com",
+                      "password": "pa$$word"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Post necessary for a user to be logged in. Both fields need to be filled."
+          }
+        }
+      },
+      "/logout": {
+        "get": {
+          "summary": "Logout User",
+          "tags": [],
+          "responses": {
+            "202": {
+              "description": "Accepted"
+            }
+          },
+          "operationId": "get-logout",
+          "description": "Logs out user with data sent in get request, permisson: Any."
+        }
+      },
+      "/register": {
+        "post": {
+          "summary": "Register User",
+          "operationId": "post-register",
+          "responses": {
+            "201": {
+              "description": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@mail.com\"\n}"
+            },
+            "400": {
+              "description": "Data provided were insufficient to create a user or invalid."
+            }
+          },
+          "description": "Registers user with data sent in post request, permisson: Any.",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string",
+                      "format": "password"
+                    },
+                    "password2": {
+                      "type": "string",
+                      "format": "password"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "required": [
+                    "username",
+                    "password",
+                    "password2",
+                    "email"
+                  ]
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "username": "user",
+                      "password": "pa$$word",
+                      "password2": "pa$$word",
+                      "email": "user@example.com"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Post data to register user."
+          }
+        }
+      },
+      "/users": {
+        "get": {
+          "summary": "Get All Users",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"id\": 1,\n        \"username\": \"testuser_admin\"\n    },\n    {\n        \"id\": 2,\n        \"username\": \"testuser1\"\n    },\n    {\n        \"id\": 3,\n        \"username\": \"testuser2\"\n    },\n    {\n        \"id\": 4,\n        \"username\": \"testuser3\"\n    }\n]"
+            },
+            "401": {
+              "description": "Authentication credentials were not provided."
+            },
+            "403": {
+              "description": "You do not have permission to perform this action."
+            }
+          },
+          "operationId": "get-users",
+          "description": "Returns list of all registered users, permisson: AdminUser."
+        }
+      },
+      "/users/self": {
+        "get": {
+          "summary": "Get Your Info",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"username\": \"testuser\",\n    \"profile_image\": null,\n    \"bio\": null,\n    \"created\": \"2023-01-16T20:15:05.180311Z\"\n}"
+            }
+          },
+          "operationId": "get-users-self",
+          "description": "Returns data of user with given token, permisson: Authenticated\n"
+        },
+        "patch": {
+          "summary": "Update Your Information",
+          "operationId": "patch-users-self",
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"username\": \"testuser\",\n    \"profile_image\": null,\n    \"bio\": \"Test updated bio\",\n    \"created\": \"2023-01-16T20:15:07.972310Z\"\n}"
+            }
+          },
+          "description": "Updates user bio and profile_image (Note: email and username cannot be changed once set), permisson: Authenticated, Self"
+        }
+      },
+      "/users/{userId}": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "Id of an existing user."
+          }
+        ],
+        "get": {
+          "summary": "Get User Info by User ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 2,\n    \"username\": \"testuser2\",\n    \"profile_image\": null,\n    \"bio\": null,\n    \"created\": \"2023-01-16T20:15:06.356368Z\"\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "examples": {
+                    "Get User AliceSmith": {
+                      "value": {
+                        "id": 142,
+                        "username": "AliceSmith",
+                        "email": "alice.smith@gmail.com",
+                        "profile_image": null,
+                        "bio": "Hi i am Alice",
+                        "created": "2022-11-09T17:50:05.949497Z"
+                      }
+                    }
+                  }
+                }
+              },
+              "headers": {}
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-users-userId",
+          "description": "Returns user with given id, permisson: Authenticated."
+        },
+        "delete": {
+          "summary": "Delete User",
+          "operationId": "delete-users-userId",
+          "responses": {
+            "204": {
+              "description": "No Content"
+            },
+            "403": {
+              "description": "You do not have permission to perform this action."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Deletes user, permisson: AdminUser."
+        },
+        "patch": {
+          "summary": "",
+          "operationId": "patch-users-userId",
+          "responses": {
+            "403": {
+              "description": "User sending request is not represented by the object they are trying to receive."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Updates user bio and profile_image (Note: email and username cannot be changed once set), permisson: Authenticated, Self"
+        }
+      },
+      "/users/{userId}/events": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get Attended Events Info by User ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "    {\n        \"id\": 1,\n        \"host\": 1,\n        \"name\": \"testevent1\",\n        \"description\": null,\n        \"max_participants\": null,\n        \"location\": null,\n        \"expires\": \"2023-01-16T20:29:58.482067Z\",\n        \"created\": \"2023-01-16T20:15:15.656372Z\"\n    },\n    {\n        \"id\": 2,\n        \"host\": 1,\n        \"name\": \"testevent2\",\n        \"description\": null,\n        \"max_participants\": null,\n        \"location\": null,\n        \"expires\": \"2023-01-16T20:29:58.482067Z\",\n        \"created\": \"2023-01-16T20:15:15.656372Z\"\n    }\n]"
+            },
+            "403": {
+              "description": "User sending request is not represented by the object they are trying to receive."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-users-userId-events",
+          "description": "Returns list of events that user participates in, permisson: Authenticated, Self"
+        }
+      },
+      "/users/{userId}/groups": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get Joined Groups Info by User ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"id\": 1,\n        \"host\": 1,\n        \"name\": \"group1\",\n        \"is_private\": true,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T20:15:12.849277Z\",\n        \"created\": \"2023-01-16T20:15:12.849277Z\"\n    },\n    {\n        \"id\": 2,\n        \"host\": 1,\n        \"name\": \"group2\",\n        \"is_private\": true,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T20:15:12.849277Z\",\n        \"created\": \"2023-01-16T20:15:12.849277Z\"\n    }\n]"
+            },
+            "403": {
+              "description": "User sending request is not represented by the object they are trying to receive."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-users-userId-groups",
+          "description": "Returns list of groups that user is member of, permisson: Authenticated, Self"
+        }
+      },
+      "/users/from-username/?username={username}": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "username",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get User Info by Username",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 2,\n    \"username\": \"testuser2\",\n    \"profile_image\": null,\n    \"bio\": null,\n    \"created\": \"2023-01-16T20:15:18.834832Z\"\n}"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-users-from-username-?username=-username",
+          "description": "Returns user given their username, permisson: Authenticated\n"
+        }
+      },
+      "/groups": {
+        "get": {
+          "summary": "Get All Non-Private Groups",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"id\": 1,\n        \"host\": 2,\n        \"name\": \"group1\",\n        \"is_private\": false,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T19:20:58.014226Z\",\n        \"created\": \"2023-01-16T19:20:58.014226Z\"\n    },\n    {\n        \"id\": 3,\n        \"host\": 2,\n        \"name\": \"group3\",\n        \"is_private\": false,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T19:20:58.014226Z\",\n        \"created\": \"2023-01-16T19:20:58.014226Z\"\n    }\n]"
+            }
+          },
+          "operationId": "get-groups",
+          "description": "Returns list of non-private groups, permisson: Authenticated."
+        },
+        "post": {
+          "summary": "Create New Group",
+          "operationId": "post-groups",
+          "responses": {
+            "201": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 1,\n    \"name\": \"testgroup\",\n    \"description\": null,\n    \"is_private\": false,\n    \"is_event_group\": false,\n    \"last_message\": \"2023-01-16T19:20:59.593089Z\",\n    \"created\": \"2023-01-16T19:20:59.593089Z\"\n}"
+            },
+            "400": {
+              "description": "This group name is already in use.\nor\nThis field is required."
+            }
+          },
+          "description": "Creates new group with data sent in post request, permisson: Authenticated\n",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/CreateGroup"
+          }
+        }
+      },
+      "/groups/all": {
+        "get": {
+          "summary": "Get All Groups",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"id\": 1,\n        \"host\": 2,\n        \"name\": \"group1\",\n        \"is_private\": false,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T19:20:58.767519Z\",\n        \"created\": \"2023-01-16T19:20:58.767519Z\"\n    },\n    {\n        \"id\": 2,\n        \"host\": 2,\n        \"name\": \"group2\",\n        \"is_private\": true,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T19:20:58.767519Z\",\n        \"created\": \"2023-01-16T19:20:58.767519Z\"\n    },\n    {\n        \"id\": 3,\n        \"host\": 2,\n        \"name\": \"group3\",\n        \"is_private\": false,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T19:20:58.767519Z\",\n        \"created\": \"2023-01-16T19:20:58.767519Z\"\n    },\n    {\n        \"id\": 4,\n        \"host\": 2,\n        \"name\": \"group4\",\n        \"is_private\": true,\n        \"is_event_group\": false,\n        \"last_message\": \"2023-01-16T19:20:58.767519Z\",\n        \"created\": \"2023-01-16T19:20:58.767519Z\"\n    }\n]"
+            },
+            "403": {
+              "description": "You do not have permission to perform this action."
+            }
+          },
+          "operationId": "get-groups-all",
+          "description": "Returns list of all groups, permisson: AdminUser\n"
+        }
+      },
+      "/groups/{groupId}": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "groupId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get Group Info by Group ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 1,\n    \"name\": \"testgroup\",\n    \"description\": null,\n    \"is_private\": true,\n    \"is_event_group\": false,\n    \"last_message\": \"2023-01-16T19:21:00.589170Z\",\n    \"created\": \"2023-01-16T19:21:00.589170Z\"\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ConversationGroup"
+                  },
+                  "examples": {
+                    "Example 1": {
+                      "value": {
+                        "id": 1,
+                        "host": 3,
+                        "name": "Group 1",
+                        "description": "",
+                        "is_private": true,
+                        "updated": "2022-11-12T21:07:28.282995Z",
+                        "created": "2022-11-10T13:54:05.063392Z"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "You do not have permission to perform this action."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-groups-groupId",
+          "description": "Retreives information of group with given id, permisson: Authenticated, Member.\n"
+        },
+        "delete": {
+          "summary": "Delete Group",
+          "operationId": "delete-groups-groupId",
+          "responses": {
+            "204": {
+              "description": "No Content"
+            },
+            "403": {
+              "description": "User sending request is not the host of the group.\nor\nUser sending request is not a moderator of the group they try to modify."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Deletes group, permisson: Authenticated, Member, Moderator, NotEventGroup\n"
+        },
+        "patch": {
+          "summary": "Update Group Information",
+          "operationId": "patch-groups-groupId",
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 1,\n    \"name\": \"testgroup\",\n    \"description\": \"testdescription\",\n    \"is_private\": false,\n    \"is_event_group\": false,\n    \"last_message\": \"2023-01-16T19:21:01.772490Z\",\n    \"created\": \"2023-01-16T19:21:01.772490Z\"\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ConversationGroup"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "User sending request is not a moderator of the group they try to modify.\nor\nUser cannot look up members of group unless they are also a member."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Updates group's data, permisson: Authenticated, Member, Moderator, NotEventGroup\n",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/PatchGroup"
+          }
+        }
+      },
+      "/groups/{groupId}/members": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "groupId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get Group Members by Group ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"username\": \"testuser1\",\n        \"user\": 1,\n        \"group\": 1,\n        \"is_moderator\": true\n    },\n    {\n        \"username\": \"testuser2\",\n        \"user\": 2,\n        \"group\": 1,\n        \"is_moderator\": false\n    },\n    {\n        \"username\": \"testuser3\",\n        \"user\": 3,\n        \"group\": 1,\n        \"is_moderator\": false\n    }\n]"
+            },
+            "403": {
+              "description": "User cannot look up members of group unless they are also a member"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-groups-groupId-members",
+          "description": "Returns list of group members, permisson: Authenticated, Member"
+        },
+        "post": {
+          "summary": "Add a Member to a Group",
+          "operationId": "post-groups-groupId-members",
+          "responses": {
+            "201": {
+              "description": "{\n    \"user\": 2,\n    \"group\": 1,\n    \"is_moderator\": false\n}"
+            },
+            "403": {
+              "description": "User sending request is not a moderator of the group they try to modify."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Adds user to the group with id equal to group_id, permisson: Authenticated, Member, Moderator, NotEventGroup"
+        }
+      },
+      "/groups/{groupId}/members/{userId}": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "groupId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "delete": {
+          "summary": "Delete User from a Group",
+          "operationId": "delete-groups-groupId-userId",
+          "responses": {
+            "204": {
+              "description": "No Content"
+            },
+            "403": {
+              "description": "You do not have permission to perform this action.\nor\nOnly host of the group can remove moderators from the group\nor\nHost cannot be removed from the group"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Removes user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated, Member, Moderator | MemberLinkSelf, NotEventGroup"
+        },
+        "patch": {
+          "summary": "Change User Role in a Group",
+          "operationId": "patch-groups-groupId-userId",
+          "responses": {
+            "200": {
+              "description": "{\n    \"user\": 2,\n    \"group\": 1,\n    \"is_moderator\": true\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GroupMember"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "User sending request is not the host of the group.\nor\nYou cannot update nor delete event group directly"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Changes moderator status of user with id equal to user_id to the group with id equal to group_id, permisson: Authenticated, Member, Moderator, Host, NotEventGroup",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/ManageUserInGroup"
+          }
+        }
+      },
+      "/groups/{groupId}/messages": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "groupId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get All Messages Sent to a Group",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"username\": \"testuser1\",\n        \"author\": 1,\n        \"group\": 1,\n        \"body\": \"test1\",\n        \"edited\": \"2023-01-16T20:07:00.903632Z\",\n        \"created\": \"2023-01-16T20:07:00.903632Z\",\n        \"is_location\": false\n    },\n    {\n        \"username\": \"testuser1\",\n        \"author\": 1,\n        \"group\": 1,\n        \"body\": \"test2\",\n        \"edited\": \"2023-01-16T20:07:00.903632Z\",\n        \"created\": \"2023-01-16T20:07:00.903632Z\",\n        \"is_location\": false\n    },\n    {\n        \"username\": \"testuser1\",\n        \"author\": 1,\n        \"group\": 1,\n        \"body\": \"test3\",\n        \"edited\": \"2023-01-16T20:07:00.903632Z\",\n        \"created\": \"2023-01-16T20:07:00.903632Z\",\n        \"is_location\": false\n    }\n]"
+            },
+            "403": {
+              "description": "User cannot look up members of group unless they are also a member"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-groups-groupId-messages",
+          "description": "Gets all messages sent to group with given group_id, permisson: Authenticated, Member\n"
+        },
+        "post": {
+          "summary": "Send a Message to a Group",
+          "operationId": "post-groups-groupId-messages",
+          "responses": {
+            "201": {
+              "description": "{\n    \"id\": 1,\n    \"body\": \"test\",\n    \"edited\": \"2023-01-16T20:07:03.309007Z\",\n    \"created\": \"2023-01-16T20:07:03.309007Z\",\n    \"is_location\": false,\n    \"author\": 1,\n    \"group\": 1\n}"
+            },
+            "403": {
+              "description": "User cannot look up members of group unless they are also a member"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Sends message to the group with id equal to group_id, permisson: Authenticated, Member\n",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/SendMessage"
+          }
+        }
+      },
+      "/groups/{group_id}/messages/{messageId}": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "group_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "messageId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get a Message by Message ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"body\": \"test1\",\n    \"edited\": \"2023-01-16T20:07:05.407602Z\",\n    \"created\": \"2023-01-16T20:07:05.407602Z\",\n    \"is_location\": false,\n    \"author\": 1,\n    \"group\": 1\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "User cannot look up members of group unless they are also a member"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-groups-group_id-messages-messageId",
+          "description": "Gets message with given message id, user sending request must be a member of the group, permisson: Authenticated, Member\n"
+        },
+        "delete": {
+          "summary": "Delete a Message",
+          "operationId": "delete-groups-group_id-messages-messageId",
+          "responses": {
+            "204": {
+              "description": "No Content"
+            },
+            "403": {
+              "description": "You do not have permission to perform this action."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Deletes message with given message_id, permisson: Authenticated, Member, Author | Moderator"
+        },
+        "patch": {
+          "summary": "Update a Message",
+          "operationId": "patch-groups-group_id-messages-messageId",
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"body\": \"newtest\",\n    \"edited\": \"2023-01-16T20:07:08.254076Z\",\n    \"created\": \"2023-01-16T20:07:08.238448Z\",\n    \"is_location\": false,\n    \"author\": 1,\n    \"group\": 1\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "User cannot change message unless they are its author."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Updates message with given message_id, permisson: Authenticated, Member, Author"
+        }
+      },
+      "/events": {
+        "get": {
+          "summary": "Get All Events",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"id\": 1,\n        \"host\": 1,\n        \"name\": \"testevent1\",\n        \"description\": null,\n        \"max_participants\": null,\n        \"location\": null,\n        \"expires\": \"2023-01-16T17:48:26.149742Z\",\n        \"created\": \"2023-01-16T17:33:27.804996Z\"\n    },\n    {\n        \"id\": 2,\n        \"host\": 1,\n        \"name\": \"testevent2\",\n        \"description\": null,\n        \"max_participants\": null,\n        \"location\": null,\n        \"expires\": \"2023-01-16T17:48:26.149742Z\",\n        \"created\": \"2023-01-16T17:33:27.804996Z\"\n    }\n]"
+            }
+          },
+          "operationId": "get-events",
+          "description": "Gets list of all events, permisson: Authenticated\n"
+        },
+        "post": {
+          "summary": "Create an Event",
+          "operationId": "post-events",
+          "responses": {
+            "201": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 1,\n    \"name\": \"testevent\",\n    \"description\": null,\n    \"max_participants\": null,\n    \"location\": null,\n    \"expires\": \"2023-03-01T12:00:00Z\",\n    \"created\": \"2023-01-16T17:33:28.633905Z\"\n}"
+            }
+          },
+          "description": "Creates an event, permisson: Authenticated\n",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/CreateEvent"
+          }
+        }
+      },
+      "/events/{eventId}": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "eventId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get Event Info by Event ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 2,\n    \"name\": \"testevent\",\n    \"description\": \"test\",\n    \"max_participants\": null,\n    \"location\": null,\n    \"expires\": \"2023-03-01T12:00:00Z\",\n    \"created\": \"2023-01-16T17:33:29.434153Z\"\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-events-eventId",
+          "description": "Returns event with given id, permisson: Authenticated\n"
+        },
+        "delete": {
+          "summary": "Delete an Event",
+          "operationId": "delete-events-eventId",
+          "responses": {
+            "204": {
+              "description": "No Content"
+            },
+            "403": {
+              "description": "User sending request is not the host of the event."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Deletes an event, permisson: Authenticated, Host\n"
+        },
+        "patch": {
+          "summary": "Update an Event",
+          "operationId": "patch-events-eventId",
+          "responses": {
+            "202": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 1,\n    \"name\": \"newname\",\n    \"description\": \"newdescription\",\n    \"max_participants\": null,\n    \"location\": null,\n    \"expires\": \"2023-04-01T12:00:00Z\",\n    \"created\": \"2023-01-16T17:33:29.974852Z\"\n}"
+            },
+            "403": {
+              "description": "User sending request is not the host of the event"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Updates an event, permisson: Authenticated, Host\n",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/PatchEvent"
+          }
+        }
+      },
+      "/events/{eventId}/join": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "eventId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Join an Event",
+          "tags": [],
+          "responses": {
+            "202": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 2,\n    \"name\": \"testevent\",\n    \"description\": \"test\",\n    \"max_participants\": null,\n    \"location\": null,\n    \"expires\": \"2023-03-01T12:00:00Z\",\n    \"created\": \"2023-01-16T17:33:34.162739Z\"\n}"
+            },
+            "403": {
+              "description": "User cannot join this event because they already participate in this event.\nor\nUser cannot join this event because it has reached its maximal participants capacity."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-events-eventId-join",
+          "description": "User sending request joins event, creates a link between the user and the event, permisson: Authenticated\n"
+        }
+      },
+      "/events/{eventId}/leave": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "eventId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Leave an Event",
+          "tags": [],
+          "responses": {
+            "202": {
+              "description": "Accepted"
+            },
+            "403": {
+              "description": "Host cannot leave an event."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-events-eventId-leave",
+          "description": "User sending request leaves event, deletes a link between the user and the event, permisson: Authenticated\n"
+        }
+      },
+      "/events/{eventId}/group": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "eventId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get Group Data by Event ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 1,\n    \"name\": \"testevent\",\n    \"description\": \"test\",\n    \"is_private\": true,\n    \"is_event_group\": false,\n    \"last_message\": \"2023-01-16T17:33:36.714916Z\",\n    \"created\": \"2023-01-16T17:33:36.714916Z\"\n}",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ConversationGroup"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "This event does not have group assigned to it.\nor\nYou do not have permission to perform this action."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-events-eventId-group",
+          "description": "Retrieves data of a group of the event, permisson: Authenticated, EventParticipant"
+        },
+        "post": {
+          "summary": "Create Group of an Event",
+          "operationId": "post-events-eventId-group",
+          "responses": {
+            "201": {
+              "description": "{\n    \"id\": 1,\n    \"host\": 1,\n    \"name\": \"testevent\",\n    \"description\": \"test\",\n    \"is_private\": true,\n    \"is_event_group\": true,\n    \"last_message\": \"2023-01-16T17:33:37.888187Z\",\n    \"created\": \"2023-01-16T17:33:37.888187Z\"\n}"
+            },
+            "403": {
+              "description": "User sending request is not the host of the event.\nor\nGroup for this event already exists."
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "description": "Creates a group for the event, permisson: Authenticated, Host"
+        }
+      },
+      "/events/{eventId}/participants": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "eventId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "get": {
+          "summary": "Get Participants Info by Group ID",
+          "tags": [],
+          "responses": {
+            "200": {
+              "description": "[\n    {\n        \"id\": 1,\n        \"username\": \"testuser1\"\n    },\n    {\n        \"id\": 2,\n        \"username\": \"testuser2\"\n    },\n    {\n        \"id\": 3,\n        \"username\": \"testuser3\"\n    }\n]"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "operationId": "get-events-eventId-participants",
+          "description": "Returns list of users participating in event with id equal to eventId, permisson: Authenticated"
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "title": "User",
+          "type": "object",
+          "examples": [
+            {
+              "id": 142,
+              "username": "AliceSmith",
+              "email": "alice.smith@gmail.com",
+              "profile_image": null,
+              "bio": "Hi i am Alice",
+              "created": "2022-11-09T17:50:05.949497Z"
+            }
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Unique identifier for the given user."
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "username": {
+              "type": "string"
+            },
+            "profileImage": {
+              "type": "object",
+              "description": "Profile image stored locally at server."
+            },
+            "bio": {
+              "type": "string",
+              "description": "User description."
+            },
+            "created": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date that the user was created."
+            }
+          },
+          "required": [
+            "id",
+            "email",
+            "username",
+            "created"
+          ]
+        },
+        "ConversationGroup": {
+          "title": "ConversationGroup",
+          "x-stoplight": {
+            "id": "u1ekdmvdyeo9p"
+          },
+          "type": "object",
+          "description": "Model of conversation group keeps data about conversations.",
+          "examples": [
+            {
+              "id": 1,
+              "host": 3,
+              "name": "Group 1",
+              "description": "",
+              "is_private": true,
+              "updated": "2022-11-12T21:07:28.282995Z",
+              "created": "2022-11-10T13:54:05.063392Z"
+            }
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Unique identifier for the conversation group."
+            },
+            "host": {
+              "type": "integer",
+              "description": "Id of the group founder."
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "is_private": {
+              "type": "boolean",
+              "default": true,
+              "description": "If group is private users have to be added to the group by its moderator."
+            },
+            "updated": {
+              "type": "string",
+              "description": "Last time message was sent to the group or its properties changed."
+            },
+            "created": {
+              "type": "string",
+              "description": "The date that the conversation group was created."
+            }
+          },
+          "required": [
+            "id",
+            "host",
+            "name",
+            "is_private",
+            "updated",
+            "created"
+          ]
+        },
+        "GroupMember": {
+          "title": "GroupMember",
+          "x-stoplight": {
+            "id": "2kqbvuijnvivf"
+          },
+          "type": "object",
+          "description": "Model keeps information about users memberships in groups.",
+          "examples": [
+            {
+              "id": 0,
+              "user": 3,
+              "group": 2,
+              "is_moderator": false
+            }
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Unique identifier."
+            },
+            "user": {
+              "type": "integer",
+              "description": "Id of user that is member."
+            },
+            "group": {
+              "type": "integer",
+              "description": "Id of group of which user is member."
+            },
+            "is_moderator": {
+              "type": "boolean",
+              "default": false,
+              "description": "Is user group moderator."
+            }
+          },
+          "required": [
+            "id",
+            "user",
+            "group"
+          ]
+        },
+        "Message": {
+          "title": "Message",
+          "x-stoplight": {
+            "id": "9ahbk4vrnp3ed"
+          },
+          "type": "object",
+          "description": "Message model keeps ",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Unique identifier for the given message."
+            },
+            "author": {
+              "type": "integer",
+              "description": "Id of user who created given message."
+            },
+            "group": {
+              "type": "integer",
+              "description": "Id of group to which the given message was sent."
+            },
+            "body": {
+              "type": "string",
+              "description": "Body of the message."
+            },
+            "updated": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date that the message was created."
+            },
+            "create": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The date that the message was updated last time."
+            }
+          },
+          "required": [
+            "id",
+            "author",
+            "group",
+            "body",
+            "updated",
+            "create"
+          ],
+          "examples": [
+            {
+              "id": 1,
+              "author": 15,
+              "group": 6,
+              "body": "Yeah, that's right",
+              "updated": "2019-08-24T14:15:22Z",
+              "create": "2019-08-24T14:15:22Z"
+            }
+          ]
+        },
+        "Event": {
+          "title": "Event",
+          "x-stoplight": {
+            "id": "ctnsigypiq50c"
+          },
+          "type": "object",
+          "description": "Model of the events keeps data of the events.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Unique indentifier of the event."
+            },
+            "host": {
+              "type": "integer",
+              "description": "Id of the user that founded the group."
+            },
+            "group": {
+              "type": "integer",
+              "description": "Id of the group linked to the given event. Note: there might not be any group linked."
+            },
+            "members": {
+              "type": "object",
+              "description": "Many to many field conected with user model. Describes which users participate in the given event."
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "maxParticipants": {
+              "type": "integer"
+            },
+            "location": {
+              "type": "string",
+              "format": "uri",
+              "description": "Link to location from Google Maps API."
+            },
+            "expires": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Event's expiration time and date."
+            },
+            "created": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Time and date when event was created."
+            }
+          },
+          "required": [
+            "id",
+            "host",
+            "name",
+            "expires",
+            "created"
+          ],
+          "examples": [
+            {
+              "id": 5,
+              "host": 8,
+              "group": null,
+              "members": {},
+              "name": "Grill",
+              "description": "",
+              "maxParticipants": 0,
+              "location": "http://example.com",
+              "expires": "2019-08-24T14:15:22Z",
+              "created": "2019-08-24T14:15:22Z"
+            }
+          ]
+        }
+      },
+      "securitySchemes": {},
+      "requestBodies": {
+        "CreateGroup": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "is_private": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "name": "Group1",
+                    "description": "Very good group",
+                    "is_private": false
+                  }
+                }
+              }
+            }
+          },
+          "description": "Post data to create group."
+        },
+        "ManageUserInGroup": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "is_moderator": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              },
+              "examples": {
+                "Adding user that is not moderator": {
+                  "value": {
+                    "is_moderator": false
+                  }
+                },
+                "Making user moderator": {
+                  "value": {
+                    "is_moderator": true
+                  }
+                }
+              }
+            }
+          },
+          "description": "Data about user state in group."
+        },
+        "SendMessage": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "body",
+                  "author"
+                ]
+              },
+              "examples": {
+                "Create message": {
+                  "value": {
+                    "body": "New message",
+                    "author": 65
+                  }
+                }
+              }
+            }
+          },
+          "description": "Post data to create message."
+        },
+        "PatchMessage": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          },
+          "description": "Patch message body to update."
+        },
+        "CreateEvent": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "max_participants": {
+                    "type": "integer"
+                  },
+                  "location": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "expires": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "examples": {
+                "Create Event": {
+                  "value": {
+                    "name": "Socializing game",
+                    "description": "Very good game",
+                    "max_participants": 5,
+                    "location": "http://example.com",
+                    "expires": "2019-08-24T14:15:22Z"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Post data to create event."
+        },
+        "PatchEvent": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "max_participants": {
+                    "type": "integer"
+                  },
+                  "location": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "expires": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              },
+              "examples": {
+                "Update Description and Expiration Date": {
+                  "value": {
+                    "description": "New description",
+                    "expires": "2019-08-24T14:15:22Z"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Patch data to update event"
+        },
+        "CreateGroupForTheEvent": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "Empty post message to create a group based on event data."
+        },
+        "PatchGroup": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "is_private": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "examples": {
+                "Update Group Name": {
+                  "value": {
+                    "name": "New name"
+                  }
+                },
+                "Update Description and Visibility": {
+                  "value": {
+                    "description": "Now for all",
+                    "is_private": false
+                  }
+                }
+              }
+            }
+          },
+          "description": "Patch information to update group."
+        }
+      }
+    },
+    "security": []
+  }

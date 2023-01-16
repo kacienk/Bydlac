@@ -3,10 +3,6 @@ import {Link} from "react-router-dom";
 
 import "./LogOutPage.css"
 
-/**
- * Custom Component which represents complete view of log out page
- * @returns {JSX.Element} Information about log out and button to log in page
- */
 const LogOutPage = () => {
     localStorage.clear()
 
