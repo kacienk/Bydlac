@@ -7,6 +7,11 @@ import UsersHeader from "../components/UsersHeader";
 
 import "./ChatPage.css"
 
+/**
+ * Custom Component which represents chat view with messages of specific Conversation Group and option to send message
+ * @returns {JSX.Element} Complete view containing logout button, currently logged-in user, messages of specific group,
+ * inputs for sending new messages and list of all user's Conversation Groups or Events along with button to create new Group or Event
+ */
 const ChatPage = () => {
     const {currentGroupId} = useContext(userContext)
 

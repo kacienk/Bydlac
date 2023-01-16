@@ -5,6 +5,10 @@ import {useContext, useEffect, useState} from "react";
 
 import "./UsersHeader.css"
 
+/**
+ * Custom Component which represents header with log out button, User button (see: {@link User}) and Conversation Group name if it its messages are currently displayed
+ * @returns {JSX.Element} element with log out button, User button and Conversation Group name
+ */
 const UsersHeader = () => {
     const {
         userId,

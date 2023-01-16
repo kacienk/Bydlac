@@ -4,16 +4,23 @@ import {useNavigate} from "react-router-dom";
 
 import './LogIn.css';
 
+/**
+ * Custom Component which represents log in form
+ * @returns {JSX.Element} LogIn form containing email and password inputs and buttons to submit credentials
+ */
 const LogIn = () => {
     const {
         ADDRESS,
         setUserToken,
         setCurrentUser,
-        setUserId,
-        currentGroupId
+        setUserId
     } = useContext(userContext)
 
     const navigate = useNavigate()
+    /**
+     * Function to send User credentials and validate them
+     * @param event event from submitting input value in HTML element
+     */
     const logInHandler = async (event) => {
         event.preventDefault()
 

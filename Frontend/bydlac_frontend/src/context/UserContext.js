@@ -4,8 +4,11 @@ const UserContext = createContext(null);
 
 export default UserContext;
 
-console.log(process.env)
-
+/**
+ * Custom Component implemented to be a container for information which needs to be accessed by multiple components
+ * @param children
+ * @returns {JSX.Element} UserProvider Component
+ */
 export const UserProvider = ({children}) => {
     const ADDRESS = `http://${process.env.REACT_APP_BACKEND_IP}:${process.env.REACT_APP_BACKEND_PORT}/api`
 
@@ -26,6 +29,9 @@ export const UserProvider = ({children}) => {
     useEffect(() => {
         let isSubscribed = true
 
+        /**
+         * Function to get Conversation Groups of a specific User from backend server
+         */
         const getUserGroups = async () => {
             const response = await fetch(`${ADDRESS}/users/${userId}/groups/`, {
                 method: 'GET',
@@ -54,6 +60,9 @@ export const UserProvider = ({children}) => {
     useEffect(() => {
         let isSubscribed = true
 
+        /**
+         * Function to get all Events from backend server
+         */
         const getUserEvents = async () => {
             let response = await fetch(`${ADDRESS}/events/`, {
                 method: 'GET',

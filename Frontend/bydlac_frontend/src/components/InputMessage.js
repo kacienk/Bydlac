@@ -7,7 +7,11 @@ import locationIcon from "../images/location_icon.png";
 
 import './InputMessage.css';
 
-function InputMessage() {
+/**
+ * Custom Component which represents functionality to send message to specific Conversation Group
+ * @returns {JSX.Element} HTML elements: input for new message, send message button and button to show popup with maps to select location to be sent
+ */
+const InputMessage = () => {
     const {
         ADDRESS,
         currentGroupId,
@@ -18,6 +22,10 @@ function InputMessage() {
     let {currentMessage} = useContext(userContext)
     const messageRef = useRef();
 
+    /**
+     * Function to handle sending message to backend server
+     * @param event event from submitting input value in HTML element
+     */
     const sendMessageHandler = async (event) => {
         event.preventDefault()
 
@@ -46,8 +54,10 @@ function InputMessage() {
     const handleMapsPopup = () => { setToggleMaps(prevState => !prevState) }
 
     const [location, setLocation] = useState({})
+    /**
+     * Function to send location as a message
+     */
     const sendLocation = async () => {
-        console.log("location ", location)
         if (JSON.stringify(location) !== "{}") {
             const response = await fetch(`${ADDRESS}/groups/${currentGroupId}/messages/`, {
                 method: 'POST',

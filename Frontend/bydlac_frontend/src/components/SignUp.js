@@ -4,6 +4,10 @@ import userContext from "../context/UserContext";
 
 import "./SignUp.css"
 
+/**
+ * Custom Component which represents sign up form
+ * @returns {JSX.Element} SignUp form containing username, email, password inputs and buttons to log in or submit credentials
+ */
 const SignUp = () => {
     const {ADDRESS} = useContext(userContext)
 
@@ -13,6 +17,10 @@ const SignUp = () => {
     const [passwordRepeated, setPasswordRepeated] = useState('')
     const navigate = useNavigate()
 
+    /**
+     * Function to send new User information and validate them
+     * @param event event from submitting input value in HTML element
+     */
     const submitHandler = async (event) => {
         event.preventDefault()
         const newUser = {username, password, password2: passwordRepeated, email}
