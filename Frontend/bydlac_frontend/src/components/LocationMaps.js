@@ -10,6 +10,15 @@ const containerStyle = {
     height: '100%'
 };
 
+/**
+ * Custom Component which represents Google Maps popup and lets User choose location to send
+ * @param handleMapsPopup function to close popup
+ * @param setLocation function to set location in parent Component
+ * @param submitLocation function to submit location in parent Component
+ * @param markerPosition marker position
+ * @param markerVisibility marker visibility
+ * @returns {JSX.Element} popup which represents maps and buttons to submit location (if needed) and close popup
+ */
 const LocationMaps = ({handleMapsPopup, setLocation, submitLocation, markerPosition, markerVisibility}) => {
     const center = useMemo(() => ({
         lat: 50.06238352015929,
