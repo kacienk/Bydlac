@@ -18,7 +18,7 @@ const Conversation = ({groupId}) => {
          * @param groupId Conversation Group ID which messages are going to be requested */
         const getMessages = async (groupId) => {
             if (groupId !== null) {
-                let response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/messages/`, {
+                let response = await fetch(`${ADDRESS}/groups/${groupId}/messages/`, {
                     method: 'GET',
                     headers: {
                         "Content-Type": "application/json",
