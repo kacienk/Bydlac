@@ -94,6 +94,7 @@ class GroupMemberListSerializer(serializers.Serializer):
 
 
 class MessageListSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
     username = serializers.CharField()
     author = serializers.IntegerField()
     group = serializers.IntegerField()

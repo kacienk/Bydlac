@@ -227,7 +227,7 @@ const EventDetails = () => {
                 <LocationMaps
                     handleMapsPopup={ handleMapsPopup }
                     setLocation={ null }
-                    markerPosition={ event.location }
+                    markerPosition={ JSON.parse(event.location) }
                     markerVisibility={ true } /> }
 
         </div>

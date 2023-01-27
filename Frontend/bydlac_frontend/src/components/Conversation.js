@@ -26,6 +26,7 @@ const Conversation = ({groupId}) => {
                     }
                 })
                 let data = await response.json()
+                data.sort((a, b) => b.id - a.id)
                 setMessages(data)
             }
         }

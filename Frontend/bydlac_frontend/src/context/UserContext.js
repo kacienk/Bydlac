@@ -4,8 +4,6 @@ const UserContext = createContext(null);
 
 export default UserContext;
 
-console.log(process.env)
-
 /**
  * Custom Component implemented to be a container for information which needs to be accessed by multiple components
  * @param children
@@ -56,7 +54,7 @@ export const UserProvider = ({children}) => {
         }, 1000)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [userToken, userId])
 
     const [userEvents, setUserEvents] = useState([])
     useEffect(() => {
@@ -86,7 +84,7 @@ export const UserProvider = ({children}) => {
         }, 1000)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [userToken, userId])
 
     let contextData = {
         ADDRESS:ADDRESS,

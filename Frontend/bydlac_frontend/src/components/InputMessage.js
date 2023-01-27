@@ -58,7 +58,6 @@ function InputMessage() {
      * Function to send location as a message
      */
     const sendLocation = async () => {
-        console.log("location ", location)
         if (JSON.stringify(location) !== "{}") {
             const response = await fetch(`http://127.0.0.1:8000/api/groups/${currentGroupId}/messages/`, {
                 method: 'POST',

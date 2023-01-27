@@ -21,6 +21,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
     const navigate = useNavigate()
 
     const [toggleGroupDetailsButton, setToggleGroupDetailsButton] = useState(true)
+    const [toggleAddUsersButton, setToggleAddUsersButton] = useState(false)
     const [toggleDeleteUsersButton, setToggleDeleteUsersButton] = useState(false)
     const [toggleChangeModeratorsButton, setToggleChangeModeratorsButton] = useState(false)
     const [toggleDeleteGroupButton, setToggleDeleteGroupButton] = useState(false)
@@ -33,24 +34,35 @@ const GroupOptions = ({groupId, handlePopup}) => {
         switch (button) {
             case 'groupDetails':
                 setToggleGroupDetailsButton(true)
+                setToggleAddUsersButton(false)
+                setToggleDeleteUsersButton(false)
+                setToggleChangeModeratorsButton(false)
+                setToggleDeleteGroupButton(false)
+                return;
+            case 'addUsers':
+                setToggleGroupDetailsButton(false)
+                setToggleAddUsersButton(true)
                 setToggleDeleteUsersButton(false)
                 setToggleChangeModeratorsButton(false)
                 setToggleDeleteGroupButton(false)
                 return;
             case 'deleteUsers':
                 setToggleGroupDetailsButton(false)
+                setToggleAddUsersButton(false)
                 setToggleDeleteUsersButton(true)
                 setToggleChangeModeratorsButton(false)
                 setToggleDeleteGroupButton(false)
                 return;
             case 'changeModerators':
                 setToggleGroupDetailsButton(false)
+                setToggleAddUsersButton(false)
                 setToggleDeleteUsersButton(false)
                 setToggleChangeModeratorsButton(true)
                 setToggleDeleteGroupButton(false)
                 return;
             case 'deleteGroup':
                 setToggleGroupDetailsButton(false)
+                setToggleAddUsersButton(false)
                 setToggleDeleteUsersButton(false)
                 setToggleChangeModeratorsButton(false)
                 setToggleDeleteGroupButton(true)
@@ -59,6 +71,9 @@ const GroupOptions = ({groupId, handlePopup}) => {
     }
 
     const [selectedToDelete, setSelectedToDelete] = useState([])
+
+    const [newSelectedUser, setNewSelectedUser] = useState('');
+    const [selectedUsersList, setSelectedUsersList] = useState([]);
 
     useEffect(() => {
         /**
@@ -87,14 +102,57 @@ const GroupOptions = ({groupId, handlePopup}) => {
         }
 
         getGroupDetails()
-    }, [selectedToDelete])
+    }, [selectedToDelete, selectedUsersList])
+
+    const handleKeyDown = (event) => {
+        if (!newSelectedUser)
+            return;
+
+        switch (event.key) {
+            case 'Enter':
+            case 'Tab':
+                setSelectedUsersList((prev) => [...prev, newSelectedUser]);
+                setNewSelectedUser('');
+                event.preventDefault();
+        }
+    };
+
+    /**
+     * Function to add (one-by-one) selected Users -
+     * meaning sending request to backend server with information about additions
+     */
+    const addUsers = () => {
+        selectedUsersList.map(async (user) => {
+            const userIdResponse = await fetch(`http://127.0.0.1:8000/api/users/from-username/?username=${user}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                }
+            })
+            const userData = await userIdResponse.json()
+
+            const addUserResponse = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${userToken}`
+                },
+                body: JSON.stringify({user: userData.id})
+            })
+
+            if (!addUserResponse.ok) {
+                alert(`Błąd podczas dodawania użytkownika o nicku: ${user}`)
+            }
+        })
+        setSelectedUsersList([])
+    }
 
     /**
      * Function to delete (one-by-one) selected Group Members -
      * meaning sending request to backend server with information about deletions
      */
     const deleteUsers = () => {
-        console.log("selectedToDelete: ", selectedToDelete)
         selectedToDelete.map(async (user) => {
             const response = await fetch(`http://127.0.0.1:8000/api/groups/${groupId}/members/${user.user}/`, {
                 method: 'DELETE',
@@ -151,6 +209,10 @@ const GroupOptions = ({groupId, handlePopup}) => {
                         Dane grupy
                     </button>
                     <button id="groupOptionsButton"
+                            onClick={ () => handleTogglingButtons('addUsers') }>
+                        Dodaj użytkowników
+                    </button>
+                    <button id="groupOptionsButton"
                             onClick={ () => handleTogglingButtons('deleteUsers') }>
                         Usuń uczestników
                     </button>
@@ -182,6 +244,31 @@ const GroupOptions = ({groupId, handlePopup}) => {
                                     <User key={groupMember.user} className="otherPerson" userId={groupMember.user} />
                                 )) }
                             </div>
+                        </div>
+                    )}
+
+                    {toggleAddUsersButton && (
+                        <div id="addUsers">
+                            <h3> Dodaj członków: </h3>
+                            <div id='newGroupUsers'>
+                                <CreatableSelect
+                                    components={{ DropdownIndicator: null, }}
+                                    inputValue={newSelectedUser}
+                                    isClearable
+                                    isMulti
+                                    menuIsOpen={false}
+                                    onChange={(newValue) => setSelectedUsersList(newValue)}
+                                    onInputChange={(newValue) => setNewSelectedUser(newValue)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Wpisz nazwy użytkowników oddzielając je enterem"
+                                    value={selectedUsersList}
+                                    getOptionLabel={(user) => user}
+                                />
+                            </div>
+                            <button id="groupOptionsButton" style={{borderRadius: "15px", marginTop: "15px"}}
+                                    onClick={ addUsers } >
+                                Potwierdź
+                            </button>
                         </div>
                     )}
 
@@ -233,7 +320,7 @@ const GroupOptions = ({groupId, handlePopup}) => {
                     {toggleDeleteGroupButton && (
                         <div id="deleteGroup">
                             <h3> Czy na pewno chcesz usunąć tę grupę? </h3>
-                            <button onClick={ deleteGroup } >
+                            <button id="groupOptionsButton" onClick={ deleteGroup } >
                                 Potwierdź
                             </button>
                         </div>

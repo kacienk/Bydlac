@@ -412,7 +412,8 @@ class MessageViewSet(ModelViewSet):
         if self.action == 'list':
             messages = Message.objects.select_related('author').filter(group=group_pk)
 
-            return messages.values('author',
+            return messages.values('id',
+                                    'author',
                                     'group',
                                     'body',
                                     'edited',

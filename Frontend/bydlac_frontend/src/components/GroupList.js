@@ -1,6 +1,6 @@
 import Group from "./Group";
 import {Link} from "react-router-dom";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import userContext from "../context/UserContext";
 
 import "./GroupList.css"
@@ -12,13 +12,16 @@ import "./GroupList.css"
 const GroupList = () => {
     const {userGroups} = useContext(userContext)
 
+    //const [isUserGroups, setIsUserGroups] = useState(userGroups.length !== 0)
+
     return (
         <div className="groupList">
             <Link to={'/new/group'}>
                 <button id='newGroupButton'>Nowa konwersacja</button>
             </Link>
 
-            { userGroups.map(group => (<Group key={group.id} group={group}/>)) }
+            { //isUserGroups &&
+                userGroups.map(group => (<Group key={group.id} group={group}/>)) }
         </div>
     )
 }
