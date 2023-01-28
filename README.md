@@ -23,9 +23,9 @@ In the future we want to setup Django and React on nginx.
 
 ## Project structure
 
-All backend things (including backend data and database data ignored in VCS) are located in Backend folder.
-All frontend things are in Frontend folder.
-Folder Documentation where we keep all the files not connected to the code that were requiered for our studies.
+All the backend stuff (including backend data and database data ignored in VCS) are located in Backend folder.
+All the frontend stuff are in Frontend folder.
+Folder Documentation id where we keep all the files not connected to the code that were requiered for our studies.
 
 ```
 Bydlac
@@ -56,7 +56,7 @@ Bydlac
 
 To run this up you need to use Docker and docker-compose. [How to get docker?](https://docs.docker.com/get-docker/).
 
-Proper .env file should be created in parent directory (Bydlac). For safety purpouse it is not included in VCS.
+Proper .env file should be created in parent directory (Bydlac). For safety purpose it is not included in VCS.
 
 Before the first launch you need to build and apply django migrations.
 To do that you need to run from parent directory following commands:
