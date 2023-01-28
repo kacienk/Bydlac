@@ -5,8 +5,14 @@ import userContext from "../context/UserContext";
 
 import "./NewGroup.css";
 
+/**
+ * Custom Component which represents new Conversation Group form and
+ * handles sending requests to create Conversation Group in backend server
+ * @returns {JSX.Element} Form containing all new Group's details to fulfill: name, description, privacy option, names of members
+ */
 const NewGroup = () => {
     const {
+        ADDRESS,
         userId,
         userToken,
         setUserGroups
@@ -41,6 +47,10 @@ const NewGroup = () => {
 
 
     const navigate = useNavigate()
+    /**
+     * Function to send request to backend server with all information about new Conversation Group
+     * @param event event from submitting input value in HTML element
+     */
     const newGroupSubmitHandler = async (event) => {
         event.preventDefault()
 
@@ -51,7 +61,7 @@ const NewGroup = () => {
             is_private: newGroupIsPrivate
         }
 
-        let createGroupResponse = await fetch('http://127.0.0.1:8000/api/groups/', {
+        let createGroupResponse = await fetch(`http://127.0.0.1:8000/api/groups/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -91,7 +101,6 @@ const NewGroup = () => {
 
             if (!addUserResponse.ok) {
                 alert(`Błąd podczas dodawania użytkownika o nicku: ${user}`)
-                //console.log(await addUserResponse.json())
             }
         })
 

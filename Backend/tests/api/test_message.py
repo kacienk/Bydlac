@@ -26,6 +26,10 @@ def test_message_list(auth_client, create_user, create_group, create_message):
     assert data[0]['body'] == message1.body
     assert data[1]['body'] == message2.body
     assert data[2]['body'] == message3.body
+    assert data[0]['username'] == user1.username
+    assert data[1]['username'] == user1.username
+    assert data[2]['username'] == user1.username
+
 
 
 @pytest.mark.django_db
@@ -35,9 +39,9 @@ def test_message_list_fail_not_member(auth_client, create_user, create_group, cr
 
     host = create_user(username='testhost')
     group = create_group(host=host, name='testgroup')
-    message1 = create_message(group=group, author=host, body='test1')
-    message2 = create_message(group=group, author=host, body='test2')
-    message3 = create_message(group=group, author=host, body='test3')
+    create_message(group=group, author=host, body='test1')
+    create_message(group=group, author=host, body='test2')
+    create_message(group=group, author=host, body='test3')
 
     response = client.get(f'/api/groups/{group.id}/messages/')
     

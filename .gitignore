@@ -104,9 +104,9 @@ celerybeat.pid
 # Environments
 .env
 .venv
-env/
+.env/
 venv/
-ENV/
+.env/
 env.bak/
 venv.bak/
 
@@ -150,14 +150,19 @@ Frontend/bydlac_frontend/build
 
 # misc
 Frontend/bydlac_frontend/.DS_Store
-Frontend/bydlac_frontend/.env.local
-Frontend/bydlac_frontend/.env.development.local
-Frontend/bydlac_frontend/.env.test.local
-Frontend/bydlac_frontend/.env.production.local
+Frontend/bydlac_frontend/.env
+Frontend/bydlac_frontend/.env.staging
 
 Frontend/bydlac_frontend/npm-debug.log*
 Frontend/bydlac_frontend/yarn-debug.log*
 Frontend/bydlac_frontend/yarn-error.log*
 
-# images
-Backend/user_images
+
+# data
+Backend/data/
+
+# sonar-scanner stuff
+.scannerwork/
+
+# readme for studies stuff
+readme.txt

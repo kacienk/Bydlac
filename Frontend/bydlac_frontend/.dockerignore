@@ -1,0 +1,7 @@
+# docker files
+.dockerignore
+Dockerfile
+
+# react stuff
+node_modules
+build

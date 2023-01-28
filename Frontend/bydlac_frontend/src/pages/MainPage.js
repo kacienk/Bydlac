@@ -8,6 +8,10 @@ import Person1 from "../components/person1.jpg";
 
 import "./MainPage.css";
 
+/**
+ * Custom Component which represents complete view of main page - if User is not logged-in it redirects them to log in page
+ * @returns {JSX.Element} welcoming text with prompt to choose Conversation Group or Event or create new ones
+ */
 const MainPage = () => {
     const {
         userToken,

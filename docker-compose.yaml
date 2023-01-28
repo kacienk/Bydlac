@@ -1,0 +1,65 @@
+version: "3"
+services:
+  frontend:
+    build: 
+      context: Frontend/bydlac_frontend/
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+        REACT_APP_BACKEND_IP: 127.0.0.1
+        REACT_APP_BACKEND_PORT: ${BACKEND_PORT}
+    ports:
+      - "3000:3000"
+    container_name: bydlac-frontend
+    # command: npx serve build
+    environment:
+      - REACT_APP_GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - REACT_APP_BACKEND_IP=127.0.0.1
+      - REACT_APP_BACKEND_PORT=${BACKEND_PORT}
+    depends_on:
+      - backend
+    networks:
+      network:
+        ipv4_address: ${FRONTEND_IP}
+
+  backend:
+    build: ./Backend/
+    ports: 
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    image: bydlac-backend:bydlac-backend
+    container_name: bydlac-backend
+    command: python /backend/manage.py runserver 0.0.0.0:${BACKEND_PORT}
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_IP=${DB_IP}
+      - DB_PORT=${DB_PORT}
+      - FRONTEND_IP=${FRONTEND_IP}
+    depends_on:
+      - db
+    networks:
+      network:
+        ipv4_address: ${BACKEND_IP}
+
+  db:
+    image: postgres
+    volumes:
+      - ./Backend/data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    container_name: bydlac-postgres
+    networks:
+      network:
+        ipv4_address: ${DB_IP}
+networks:
+  network:
+    ipam: 
+      driver: default
+      config: 
+        - subnet: ${BYDLAC_NETWORK_IP}
+    
+

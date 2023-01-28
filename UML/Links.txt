@@ -1,9 +1,0 @@
-Frontend UML: https://lucid.app/lucidchart/c6f7e8af-94b2-4aec-a13e-580ec8aee1e0/edit?invitationId=inv_bbe219d3-f0ed-4f73-9855-d44bd66b1603
-
-Compartment diagram: https://lucid.app/lucidchart/09c22bcd-a115-402a-9d2c-5c09cbc09bd3/edit?invitationId=inv_c0d44b39-ad4c-4ae1-a58d-ef661ce8f7c8
-
-Sequence diagram:
-https://lucid.app/lucidchart/dd9d7576-5203-4454-87f4-7d4b51ed2b61/edit?invitationId=inv_c5630edc-43fe-4e8a-befb-e5544adba9ea
-
-Deployment diagram:
-https://lucid.app/lucidchart/ed557898-a2ac-4c6f-a1d6-8405ae17f4e4/edit?invitationId=inv_ae2c61e6-cacb-4d9a-be15-6cf369b9e896

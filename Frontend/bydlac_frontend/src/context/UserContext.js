@@ -4,7 +4,13 @@ const UserContext = createContext(null);
 
 export default UserContext;
 
+/**
+ * Custom Component implemented to be a container for information which needs to be accessed by multiple components
+ * @param children
+ * @returns {JSX.Element} UserProvider Component
+ */
 export const UserProvider = ({children}) => {
+    const ADDRESS = `http://${process.env.REACT_APP_BACKEND_PORT}:${process.env.REACT_APP_BACKEND_PORT}/api`
 
     const [userToken, setUserToken] = useState(
         localStorage.getItem('userToken') ? JSON.parse(localStorage.getItem('userToken')) : null)
@@ -23,6 +29,9 @@ export const UserProvider = ({children}) => {
     useEffect(() => {
         let isSubscribed = true
 
+        /**
+         * Function to get Conversation Groups of a specific User from backend server
+         */
         const getUserGroups = async () => {
             const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/groups/`, {
                 method: 'GET',
@@ -45,12 +54,15 @@ export const UserProvider = ({children}) => {
         }, 1000)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [userToken, userId])
 
     const [userEvents, setUserEvents] = useState([])
     useEffect(() => {
         let isSubscribed = true
 
+        /**
+         * Function to get all Events from backend server
+         */
         const getUserEvents = async () => {
             let response = await fetch(`http://127.0.0.1:8000/api/events/`, {
                 method: 'GET',
@@ -72,9 +84,11 @@ export const UserProvider = ({children}) => {
         }, 1000)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [userToken, userId])
 
     let contextData = {
+        ADDRESS:ADDRESS,
+
         userToken:userToken, // Conversation, GroupOptions, InputMessage, NewEvent, NewGroup, EventDetails, MainPage
         setUserToken:setUserToken, // LogIn
 

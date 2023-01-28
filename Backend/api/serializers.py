@@ -91,3 +91,14 @@ class GroupMemberListSerializer(serializers.Serializer):
     user = serializers.IntegerField()
     group = serializers.IntegerField()
     is_moderator = serializers.BooleanField()
+
+
+class MessageListSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    author = serializers.IntegerField()
+    group = serializers.IntegerField()
+    body = serializers.CharField()
+    edited = serializers.DateTimeField()
+    created = serializers.DateTimeField()
+    is_location = serializers.BooleanField()

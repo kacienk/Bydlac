@@ -1,20 +1,31 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import userContext from "../context/UserContext";
 
 import "./SignUp.css"
 
+/**
+ * Custom Component which represents sign up form
+ * @returns {JSX.Element} SignUp form containing username, email, password inputs and buttons to log in or submit credentials
+ */
 const SignUp = () => {
+    const {ADDRESS} = useContext(userContext)
+
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [passwordRepeated, setPasswordRepeated] = useState('')
     const navigate = useNavigate()
 
+    /**
+     * Function to send new User information and validate them
+     * @param event event from submitting input value in HTML element
+     */
     const submitHandler = async (event) => {
         event.preventDefault()
         const newUser = {username, password, password2: passwordRepeated, email}
 
-        let response = await fetch('http://127.0.0.1:8000/api/register/', {
+        let response = await fetch(`http://127.0.0.1:8000/api/register/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(newUser)

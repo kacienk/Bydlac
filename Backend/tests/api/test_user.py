@@ -41,10 +41,9 @@ def test_login_user_fail(client):
 
 
 @pytest.mark.django_db
-def test_users_list(client, create_superuser, create_user, auth_user):
+def test_users_list(auth_client, create_superuser, create_user):
     superuser = create_superuser(username='testuser')
-    auth_response = auth_user(superuser)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(superuser)
 
     create_user(username='testuser1')
     create_user(username='testuser2')
@@ -60,10 +59,9 @@ def test_users_list(client, create_superuser, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_list_fail_authenticated_not_admin(client, create_user, auth_user):
+def test_user_list_fail_authenticated_not_admin(auth_client, create_user):
     user = create_user(username='testuser')
-    auth_response = auth_user(user)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user)
 
     response = client.get('/api/users/')
 
@@ -81,10 +79,9 @@ def test_user_list_fail_not_authenticated(client):
 
 
 @pytest.mark.django_db
-def test_user_self(client, create_user, auth_user):
+def test_user_self(auth_client, create_user):
     user = create_user(username='testuser')
-    auth_response = auth_user(user)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user)
 
     response = client.get('/api/users/self/')
     data = response.data
@@ -96,11 +93,10 @@ def test_user_self(client, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_retrieve(client, create_user, auth_user):
+def test_user_retrieve(auth_client, create_user):
     user1 = create_user(username='testuser1')
     user2 = create_user(username='testuser2')
-    auth_response = auth_user(user1)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user1)
 
     response = client.get(f'/api/users/{user2.id}/')
     data = response.data
@@ -112,10 +108,9 @@ def test_user_retrieve(client, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_retrieve_fail_bad_id(client, create_user, auth_user):
+def test_user_retrieve_fail_bad_id(auth_client, create_user):
     user1 = create_user(username='testuser1')
-    auth_response = auth_user(user1)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user1)
 
     response = client.get(f'/api/users/-1/')
 
@@ -123,10 +118,9 @@ def test_user_retrieve_fail_bad_id(client, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_patch(client, create_user, auth_user):
+def test_user_patch(auth_client, create_user):
     user = create_user(username='testuser')
-    auth_response = auth_user(user)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user)
     bio = 'Test updated bio'
 
     client.patch(f'/api/users/{user.id}/', dict(bio=bio))
@@ -144,10 +138,9 @@ def test_user_patch(client, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_patch_fail_patch_user_other_than_self(client, create_user, auth_user):
+def test_user_patch_fail_patch_user_other_than_self(auth_client, create_user):
     user1 = create_user(username='testuser1')
-    auth_response = auth_user(user1)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user1)
     user2 = create_user(username='testuser2')
     bio = 'Test updated bio'
 
@@ -157,10 +150,9 @@ def test_user_patch_fail_patch_user_other_than_self(client, create_user, auth_us
 
 
 @pytest.mark.django_db
-def test_user_delete(client, create_user, create_superuser, auth_user):
+def test_user_delete(auth_client, create_user, create_superuser):
     superuser = create_superuser(username='testuser')
-    auth_response = auth_user(superuser)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(superuser)
     user = create_user(username='testuser')
 
     response = client.delete(f'/api/users/{user.id}/')
@@ -171,10 +163,9 @@ def test_user_delete(client, create_user, create_superuser, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_delete_fail_not_admin(client, create_user, auth_user):
+def test_user_delete_fail_not_admin(auth_client, create_user):
     user1 = create_user(username='testuser1')
-    auth_response = auth_user(user1)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user1)
     user2 = create_user(username='testuser2')
 
     response = client.delete(f'/api/users/{user2.id}/')
@@ -183,10 +174,9 @@ def test_user_delete_fail_not_admin(client, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_groups(client, create_user, auth_user, create_group):
+def test_user_groups(auth_client, create_user, create_group):
     user = create_user(username='testuser')
-    auth_response = auth_user(user)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user)
     group1 = create_group(host=user, name='group1')
     group2 = create_group(host=user, name='group2')
 
@@ -203,10 +193,9 @@ def test_user_groups(client, create_user, auth_user, create_group):
 
     
 @pytest.mark.django_db
-def test_user_groups_user_not_in_any_group(client, create_user, auth_user):
+def test_user_groups_user_not_in_any_group(auth_client, create_user):
     user = create_user(username='testuser')
-    auth_response = auth_user(user)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user)
 
     response = client.get(f'/api/users/{user.id}/groups/')
     data = response.data
@@ -216,14 +205,13 @@ def test_user_groups_user_not_in_any_group(client, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_groups_check_not_self_groups(client, create_user, auth_user, create_group):
+def test_user_groups_check_not_self_groups(auth_client, create_user, create_group):
     user1 = create_user(username='testuser')
-    auth_response = auth_user(user1)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user1)
 
     user2 = create_user(username='testuser2')
-    group1 = create_group(host=user2, name='testgroup1')
-    group2 = create_group(host=user2, name='testgroup2')
+    create_group(host=user2, name='testgroup1')
+    create_group(host=user2, name='testgroup2')
 
     response = client.get(f'/api/users/{user2.id}/groups/')
 
@@ -231,10 +219,9 @@ def test_user_groups_check_not_self_groups(client, create_user, auth_user, creat
 
 
 @pytest.mark.django_db
-def test_user_events(client, create_user, auth_user, create_event):
+def test_user_events(auth_client, create_user, create_event):
     user = create_user(username='testuser')
-    auth_response = auth_user(user)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user)
     event1 = create_event(host=user, name='testevent1')
     event2 = create_event(host=user, name='testevent2')
 
@@ -251,10 +238,9 @@ def test_user_events(client, create_user, auth_user, create_event):
 
 
 @pytest.mark.django_db
-def test_user_events_user_not_in_any_event(client, create_user, auth_user):
+def test_user_events_user_not_in_any_event(auth_client, create_user):
     user = create_user(username='testuser')
-    auth_response = auth_user(user)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user)
 
     response = client.get(f'/api/users/{user.id}/events/')
     data = response.data
@@ -264,14 +250,13 @@ def test_user_events_user_not_in_any_event(client, create_user, auth_user):
 
 
 @pytest.mark.django_db
-def test_user_events_check_not_self_events(client, create_user, auth_user, create_event):
+def test_user_events_check_not_self_events(auth_client, create_user, create_event):
     user1 = create_user(username='testuser')
-    auth_response = auth_user(user1)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user1)
 
     user2 = create_user(username='testuser2')
-    event1 = create_event(host=user2, name='event1')
-    event2 = create_event(host=user2, name='event2')
+    create_event(host=user2, name='event1')
+    create_event(host=user2, name='event2')
 
     response = client.get(f'/api/users/{user2.id}/groups/')
 
@@ -279,10 +264,9 @@ def test_user_events_check_not_self_events(client, create_user, auth_user, creat
 
 
 @pytest.mark.django_db
-def test_user_from_username(client, create_user, auth_user):
+def test_user_from_username(auth_client, create_user):
     user1 = create_user(username='testuser')
-    auth_response = auth_user(user1)
-    client.credentials(HTTP_AUTHORIZATION='Token ' + auth_response.data['token'])
+    client = auth_client(user1)
 
     user2 = create_user(username='testuser2')
     response = client.get(f'/api/users/from-username/?username={user2.username}')

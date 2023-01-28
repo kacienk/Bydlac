@@ -9,8 +9,15 @@ import {format, parseISO} from "date-fns";
 
 import "./EventPage.css";
 
+/**
+ * Custom Component which represents detailed information about specific Event
+ * @returns {JSX.Element} Elements such as Event name, description, creation date, expiration date, location (in popup),
+ * current number of participants vs. maximum number of them, all participants with option to display their account's details,
+ * button to join/leave Event and button to go to Conversation Group connected with this Event
+ */
 const EventDetails = () => {
     const {
+        ADDRESS,
         userToken,
         userId,
         currentEventId,
@@ -26,6 +33,9 @@ const EventDetails = () => {
     const [trigger, setTrigger] = useState(false)
 
     useEffect(() => {
+        /**
+         * Function to find current Event based on its ID from backend server
+         */
         const findCurrentEvent = () => {
             userEvents.find((obj) => {
                 if (obj.id === currentEventId)
@@ -37,6 +47,9 @@ const EventDetails = () => {
     }, [currentEventId, trigger])
 
     useEffect(() => {
+        /**
+         * Function to obtain list of Event Participants from backend server
+         */
         const getEventParticipants = async () => {
             const eventParticipantsResponse = await fetch(`http://127.0.0.1:8000/api/events/${currentEventId}/participants/`, {
                 method: 'GET',
@@ -49,10 +62,14 @@ const EventDetails = () => {
             setEventParticipants(eventParticipantsData)
         }
 
-        getEventParticipants()
+        if (currentEventId !== null)
+            getEventParticipants()
     }, [currentEventId, trigger])
 
     useEffect(() => {
+        /**
+         * Function to check whether currently logged-in user is participant of this Event
+         */
         const isParticipantChecker = () => {
             const res = eventParticipants.some((participant) => { return participant.id === userId })
             setIsParticipant(res)
@@ -62,6 +79,10 @@ const EventDetails = () => {
     })
 
     useEffect(() => {
+        /**
+         * Function to obtain Conversation Group connected to this Event (if it exists) from backend server
+         * @returns {Promise<void>}
+         */
         const getGroupToEvent = async () => {
             const response = await fetch(`http://127.0.0.1:8000/api/events/${currentEventId}/group/`, {
                 method: 'GET',
@@ -74,7 +95,8 @@ const EventDetails = () => {
             setGroupIdToCurrentEvent(data['id'])
         }
 
-        getGroupToEvent()
+        if (currentEventId !== null)
+            getGroupToEvent()
     }, [currentEventId])
 
     const [eventCreatedDate, setEventCreatedDate] = useState(new Date())
@@ -96,6 +118,9 @@ const EventDetails = () => {
 
     const navigate = useNavigate()
 
+    /**
+     * Function to send information about Event deletion to backend server
+     */
     const deleteEvent = async () => {
         const deletedResponse = await fetch(`http://127.0.0.1:8000/api/events/${currentEventId}/`, {
             method: 'DELETE',
@@ -111,6 +136,9 @@ const EventDetails = () => {
             alert(deletedResponse.status)
     }
 
+    /**
+     * Function to send information about currently logged-in user joining this Event to backend server
+     */
     const joinEvent = async () => {
         const userJoinedEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${currentEventId}/join/`, {
             method: 'GET',
@@ -127,6 +155,9 @@ const EventDetails = () => {
             alert(userJoinedEventResponse.status)
     }
 
+    /**
+     * Function to send information about currently logged-in user leaving this Event to backend server
+     */
     const leaveEvent = async () => {
         const userLeftEventResponse = await fetch(`http://127.0.0.1:8000/api/events/${currentEventId}/leave/`, {
             method: 'GET',
@@ -196,7 +227,7 @@ const EventDetails = () => {
                 <LocationMaps
                     handleMapsPopup={ handleMapsPopup }
                     setLocation={ null }
-                    markerPosition={ event.location }
+                    markerPosition={ JSON.parse(event.location) }
                     markerVisibility={ true } /> }
 
         </div>
