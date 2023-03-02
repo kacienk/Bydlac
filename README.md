@@ -5,8 +5,8 @@ This project was created for our studies.
 
 ## Project group
 
-* Kacper Cienkosz -- Backend, Docker, Documentation
-* Miłosz Dubiel -- Frontend, Documentation
+* [Kacper Cienkosz](https://github.com/kacienk) -- Backend, Docker, Documentation
+* [Miłosz Dubiel](https://github.com/dubielel) -- Frontend, Documentation
 * Karol Błaszczak -- Documentation
 * Krystian Sitarz -- Documentation
 
