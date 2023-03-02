@@ -1,14 +1,14 @@
 # Bydlac
 
-A Django-React Full-Stack App for conversations with other users and events in real life.
+A Django-React Full-Stack App for chatting with other users and creating events in real life.
 This project was created for our studies.
 
 ## Project group
 
 * [Kacper Cienkosz](https://github.com/kacienk) -- Backend, Docker, Documentation
 * [Miłosz Dubiel](https://github.com/dubielel) -- Frontend, Documentation
-* Karol Błaszczak -- Documentation
-* Krystian Sitarz -- Documentation
+* [Karol Błaszczak](https://github.com/karcio424) -- Documentation
+* [Krystian Sitarz](https://github.com/Sitaarz) -- Documentation
 
 ## Technologies
 
